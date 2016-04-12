@@ -55,6 +55,7 @@ dependencies {
 	compile 'lessvoid:nifty:1.4.1'
     compile 'lessvoid:nifty-default-controls:1.4.1'
     compile 'lessvoid:nifty-style-black:1.4.1'
+	compile 'lessvoid:nifty-lwjgl-renderer:1.4.1'
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }
 
