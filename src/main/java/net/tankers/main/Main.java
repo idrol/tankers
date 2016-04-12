@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
  
 public class Main {
+	public static String pathPrefix = "build/";
 	public static GameState currentState = null;
 	public static GameState nextState = null;
 	private static boolean stopGame = false;

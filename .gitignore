@@ -10,6 +10,8 @@ hs_err_pid*
 # Intellij IDE
 .idea/
 *.iml
+*.ipr
+*.iws
 
 #Eclipse
 .classpath

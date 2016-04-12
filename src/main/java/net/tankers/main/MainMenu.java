@@ -2,6 +2,8 @@ package net.tankers.main;
 
 import net.tankers.main.screenControllers.MainScreenController;
 
+import java.io.*;
+
 public class MainMenu extends GameState{
 
 	@Override
@@ -25,7 +27,11 @@ public class MainMenu extends GameState{
 	public void init() {
 		nifty.loadStyleFile("nifty-default-styles.xml");
 		nifty.loadControlFile("nifty-default-controls.xml");
-		nifty.fromXml("main-screen", this.getClass().getResourceAsStream("mainMenu.nifty"), "start", new MainScreenController());
+		try {
+			nifty.fromXml("main-screen", new FileInputStream(Main.pathPrefix+"resources/main/mainMenu.nifty"), "start", new MainScreenController());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		nifty.gotoScreen("start");
 	}
 
