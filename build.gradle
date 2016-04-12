@@ -1,0 +1,67 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+mainClassName = "main.java.org.ogp.core.Core"
+applicationDefaultJvmArgs = ["-Djava.library.path=native/", "-DOgpResources=", "-XX:+UseConcMarkSweepGC"]
+sourceCompatibility = 1.8
+version = '0.2'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Open game project',
+                   'Implementation-Version': version
+    }
+}
+
+startScripts {
+	doLast {
+		windowsScript.text = windowsScript.text.replace('native/', '%~dp0../native/')
+		windowsScript.text = windowsScript.text.replace('-DOgpResources=', '-DOgpResources=../')
+		unixScript.text = unixScript.text.replace('native/', '\$APP_HOME/native/')
+		unixScript.text = unixScript.text.replace('-DOgpResources=', '-DOgpResources=../')
+	}
+}
+
+distZip {
+	into(project.name+"-"+project.version) {
+		from '.'
+		include 'native/*'
+		include 'res/**'
+	}
+}
+
+distTar {
+	into(project.name+"-"+project.version) {
+		from '.'
+		include 'native/*'
+		include 'res/**'
+	}
+}
+
+repositories {
+    mavenCentral()
+	maven { 
+		url "https://clojars.org/repo"
+		url 'http://nifty-gui.sourceforge.net/nifty-maven-repo'
+	}
+}
+
+dependencies {
+	compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+	compile 'org.jbox2d:jbox2d:2.1.2.2'
+	compile 'io.netty:netty-all:4.0.4.Final'
+	compile 'lessvoid:nifty:1.4.1'
+    compile 'lessvoid:nifty-default-controls:1.4.1'
+    compile 'lessvoid:nifty-style-black:1.4.1'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
