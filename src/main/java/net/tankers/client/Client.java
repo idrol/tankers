@@ -6,10 +6,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 /**
  * Created by idrol on 13-04-2016.
  */
@@ -17,6 +13,8 @@ public class Client {
 
     private final String host;
     private final int port;
+
+    private Channel channel;
 
     public Client(String host, int port) {
         this.host = host;
@@ -33,17 +31,17 @@ public class Client {
                     .handler(new ClientInitializer());
 
             Channel channel = bootstrap.connect(host, port).sync().channel();
-            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-            while(true) {
-                channel.write(in.readLine() + "\r\n");
-            }
+            this.channel = channel;
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }finally {
             group.shutdownGracefully();
         }
+    }
+
+    public void writeMessage(String message) {
+        channel.write(message + "\r\n");
+        channel.flush();
     }
 
 }

@@ -27,7 +27,7 @@
                     <control name="label" text="Password" color="#000000"></control>
                     <control margin="5px" name="textfield" maxLength="20" id="password" passwordChar="*"></control>
                     <panel childLayout="horizontal">
-                        <control margin="5px" name="button" label="Login" id="Login" align="center" valign="center"></control>
+                        <control margin="5px" name="button" label="Login" id="login" align="center" valign="center"></control>
                         <control margin="5px" name="button" label="Back" id="back" align="center" valign="center"></control>
                     </panel>
                 </panel>
@@ -42,7 +42,7 @@
                     <control margin="5px" name="textfield" maxLength="20" id="username"></control>
                     <control name="label" text="Password" color="#000000"></control>
                     <control margin="5px" name="textfield" maxLength="20" id="password" passwordChar="*"></control>
-                    <control name="label" text="Re-Enter Password"></control>
+                    <control name="label" text="Re-Enter Password" color="#000000"></control>
                     <control margin="5px" name="textfield" maxLength="20" id="password-verify" passwordChar="*"></control>
                     <panel childLayout="horizontal">
                         <control margin="5px" name="button" label="Register" id="Register" align="center" valign="center"></control>

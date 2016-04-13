@@ -12,7 +12,7 @@ import io.netty.handler.logging.LoggingHandler;
  */
 public class Server {
 
-    static final int PORT = 8992;
+    static final int PORT = 25565;
 
     public static void main(String[] args) {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);

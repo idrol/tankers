@@ -5,6 +5,8 @@ import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ButtonClickedEvent;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
+import net.tankers.main.Lobby;
+import net.tankers.main.Main;
 
 /**
  * Created by idrol on 13-04-2016.
@@ -23,5 +25,11 @@ public class Login extends DefaultScreenController {
     @NiftyEventSubscriber(id="back")
     public void back(final String id, final ButtonClickedEvent event) {
         nifty.gotoScreen("start");
+    }
+
+    @NiftyEventSubscriber(id="login")
+    public void login(final String id, final ButtonClickedEvent event) {
+
+        Main.switchState(new Lobby());
     }
 }
