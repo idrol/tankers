@@ -31,7 +31,7 @@ public class MainMenu extends GameState{
 		nifty.loadStyleFile("nifty-default-styles.xml");
 		nifty.loadControlFile("nifty-default-controls.xml");
 		try {
-			nifty.fromXml("main-screen", new FileInputStream(Main.pathPrefix+"resources/main/mainMenu.nifty"), "start", new MainScreenController());
+			nifty.fromXml("main-screen", new FileInputStream(Main.pathPrefix+"mainMenu.nifty"), "start", new MainScreenController());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

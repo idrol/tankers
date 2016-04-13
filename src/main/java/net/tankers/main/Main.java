@@ -8,7 +8,9 @@ import org.lwjgl.opengl.GL11;
 import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
  
 public class Main {
-	public static String pathPrefix = "build/";
+	public static String pathPrefix = "";
+    private static String intellijResourcePrefix = "build/resources/main/";
+    private static String eclipseResourcePrefix = "";
 	public static GameState currentState = null;
 	public static GameState nextState = null;
 	private static boolean stopGame = false;
@@ -65,6 +67,13 @@ public class Main {
     }
      
     public static void main(String[] argv) {
+        System.out.println(argv[0]);
+        if(argv[0].equals("ECLIPSE")) {
+            pathPrefix = eclipseResourcePrefix;
+        }else if(argv[0].equals("INTELLIJ")) {
+            System.out.println("Worked");
+            pathPrefix = intellijResourcePrefix;
+        }
     	Main.start();
     }
 }
