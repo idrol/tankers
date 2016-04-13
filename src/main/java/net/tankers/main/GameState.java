@@ -71,6 +71,7 @@ public abstract class GameState {
 	public abstract void render();
 	
 	public void halt() {
+        System.out.println("Setting running to false for " + this.getClass());
 		isRunning = false;
 	}
 	

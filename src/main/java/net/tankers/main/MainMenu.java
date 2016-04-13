@@ -8,13 +8,16 @@ public class MainMenu extends GameState{
 
 	@Override
 	public void update(float delta) {
-		isRunning = !nifty.update();
+        if(nifty.update()){
+            isRunning = false;
+        }
+
 		
 	}
 
 	@Override
 	public void render() {
-		nifty.render(false);
+        nifty.render(false);
 	}
 
 	@Override
@@ -33,6 +36,7 @@ public class MainMenu extends GameState{
 			e.printStackTrace();
 		}
 		nifty.gotoScreen("start");
+
 	}
 
 }

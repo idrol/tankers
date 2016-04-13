@@ -45,10 +45,11 @@ public class Main {
         while (!stopGame) {
             currentState.start();
             if(nextState != null){
+				System.out.println("Switching to gamestate " + nextState.getClass());
             	currentState = nextState;
                 nextState = null;
             }else{
-            	System.out.println("Next state was null shuting down game!");
+            	System.out.println("Next state was null shutting down game!");
             	stopGame = true;
             }
             

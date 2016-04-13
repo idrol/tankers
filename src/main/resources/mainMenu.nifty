@@ -4,7 +4,7 @@
 	   xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
   <useStyles filename="nifty-default-styles.xml" />
   <useControls filename="nifty-default-controls.xml" />
-  <screen id="start">
+  <screen id="start" controller="net.tankers.main.screenControllers.MainScreenController">
   	<layer childLayout="center">
 		<panel width="100%" childLayout="vertical" backgroundColor="#ff0f">
 			<panel id="red" backgroundColor="#f008" height="100%" width="200px" childLayout="center" align="center">
