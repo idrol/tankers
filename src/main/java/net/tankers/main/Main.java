@@ -10,7 +10,7 @@ import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
 public class Main {
 	public static String pathPrefix = "";
     private static String intellijResourcePrefix = "build/resources/main/";
-    private static String eclipseResourcePrefix = "";
+    private static String eclipseResourcePrefix = "bin/";
 	public static GameState currentState = null;
 	public static GameState nextState = null;
 	private static boolean stopGame = false;
