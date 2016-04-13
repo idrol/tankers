@@ -19,9 +19,18 @@ public class MainScreenController extends DefaultScreenController {
         System.out.println("Bind succesfull");
     }
 
-	@NiftyEventSubscriber(id="StartButton")
-    public void startGame(final String id, final ButtonClickedEvent event) {
-        System.out.println("Button was clicked");
-        Main.switchState(new Game());
+	@NiftyEventSubscriber(id="Login")
+    public void login(final String id, final ButtonClickedEvent event) {
+        nifty.gotoScreen("login");
+    }
+
+    @NiftyEventSubscriber(id="Register")
+    public void register(final String id, final ButtonClickedEvent event) {
+        nifty.gotoScreen("register");
+    }
+
+    @NiftyEventSubscriber(id="quit")
+    public void quit(final String id, final ButtonClickedEvent event) {
+        Main.currentState.halt();
     }
 }

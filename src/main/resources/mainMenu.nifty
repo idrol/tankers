@@ -2,15 +2,54 @@
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
-  <useStyles filename="nifty-default-styles.xml" />
-  <useControls filename="nifty-default-controls.xml" />
-  <screen id="start" controller="net.tankers.main.screenControllers.MainScreenController">
-  	<layer childLayout="center">
-		<panel width="100%" childLayout="vertical" backgroundColor="#ff0f">
-			<panel id="red" backgroundColor="#f008" height="100%" width="200px" childLayout="center" align="center">
-				<control name="button" label="Start" id="StartButton" align="center" valign="center"></control>
-			</panel>
-		</panel>
-	</layer>
-  </screen>
+    <useStyles filename="nifty-default-styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    <screen id="start" controller="net.tankers.main.screenControllers.MainScreenController">
+        <layer childLayout="center">
+            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+                <panel width="200px" childLayout="vertical">
+                    <control margin="5px" name="button" label="Login" id="Login" align="center" valign="center"></control>
+                    <control margin="5px" name="button" label="Register" id="Register" align="center" valign="center"></control>
+                    <control margin="5px" name="button" label="Quit" id="quit" align="center" valign="center"></control>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
+    <screen id="lobby" controller="net.tankers.main.screenControllers.Lobby">
+
+    </screen>
+    <screen id="login" controller="net.tankers.main.screenControllers.Login">
+        <layer childLayout="center">
+            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+                <panel width="200px" childLayout="vertical">
+                    <control name="label" text="Username" color="#000000"></control>
+                    <control margin="5px" name="textfield" maxLength="20" id="username"></control>
+                    <control name="label" text="Password" color="#000000"></control>
+                    <control margin="5px" name="textfield" maxLength="20" id="password" passwordChar="*"></control>
+                    <panel childLayout="horizontal">
+                        <control margin="5px" name="button" label="Login" id="Login" align="center" valign="center"></control>
+                        <control margin="5px" name="button" label="Back" id="back" align="center" valign="center"></control>
+                    </panel>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
+    <screen id="register" controller="net.tankers.main.screenControllers.Register">
+        <layer childLayout="center">
+            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+                <panel width="200px" childLayout="vertical">
+                    <control name="label" text="Username" color="#000000"></control>
+                    <control margin="5px" name="textfield" maxLength="20" id="username"></control>
+                    <control name="label" text="Password" color="#000000"></control>
+                    <control margin="5px" name="textfield" maxLength="20" id="password" passwordChar="*"></control>
+                    <control name="label" text="Re-Enter Password"></control>
+                    <control margin="5px" name="textfield" maxLength="20" id="password-verify" passwordChar="*"></control>
+                    <panel childLayout="horizontal">
+                        <control margin="5px" name="button" label="Register" id="Register" align="center" valign="center"></control>
+                        <control margin="5px" name="button" label="Back" id="back" align="center" valign="center"></control>
+                    </panel>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
 </nifty>
