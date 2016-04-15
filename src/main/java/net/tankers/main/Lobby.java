@@ -2,7 +2,6 @@ package net.tankers.main;
 
 import net.tankers.client.Client;
 import net.tankers.main.screenControllers.LobbyController;
-import net.tankers.main.screenControllers.MainScreenController;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,6 +21,7 @@ public class Lobby extends GameState {
         client = new Client("localhost", 25565);
         client.run();
         lobbyController = new LobbyController();
+        lobbyController.setClient(client);
         try {
             nifty.fromXml("main-screen", new FileInputStream(Main.pathPrefix+"lobby.nifty"), "lobby", lobbyController);
         } catch (FileNotFoundException e) {
@@ -45,6 +45,6 @@ public class Lobby extends GameState {
 
     @Override
     public void cleanUp() {
-
+        client.stop();
     }
 }

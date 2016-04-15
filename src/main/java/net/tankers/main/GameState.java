@@ -1,16 +1,18 @@
 package net.tankers.main;
 
-import org.lwjgl.Sys;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
-
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.nulldevice.NullSoundDevice;
 import de.lessvoid.nifty.render.batch.BatchRenderDevice;
 import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
 import de.lessvoid.nifty.renderer.lwjgl.render.LwjglBatchRenderBackendCoreProfileFactory;
 import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
+import org.lwjgl.Sys;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class GameState {
 	
@@ -29,6 +31,7 @@ public abstract class GameState {
 	
 	public void start() {
 		nifty = initNifty(Main.lwjglInputSystem);
+		Logger.getLogger("de.lessvoid.nifty").setLevel(Level.SEVERE);
 		init();
 		lastFrameTime = getTime();
 		while(!Display.isCloseRequested() && isRunning){
