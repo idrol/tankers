@@ -3,6 +3,7 @@ package net.tankers.server.sqlite;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -26,7 +27,14 @@ public class SQLiteJDBC {
 			System.err.println("Couldn't connect to database '" + databaseName + "'");
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public void disconnectFromDatabase() {
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -40,7 +48,7 @@ public class SQLiteJDBC {
 			Statement statement = connection.createStatement();
 			
 			String sqlQuery = "CREATE TABLE IF NOT EXISTS " +tableName + "(" + rows + ")";
-			
+			System.out.println(sqlQuery);
 			statement.execute(sqlQuery);
 			statement.close();
 			System.out.println("Created table " + tableName);
@@ -82,9 +90,10 @@ public class SQLiteJDBC {
 			
 			resultSet = statement.executeQuery(query);
 			
+			int x = 1;
 			while(resultSet.next()) {
-				result.add("Name: " + resultSet.getString("name") +
-						" Age: " + Integer.toString(resultSet.getInt("age")));
+				result.add("Name: " + resultSet.getString("username") +
+						" Age: " + resultSet.getString("password"));
 			}
 			
 			resultSet.close();
@@ -94,6 +103,34 @@ public class SQLiteJDBC {
 		}
 		
 		return result;
+	}
+	
+	public boolean validateUser(String username, String password) {
+		ResultSet resultSet = null;
+		String dbUsername = null, dbPassword = null;
+		
+		try {
+			Statement statement = connection.createStatement();
+			
+			String query = "SELECT username, password FROM users WHERE username='" + username + "'";
+			
+			resultSet = statement.executeQuery(query);
+			
+			dbUsername = resultSet.getString("username");
+			dbPassword = resultSet.getString("password");
+			
+			resultSet.close();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		if(username.equals(dbUsername) && password.equals(dbPassword)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public void dropTable(String tableName) {
@@ -109,17 +146,24 @@ public class SQLiteJDBC {
 	public static void main(String[] args) {
 		SQLiteJDBC db = new SQLiteJDBC();
 		
-		db.connectToDatabase("memes");
+		db.connectToDatabase("database");
 		
-		//db.dropTable("FOLK");
+		//db.dropTable("users");
 		
-		db.createTable("FOLK", "NAME TEXT NOT NULL, AGE INT NOT NULL");
+		/*db.createTable("users", 
+				"uniqueid integer PRIMARY KEY AUTOINCREMENT," +
+				" username TEXT NOT NULL," +
+				" password TEXT NOT NULL");
+		*/
 		
-		db.insertInto("FOLK", "('NAME', 'AGE') VALUES ('John','23')");
-		
-		ArrayList<String> result = db.selectFrom("*", "FOLK");
-		for(String entry : result) {
-			System.out.println(entry);
+		//db.insertInto("users", "('username', 'password') VALUES ('testuser','1234')");
+
+		boolean loggedin = db.validateUser("testuser", "1234");
+		if(loggedin) {
+			System.out.println("Logged in!");
+		} else {
+			System.out.println("Not logged in!");
 		}
+		
 	}
 }
