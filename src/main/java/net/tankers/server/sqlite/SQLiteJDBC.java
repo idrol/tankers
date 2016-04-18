@@ -106,27 +106,26 @@ public class SQLiteJDBC {
 	}
 	
 	public boolean validateUser(String username, String password) {
-		ResultSet resultSet = null;
-		String dbUsername = null, dbPassword = null;
+		ResultSet resultSet;
+		int result = 0;
 		
 		try {
 			Statement statement = connection.createStatement();
 			
-			String query = "SELECT username, password FROM users WHERE username='" + username + "'";
+			String query = "SELECT EXISTS(SELECT username, password "
+					+ "FROM users "
+					+ "WHERE username='" + username + "' AND password='" + password +"' LIMIT 1)";
 			
 			resultSet = statement.executeQuery(query);
+			result = resultSet.getInt(1);
 			
-			dbUsername = resultSet.getString("username");
-			dbPassword = resultSet.getString("password");
-			
-			resultSet.close();
 			statement.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		if(username.equals(dbUsername) && password.equals(dbPassword)) {
+		if(result == 1) {
 			return true;
 		} else {
 			return false;
@@ -150,11 +149,10 @@ public class SQLiteJDBC {
 		
 		//db.dropTable("users");
 		
-		/*db.createTable("users", 
+		db.createTable("users", 
 				"uniqueid integer PRIMARY KEY AUTOINCREMENT," +
 				" username TEXT NOT NULL," +
 				" password TEXT NOT NULL");
-		*/
 		
 		//db.insertInto("users", "('username', 'password') VALUES ('testuser','1234')");
 
@@ -165,5 +163,6 @@ public class SQLiteJDBC {
 			System.out.println("Not logged in!");
 		}
 		
+		db.disconnectFromDatabase();
 	}
 }
