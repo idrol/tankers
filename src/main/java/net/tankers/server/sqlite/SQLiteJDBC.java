@@ -57,7 +57,7 @@ public class SQLiteJDBC {
 		}
 	}
 	
-	public void insertInto(String tableName, String query) {
+	private void insertInto(String tableName, String query) {
 		try {
 			Statement statement = connection.createStatement();
 			
@@ -73,7 +73,7 @@ public class SQLiteJDBC {
 	}
 	
 	//Exempelkod, bör adaptas sedan
-	public ArrayList<String> selectFrom(String whatToSelect, String tableName) {
+	private ArrayList<String> selectFrom(String whatToSelect, String tableName) {
 		ResultSet resultSet = null;
 		ArrayList<String> result = new ArrayList<String>();
 		
@@ -90,7 +90,6 @@ public class SQLiteJDBC {
 			
 			resultSet = statement.executeQuery(query);
 			
-			int x = 1;
 			while(resultSet.next()) {
 				result.add("Name: " + resultSet.getString("username") +
 						" Age: " + resultSet.getString("password"));
@@ -132,6 +131,44 @@ public class SQLiteJDBC {
 		}
 	}
 	
+	private boolean isDuplicateUser(String username) throws DuplicateUserException {
+		ResultSet resultSet;
+		int result = 0;
+		
+		try {
+			Statement statement = connection.createStatement();
+			
+			String query = "SELECT EXISTS(SELECT username, password "
+					+ "FROM users "
+					+ "WHERE username='" + username + "' LIMIT 1)";
+			
+			resultSet = statement.executeQuery(query);
+			result = resultSet.getInt(1);
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		if(result == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	public void createUser(String username, String password) {
+		try {
+			if(!isDuplicateUser(username)) {
+				insertInto("users", "('username', 'password') VALUES ('testuser','1234')");
+			} else {
+				throw new DuplicateUserException(username);
+			}
+		} catch (DuplicateUserException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void dropTable(String tableName) {
 		try {
 			Statement statement = connection.createStatement();
@@ -147,14 +184,12 @@ public class SQLiteJDBC {
 		
 		db.connectToDatabase("database");
 		
-		//db.dropTable("users");
-		
 		db.createTable("users", 
 				"uniqueid integer PRIMARY KEY AUTOINCREMENT," +
 				" username TEXT NOT NULL," +
 				" password TEXT NOT NULL");
 		
-		//db.insertInto("users", "('username', 'password') VALUES ('testuser','1234')");
+		db.createUser("testuser2", "1234");
 
 		boolean loggedin = db.validateUser("testuser", "1234");
 		if(loggedin) {
