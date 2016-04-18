@@ -72,36 +72,20 @@ public class SQLiteJDBC {
 		}
 	}
 	
-	//Exempelkod, bör adaptas sedan
-	private ArrayList<String> selectFrom(String whatToSelect, String tableName) {
+	public void printAllUsers() {
 		ResultSet resultSet = null;
-		ArrayList<String> result = new ArrayList<String>();
-		
 		try {
 			Statement statement = connection.createStatement();
-			
-			String query = "SELECT " +
-					whatToSelect +
-					" FROM "
-					+ tableName
-					+ ";";
-			
-			System.out.println(query);
-			
+			String query = "SELECT * FROM users";
 			resultSet = statement.executeQuery(query);
 			
 			while(resultSet.next()) {
-				result.add("Name: " + resultSet.getString("username") +
-						" Age: " + resultSet.getString("password"));
+				System.out.println(resultSet.getString("username") + ":" + resultSet.getString("password"));
 			}
 			
-			resultSet.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		return result;
 	}
 	
 	public boolean validateUser(String username, String password) {
@@ -160,7 +144,8 @@ public class SQLiteJDBC {
 	public void createUser(String username, String password) {
 		try {
 			if(!isDuplicateUser(username)) {
-				insertInto("users", "('username', 'password') VALUES ('testuser','1234')");
+				insertInto("users", "('username', 'password') "
+						+ "VALUES ('" + username + "','"+ password +"')");
 			} else {
 				throw new DuplicateUserException(username);
 			}
@@ -169,11 +154,22 @@ public class SQLiteJDBC {
 		}
 	}
 	
-	public void dropTable(String tableName) {
+	public void deleteUser(String username) {
+		
+		if(username == null)
+			return;
+		
 		try {
 			Statement statement = connection.createStatement();
-			String query = "DROP TABLE IF EXISTS " + tableName;
-			statement.execute(query);
+			
+			String query = "DELETE FROM users WHERE username IN "
+					+ "(SELECT username FROM users WHERE username="
+					+ "'"+ username +"' LIMIT 1)";
+			
+			statement.executeUpdate(query);
+			
+			statement.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -189,9 +185,16 @@ public class SQLiteJDBC {
 				" username TEXT NOT NULL," +
 				" password TEXT NOT NULL");
 		
-		db.createUser("testuser2", "1234");
-
-		boolean loggedin = db.validateUser("testuser", "1234");
+		//db.createUser("testuser", "1234");
+		//db.createUser("testuser2", "1234");
+		//db.createUser("testuser3", "1234");
+		
+		
+		//db.deleteUser("testuser3");
+		
+		db.printAllUsers();
+		
+		boolean loggedin = db.validateUser("testuser3", "1234");
 		if(loggedin) {
 			System.out.println("Logged in!");
 		} else {
