@@ -7,6 +7,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import net.tankers.entity.NetworkedEntity;
+import net.tankers.entity.Player;
 import net.tankers.entity.Tank;
 
 import java.lang.reflect.Constructor;
@@ -21,15 +22,18 @@ public class Client {
 
     private final String host;
     private final int port;
+    private String username = "";
 
     private Channel channel;
     private EventLoopGroup group = null;
     private Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
 
-    public Client(String host, int port) {
+    public Client(String host, int port, String username) {
         this.host = host;
         this.port = port;
+        this.username = username;
         registerNetworkedEntityClass(Tank.class);
+        registerNetworkedEntityClass(Player.class);
     }
 
     public void run() {
@@ -39,10 +43,8 @@ public class Client {
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ClientInitializer());
-
-            Channel channel = bootstrap.connect(host, port).sync().channel();
-            this.channel = channel;
+                    .handler(new ClientInitializer(this));
+            this.channel = bootstrap.connect(host, port).sync().channel();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -56,14 +58,23 @@ public class Client {
     }
 
     public void decode(String msg){
+        String msgType = msg.split(";")[0];
+        if(msgType.equals("object")){
+            decodeObject(msg.split(";")[1]);
+        }else if(msgType.equals("user_info")){
+
+        }
+    }
+
+    public void decodeObject(String msg) {
         String[] data = msg.split(":");
         HashMap<Integer, NetworkedEntity> objects = entities.get(data[0]);
         if(data[2].equals("create")){
-            if(objects.get(data[1]) == null){
+            if(objects.get(Integer.parseInt(data[1])) == null){
                 try {
                     Class<?> clazz = Class.forName(data[0]);
-                    Constructor<?> ctor = clazz.getConstructor();
-                    Object object = ctor.newInstance(new Object[]{});
+                    Constructor<?> ctor = clazz.getConstructor(Boolean.class, Integer.class);
+                    Object object = ctor.newInstance(false, Integer.parseInt(data[1]));
                     if(object instanceof NetworkedEntity){
                         int instanceId = ((NetworkedEntity) object).getInstanceID();
                         objects.put(instanceId, (NetworkedEntity) object);
@@ -82,12 +93,10 @@ public class Client {
             }
         }else if(data[2].equals("update")){
             String[] data2 = new String[data.length-3];
-            for(int i=3;i<data.length;i++){
-                data2[i-3] = data[i];
-            }
-            objects.get(data[1]).decodeData(data2);
+            System.arraycopy(data, 3, data2, 0, data.length - 3);
+            objects.get(Integer.parseInt(data[1])).decodeData(data2);
         }else if(data[2].equals("delete")){
-            objects.remove(data[1]);
+            objects.remove(Integer.parseInt(data[1]));
         }
     }
 

@@ -13,12 +13,17 @@ public class Lobby extends GameState {
 
     private LobbyController lobbyController = null;
     private Client client = null;
+    private String username;
+
+    public Lobby(String username) {
+        this.username = username;
+    }
 
     @Override
     public void init() {
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
-        client = new Client("localhost", 25565);
+        client = new Client("localhost", 25565, username);
         client.run();
         lobbyController = new LobbyController();
         lobbyController.setClient(client);

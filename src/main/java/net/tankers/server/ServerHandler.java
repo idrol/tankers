@@ -6,9 +6,13 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import net.tankers.entity.NetworkedEntity;
+import net.tankers.entity.Player;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by idrol on 13-04-2016.
@@ -16,6 +20,11 @@ import java.net.UnknownHostException;
 public class ServerHandler extends SimpleChannelInboundHandler<String> {
 
     static final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    private List<NetworkedEntity> entities = new ArrayList<NetworkedEntity>();
+
+    private static final int CREATE = 1;
+    private static final int UPDATE = 2;
+    private static final int DELETE = 3;
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) {
@@ -31,6 +40,30 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 
 
         channels.add(ctx.channel());
+        Player player = new Player();
+        int instanceID = player.getInstanceID();
+        entities.add(new Player());
+        broadCast(encodeBase(player, instanceID, CREATE));
+    }
+
+    private String encodeBase(NetworkedEntity entity, int instanceID, int action) {
+        String base = "";
+        base += entity.getClass().getName()+":";
+        base += instanceID+":";
+        if(action == CREATE){
+            base += "create";
+        }else if(action == UPDATE) {
+            base += "update";
+        }else if(action == DELETE) {
+            base += "delete";
+        }
+        return base;
+    }
+
+    protected void broadCast(String msg) {
+        for(Channel c: channels) {
+            c.writeAndFlush(msg);
+        }
     }
 
     @Override

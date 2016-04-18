@@ -5,8 +5,8 @@ package net.tankers.entity;
  */
 public class Tank extends NetworkedEntity {
 
-    public Tank() {
-        super();
+    public Tank(Boolean isServer, Integer instanceID) {
+        super(isServer, instanceID);
         objectIdentifier = "tank";
     }
 }
