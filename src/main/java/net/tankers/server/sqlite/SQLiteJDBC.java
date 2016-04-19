@@ -3,11 +3,8 @@ package net.tankers.server.sqlite;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SQLiteJDBC {
 	private Connection connection;
@@ -29,7 +26,7 @@ public class SQLiteJDBC {
 		}
 	}
 	
-	public void disconnectFromDatabase() {
+	public void closeConnection() {
 		try {
 			connection.close();
 		} catch (SQLException e) {
@@ -115,7 +112,7 @@ public class SQLiteJDBC {
 		}
 	}
 	
-	private boolean isDuplicateUser(String username) throws DuplicateUserException {
+	private boolean isDuplicateUser(String username) {
 		ResultSet resultSet;
 		int result = 0;
 		
@@ -141,16 +138,12 @@ public class SQLiteJDBC {
 		}
 	}
 	
-	public void createUser(String username, String password) {
-		try {
-			if(!isDuplicateUser(username)) {
-				insertInto("users", "('username', 'password') "
-						+ "VALUES ('" + username + "','"+ password +"')");
-			} else {
-				throw new DuplicateUserException(username);
-			}
-		} catch (DuplicateUserException e) {
-			e.printStackTrace();
+	public void createUser(String username, String password) throws DuplicateUserException {
+		if(!isDuplicateUser(username)) {
+			insertInto("users", "('username', 'password') "
+					+ "VALUES ('" + username + "','"+ password +"')");
+		} else {
+			throw new DuplicateUserException(username);
 		}
 	}
 	
@@ -201,6 +194,6 @@ public class SQLiteJDBC {
 			System.out.println("Not logged in!");
 		}
 		
-		db.disconnectFromDatabase();
+		db.closeConnection();
 	}
 }
