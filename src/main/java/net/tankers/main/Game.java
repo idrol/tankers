@@ -1,9 +1,6 @@
 package net.tankers.main;
 
-import de.lessvoid.nifty.controls.Chat;
-import de.lessvoid.nifty.screen.Screen;
 import net.tankers.client.Client;
-import net.tankers.entity.Player;
 import net.tankers.main.screenControllers.LobbyController;
 
 import java.io.FileInputStream;

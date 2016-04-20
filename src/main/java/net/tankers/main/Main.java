@@ -1,11 +1,10 @@
 package net.tankers.main;
 
+import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-
-import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
  
 public class Main {
 	public static String pathPrefix = "";

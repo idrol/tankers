@@ -1,10 +1,6 @@
 package net.tankers.server.sqlite;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class SQLiteJDBC {
 	private Connection connection;

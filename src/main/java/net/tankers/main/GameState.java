@@ -11,9 +11,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public abstract class GameState {
 	
 	private long lastFrameTime = 0;

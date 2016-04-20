@@ -5,8 +5,6 @@ import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ButtonClickedEvent;
 import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.controls.TextField;
-import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.Color;

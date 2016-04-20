@@ -2,7 +2,8 @@ package net.tankers.main;
 
 import net.tankers.main.screenControllers.MainScreenController;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class MainMenu extends GameState{
 

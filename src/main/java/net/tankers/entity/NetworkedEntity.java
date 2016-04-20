@@ -1,6 +1,5 @@
 package net.tankers.entity;
 
-import io.netty.channel.Channel;
 import net.tankers.client.Client;
 import net.tankers.server.Server;
 import net.tankers.utils.NetworkUtils;

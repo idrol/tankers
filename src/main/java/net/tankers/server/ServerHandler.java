@@ -10,8 +10,6 @@ import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
 import net.tankers.utils.NetworkUtils;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
