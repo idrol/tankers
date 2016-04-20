@@ -5,13 +5,12 @@ import java.sql.*;
 public class SQLiteJDBC {
 	private Connection connection;
 	
-	public SQLiteJDBC() {}
-	
-	public SQLiteJDBC(String databaseName) {
-		connectToDatabase(databaseName);
+	public SQLiteJDBC() {
+		connectToDatabase("database");
+		initializeUserTable();
 	}
 	
-	public void connectToDatabase(String databaseName) {
+	private void connectToDatabase(String databaseName) {
 		try {
 			connection = 
 					DriverManager.getConnection("jdbc:sqlite:" + databaseName + ".db");
@@ -108,7 +107,7 @@ public class SQLiteJDBC {
 		}
 	}
 	
-	private boolean isDuplicateUser(String username) {
+	public boolean isDuplicateUser(String username) {
 		ResultSet resultSet;
 		int result = 0;
 		
@@ -164,15 +163,18 @@ public class SQLiteJDBC {
 		}
 	}
 	
+	private void initializeUserTable() {
+		createTable("users", 
+				"uniqueid integer PRIMARY KEY AUTOINCREMENT," +
+				" username TEXT NOT NULL," +
+				" password TEXT NOT NULL");
+	}
+	
 	public static void main(String[] args) {
 		SQLiteJDBC db = new SQLiteJDBC();
 		
 		db.connectToDatabase("database");
-		
-		db.createTable("users", 
-				"uniqueid integer PRIMARY KEY AUTOINCREMENT," +
-				" username TEXT NOT NULL," +
-				" password TEXT NOT NULL");
+		db.initializeUserTable();
 		
 		//db.createUser("testuser", "1234");
 		//db.createUser("testuser2", "1234");

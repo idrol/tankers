@@ -12,8 +12,6 @@ public class MainMenu extends GameState{
         if(nifty.update()){
             isRunning = false;
         }
-
-		
 	}
 
 	@Override

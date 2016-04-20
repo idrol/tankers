@@ -56,8 +56,8 @@ public class Client {
     }
     
     public void registerUser(String username, String password, String verifyPassword) {
-    	//writeMessage("register;"+username+":"+password+":"+verifyPassword);
     	System.out.println("Sent registration stuff");
+    	writeMessage("register;"+username+":"+password+":"+verifyPassword);
     }
     
     public void setGame(Game game) {

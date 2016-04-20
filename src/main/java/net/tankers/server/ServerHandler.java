@@ -8,6 +8,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
+import net.tankers.server.sqlite.SQLiteJDBC;
 import net.tankers.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -79,8 +80,10 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                 String[] msgData = msg.split(";")[1].split(":");
                 String username = msgData[0];
                 String password = msgData[1];
-                boolean auth = true;// auth
+                boolean auth = authenticateUser(username, password);
+                System.out.println("AUTH: "+auth);
                 Player player = players.get(ctx.channel());
+                
                 if(auth){
                     ctx.channel().writeAndFlush("login_status;1"+ NetworkUtils.ENDING);
                     player.authenticated = auth;
@@ -90,10 +93,55 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                 }else{
                     ctx.channel().writeAndFlush("login_status;0"+ NetworkUtils.ENDING);
                 }
-            }else{
-                System.out.println("Unauthenticated channel tried message: " + msg);
+                
+            } else if(message_name.equals("register")) {
+            	String[] msgData = msg.split(";")[1].split(":");
+                String username = msgData[0];
+                String password = msgData[1];
+                String verifyPassword = msgData[2];
+                
+                String credentialsStatus = verifyRegistrationCredentials(username,password,verifyPassword);
+                if(credentialsStatus.equals("success")) {
+                	SQLiteJDBC sqlite = new SQLiteJDBC();
+                	sqlite.createUser(username, password);
+                	sqlite.printAllUsers();
+                	sqlite.closeConnection();
+                }
+                
+            } else {
+            	System.out.println("Unauthenticated channel tried message: " + msg);
             }
         }
+    }
+    
+    private boolean authenticateUser(String username, String password) {
+    	SQLiteJDBC sqlite = new SQLiteJDBC();
+    	sqlite.printAllUsers();
+    	return sqlite.validateUser(username, password);
+    }
+    
+    private String verifyRegistrationCredentials(String username, String password, String verifyPassword) {
+    	SQLiteJDBC sqlite = new SQLiteJDBC();
+    	if(username.length() >= 4) {
+    		if(!sqlite.isDuplicateUser(username)) {
+        		if(password.equals(verifyPassword)) {
+        			sqlite.closeConnection();
+        			return "success";
+        		} else {
+        			System.out.println("Registration - Passwords do not match");
+        			sqlite.closeConnection();
+        			return "passwordsdonotmatch";
+        		}
+        	} else {
+        		System.out.println("Registration - Duplicate user");
+        		sqlite.closeConnection();
+        		return "duplicateuser";
+        	}
+    	} else {
+    		System.out.println("Registration - Too short username, needs to be 4 chars minimum");
+    		sqlite.closeConnection();
+    		return "tooshortusername";
+    	}
     }
 
     @Override
