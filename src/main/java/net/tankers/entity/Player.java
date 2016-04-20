@@ -1,5 +1,6 @@
 package net.tankers.entity;
 
+import io.netty.channel.Channel;
 import net.tankers.client.Client;
 import net.tankers.server.Server;
 import net.tankers.utils.NetworkUtils;
@@ -16,8 +17,8 @@ public class Player extends NetworkedEntity {
         super(client, instanceID);
     }
 
-    public Player(Server server) {
-        super(server);
+    public Player(Server server, Channel channel) {
+        super(server, channel);
     }
 
     public boolean authenticated = false;
@@ -63,5 +64,11 @@ public class Player extends NetworkedEntity {
         msg.add(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "username:"+username);
         msg.add(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "authenticated:"+((authenticated) ? 1 : 0));
         return msg;
+    }
+
+    public void write(String msg) {
+        if(isServer){
+            channel.writeAndFlush(msg + "\r\n");
+        }
     }
 }

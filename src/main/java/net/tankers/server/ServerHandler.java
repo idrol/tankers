@@ -37,7 +37,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 
 
         channels.add(ctx.channel());
-        Player player = new Player(server);
+        Player player = new Player(server, ctx.channel());
         entities.add(player);
         players.put(ctx.channel(), player);
     }
@@ -69,7 +69,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             }
         }
         if(channelAuthenticated(ctx.channel())){
+            switch (message_name){
+                case "search_match":
 
+                    break;
+            }
         }else{
             if(message_name.equals("login")){
                 String[] msgData = msg.split(";")[1].split(":");

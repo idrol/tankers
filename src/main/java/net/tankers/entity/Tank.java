@@ -1,5 +1,6 @@
 package net.tankers.entity;
 
+import io.netty.channel.Channel;
 import net.tankers.client.Client;
 import net.tankers.server.Server;
 
@@ -14,8 +15,8 @@ public class Tank extends NetworkedEntity {
         super(client, instanceID);
     }
 
-    public Tank(Server server) {
-        super(server);
+    public Tank(Server server, Channel channel) {
+        super(server, channel);
     }
 
     @Override

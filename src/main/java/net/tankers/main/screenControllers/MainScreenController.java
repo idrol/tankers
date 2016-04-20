@@ -25,6 +25,7 @@ public class MainScreenController extends DefaultScreenController {
 
     @NiftyEventSubscriber(id="Register")
     public void register(final String id, final ButtonClickedEvent event) {
+        nifty.registerScreenController();
         nifty.gotoScreen("register");
     }
 

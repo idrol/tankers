@@ -1,5 +1,6 @@
 package net.tankers.entity;
 
+import io.netty.channel.Channel;
 import net.tankers.client.Client;
 import net.tankers.server.Server;
 import net.tankers.utils.NetworkUtils;
@@ -17,6 +18,7 @@ public abstract class NetworkedEntity extends Entity {
     protected Server server = null;
     protected Client client = null;
     protected boolean isServer;
+    protected Channel channel;
 
 
     public NetworkedEntity(Client client, Integer instanceID) {
@@ -25,11 +27,16 @@ public abstract class NetworkedEntity extends Entity {
         isServer = false;
     }
 
-    public NetworkedEntity(Server server){
+    public NetworkedEntity(Server server, Channel channel){
         objectIdentifier = this.getClass().getSimpleName();
         this.instanceID = instances;
         instances++;
         isServer = true;
+        this.channel = channel;
+    }
+
+    public Channel getChannel() {
+        return channel;
     }
 
     public void setServer(Server server){
