@@ -23,20 +23,15 @@ public class Client {
 
     private final String host;
     private final int port;
-    private String username = "";
-    private String password = "";
 
     private Channel channel;
     private EventLoopGroup group = null;
     private Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
     public Game game;
 
-    public Client(String host, int port, Game game, String username, String password) {
+    public Client(String host, int port) {
         this.host = host;
         this.port = port;
-        this.game = game;
-        this.username = username;
-        this.password = username;
         registerNetworkedEntityClass(Tank.class);
         registerNetworkedEntityClass(Player.class);
     }
@@ -50,11 +45,23 @@ public class Client {
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new ClientInitializer(this));
             this.channel = bootstrap.connect(host, port).sync().channel();
-            writeMessage("login;"+username+":"+password);
             System.out.println("got to end");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void loginUser(String username, String password) {
+    	writeMessage("login;"+username+":"+password);
+    }
+    
+    public void registerUser(String username, String password, String verifyPassword) {
+    	//writeMessage("register;"+username+":"+password+":"+verifyPassword);
+    	System.out.println("Sent registration stuff");
+    }
+    
+    public void setGame(Game game) {
+    	this.game = game;
     }
 
     public void registerNetworkedEntityClass(Class<?> entityClass){

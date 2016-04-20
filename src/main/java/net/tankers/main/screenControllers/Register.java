@@ -9,6 +9,8 @@ import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.Color;
 import de.lessvoid.nifty.tools.SizeValue;
+import net.tankers.client.Client;
+import net.tankers.main.Game;
 import net.tankers.server.sqlite.DuplicateUserException;
 import net.tankers.server.sqlite.SQLiteJDBC;
 
@@ -37,37 +39,8 @@ public class Register extends DefaultScreenController {
     	String username = usernameField.getDisplayedText();
     	String password = passwordField.getRealText();
     	String verifyPassword = verifyPasswordField.getRealText();
-    	
-    	//Samplecode, will actually happen on serverside
-    	if (password.length() > 3) {
-	    	if (verifyPassword(username, password, verifyPassword)) {
-	    		SQLiteJDBC sqlite = new SQLiteJDBC();
-	    		sqlite.connectToDatabase("database");
-	    		
-	    		//In case users table does not exist already
-	    		sqlite.createTable("users", 
-	    				"uniqueid integer PRIMARY KEY AUTOINCREMENT," +
-	    				" username TEXT NOT NULL," +
-	    				" password TEXT NOT NULL");
-	    		
-	    		
-	    		try {
-					sqlite.createUser(username, password);
-					notificationLabel.setColor(new Color("#00ff00"));
-					notificationLabel.setText("Successfully registered user " + username + "!");
-				} catch (DuplicateUserException e) {
-					notificationLabel.setColor(new Color("#ff0000"));
-					notificationLabel.setText("A user called '" + username + "' already exists");
-				}
-	
-	    	} else {
-	    		notificationLabel.setColor(new Color("#ff0000"));
-				notificationLabel.setText("The passwords don't match");
-	    	}
-    	} else {
-    		notificationLabel.setColor(new Color("#ff0000"));
-			notificationLabel.setText("The password and username have to be at least 4 characters long");
-    	}
+    	Client client = new Client("localhost", 25565);
+    	client.registerUser(username, password, verifyPassword);
     }
 
     @NiftyEventSubscriber(id="back")
@@ -75,12 +48,4 @@ public class Register extends DefaultScreenController {
         nifty.gotoScreen("start");
     }
     
-    private boolean verifyPassword(String username, String password, String verifyPassword) {
-    	if(password.equals(verifyPassword)) {
-    		
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
 }
