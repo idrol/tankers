@@ -42,6 +42,7 @@ public class Register extends DefaultScreenController {
     	System.out.println(username+":"+password+":"+verifyPassword);
     	
     	Client client = new Client("localhost", 25565);
+    	client.run();
     	client.registerUser(username, password, verifyPassword);
     }
 
