@@ -25,7 +25,7 @@ public class Game extends GameState {
     public void init() {
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
-        client = new Client("localhost", 25565, this, username, password);
+        client = new Client("localhost", 25565);
         client.run();
         lobbyController = new LobbyController(this);
         lobbyController.setClient(client);
