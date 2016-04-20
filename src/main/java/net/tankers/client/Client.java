@@ -9,6 +9,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
 import net.tankers.entity.Tank;
+import net.tankers.main.Game;
+import net.tankers.utils.NetworkUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -23,15 +25,19 @@ public class Client {
     private final String host;
     private final int port;
     private String username = "";
+    private String password = "";
 
     private Channel channel;
     private EventLoopGroup group = null;
     private Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
+    public Game game;
 
-    public Client(String host, int port, String username) {
+    public Client(String host, int port, Game game, String username, String password) {
         this.host = host;
         this.port = port;
+        this.game = game;
         this.username = username;
+        this.password = username;
         registerNetworkedEntityClass(Tank.class);
         registerNetworkedEntityClass(Player.class);
     }
@@ -45,6 +51,8 @@ public class Client {
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new ClientInitializer(this));
             this.channel = bootstrap.connect(host, port).sync().channel();
+            channel.writeAndFlush("login;"+username+":"+password+ NetworkUtils.ENDING);
+            System.out.println("got to end");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -73,11 +81,13 @@ public class Client {
             if(objects.get(Integer.parseInt(data[1])) == null){
                 try {
                     Class<?> clazz = Class.forName(data[0]);
-                    Constructor<?> ctor = clazz.getConstructor(Boolean.class, Integer.class);
-                    Object object = ctor.newInstance(false, Integer.parseInt(data[1]));
+                    Constructor<?> ctor = clazz.getConstructor(Client.class, Integer.class);
+                    Object object = ctor.newInstance(this, Integer.parseInt(data[1]));
                     if(object instanceof NetworkedEntity){
-                        int instanceId = ((NetworkedEntity) object).getInstanceID();
-                        objects.put(instanceId, (NetworkedEntity) object);
+                        NetworkedEntity entity = (NetworkedEntity) object;
+                        int instanceId = entity.getInstanceID();
+                        entity.setClient(this);
+                        objects.put(instanceId, entity);
                     }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();

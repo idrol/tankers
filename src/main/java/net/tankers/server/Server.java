@@ -12,9 +12,9 @@ import io.netty.handler.logging.LoggingHandler;
  */
 public class Server {
 
-    static final int PORT = 25565;
+    private final int PORT = 25565;
 
-    public static void main(String[] args) {
+    public void run() {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -22,7 +22,7 @@ public class Server {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new ServerInitializer());
+                    .childHandler(new ServerInitializer(this));
 
             b.bind(PORT).sync().channel().closeFuture().sync();
         } catch (InterruptedException e) {
@@ -31,5 +31,9 @@ public class Server {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    public static void main(String[] args) {
+        new Server().run();
     }
 }

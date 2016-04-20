@@ -13,6 +13,12 @@ import io.netty.handler.codec.string.StringEncoder;
  * Created by idrol on 13-04-2016.
  */
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
+    private Server server;
+
+    public ServerInitializer(Server server) {
+        this.server = server;
+    }
+
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
@@ -22,6 +28,6 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new StringDecoder());
         pipeline.addLast(new StringEncoder());
 
-        pipeline.addLast(new ServerHandler());
+        pipeline.addLast(new ServerHandler(server));
     }
 }

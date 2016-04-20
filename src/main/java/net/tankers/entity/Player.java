@@ -1,18 +1,27 @@
 package net.tankers.entity;
 
+import io.netty.channel.Channel;
+import net.tankers.client.Client;
+import net.tankers.server.Server;
+import net.tankers.utils.NetworkUtils;
+
+import java.util.List;
+
 /**
  * Created by idrol on 16-04-2016.
  */
 public class Player extends NetworkedEntity {
-    protected String username = "";
+    public String username = "";
 
-    public Player(Boolean isServer, Integer instanceID) {
-        super(isServer, instanceID);
+    public Player(Client client, Integer instanceID) {
+        super(client, instanceID);
     }
 
-    public Player() {
-        super();
+    public Player(Server server) {
+        super(server);
     }
+
+    public boolean authenticated = false;
 
     @Override
     public void updateServer(float delta) {
@@ -26,8 +35,15 @@ public class Player extends NetworkedEntity {
 
     @Override
     public void decodeData(String[] data){
+        System.out.println("Decoding data sent to Player instance " + data[0]);
         if(data[0].equals("username")){
             username = data[1];
+        }else if(data[0].equals("authenticated")){
+            if(data[1].equals("1")){
+                authenticated = true;
+            }else{
+                authenticated = false;
+            }
         }
     }
 
@@ -41,5 +57,12 @@ public class Player extends NetworkedEntity {
             return data;
         }
         return null;
+    }
+
+    @Override
+    public List<String> sync(List<String> msg) {
+        msg.add(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "username:"+username);
+        msg.add(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "authenticated:"+((authenticated) ? 1 : 0));
+        return msg;
     }
 }

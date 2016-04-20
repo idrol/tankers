@@ -31,7 +31,7 @@ public abstract class GameState {
 	
 	public void start() {
 		nifty = initNifty(Main.lwjglInputSystem);
-		Logger.getLogger("de.lessvoid.nifty").setLevel(Level.SEVERE);
+		//Logger.getLogger("de.lessvoid.nifty").setLevel(Level.SEVERE);
 		init();
 		lastFrameTime = getTime();
 		while(!Display.isCloseRequested() && isRunning){

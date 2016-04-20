@@ -1,5 +1,13 @@
 package net.tankers.entity;
 
+import io.netty.channel.Channel;
+import net.tankers.client.Client;
+import net.tankers.server.Server;
+import net.tankers.utils.NetworkUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by idrol on 14-04-2016.
  */
@@ -7,25 +15,34 @@ public abstract class NetworkedEntity extends Entity {
     protected int instanceID;
     protected String objectIdentifier;
     protected static int instances = 0;
-    protected boolean server;
+    protected Server server = null;
+    protected Client client = null;
+    protected boolean isServer;
 
-    public NetworkedEntity(Boolean isServer, Integer instanceID){
-        server = isServer;
+
+    public NetworkedEntity(Client client, Integer instanceID) {
         objectIdentifier = this.getClass().getSimpleName();
-        if(server){
-            this.instanceID = instances;
-            instances++;
-        }else {
-            this.instanceID = instanceID;
-        }
+        this.instanceID = instanceID;
+        isServer = false;
     }
 
-    public NetworkedEntity() {
-        this(true, 0);
+    public NetworkedEntity(Server server){
+        objectIdentifier = this.getClass().getSimpleName();
+        this.instanceID = instances;
+        instances++;
+        isServer = true;
+    }
+
+    public void setServer(Server server){
+        this.server = server;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public void setNetworkState(boolean isServer){
-        server = isServer;
+        this.isServer = isServer;
     }
 
     public int getInstanceID() {
@@ -37,12 +54,27 @@ public abstract class NetworkedEntity extends Entity {
     public abstract String[] encodeData(String variable);
 
     public void update(float delta) {
-        if(server){
+        if(isServer){
             updateServer(delta);
         }else{
             updateClient(delta);
         }
     }
+
+    public List<String> sync(){
+        List<String> msg = new ArrayList<String>();
+        msg.add(NetworkUtils.encodeBase(this, NetworkUtils.CREATE));
+        msg = sync(msg);
+        return msg;
+    }
+
+    public List<String> remove() {
+        List<String> msg = new ArrayList<String>();
+        msg.add(NetworkUtils.encodeBase(this, NetworkUtils.DELETE));
+        return msg;
+    }
+
+    public abstract List<String> sync(List<String> msg);
 
     public abstract void updateServer(float delta);
 
