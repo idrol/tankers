@@ -10,7 +10,6 @@ import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
 import net.tankers.entity.Tank;
 import net.tankers.main.Game;
-import net.tankers.utils.NetworkUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -51,7 +50,7 @@ public class Client {
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new ClientInitializer(this));
             this.channel = bootstrap.connect(host, port).sync().channel();
-            channel.writeAndFlush("login;"+username+":"+password+ NetworkUtils.ENDING);
+            writeMessage("login;"+username+":"+password);
             System.out.println("got to end");
         } catch (InterruptedException e) {
             e.printStackTrace();
