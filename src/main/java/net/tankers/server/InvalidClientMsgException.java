@@ -1,9 +1,19 @@
 package net.tankers.server;
 
+@SuppressWarnings("serial")
 public class InvalidClientMsgException extends Exception {
-	private static final long serialVersionUID = -3903135865702295821L;
 	
-	public InvalidClientMsgException() {
-		super();
+	public InvalidClientMsgException() {}
+	
+	public InvalidClientMsgException(String message) {
+		super(message);
+	}
+	
+	public InvalidClientMsgException(Throwable cause) {
+		super(cause);
+	}
+	
+	public InvalidClientMsgException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }
