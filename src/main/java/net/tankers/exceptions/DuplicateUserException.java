@@ -1,4 +1,4 @@
-package net.tankers.server.sqlite;
+package net.tankers.exceptions;
 
 public class DuplicateUserException extends Exception {
 	private static final long serialVersionUID = -7109853582586230005L;

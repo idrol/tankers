@@ -8,7 +8,8 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
-import net.tankers.server.sqlite.DuplicateUserException;
+import net.tankers.exceptions.DuplicateUserException;
+import net.tankers.exceptions.InvalidClientMsgException;
 import net.tankers.server.sqlite.SQLiteJDBC;
 import net.tankers.utils.NetworkUtils;
 
@@ -25,6 +26,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     static final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     private List<NetworkedEntity> entities = new ArrayList<NetworkedEntity>();
     private Map<Channel, Player> players = new HashMap<Channel, Player>();
+    private SQLiteJDBC sqlite = new SQLiteJDBC();
     private Server server;
 
     public ServerHandler(Server server) {
@@ -80,7 +82,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                 performLogin(msg, ctx);
                 
             } else if(message_name.equals("register")) {
-            	performRegistration(msg, ctx);
+            	performRegistration(msg, ctx); 
                 
             } else {
             	System.out.println("Unauthenticated channel tried message: " + msg);
@@ -120,7 +122,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     }
     
     private boolean authenticateUser(String username, String password) {
-    	SQLiteJDBC sqlite = new SQLiteJDBC();
     	return sqlite.validateUser(username, password);
     }
     
@@ -142,34 +143,32 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     }
     
     private String verifyRegistrationCredentials(String username, String password, String verifyPassword) {
-    	SQLiteJDBC sqlite = new SQLiteJDBC();
     	if(username.length() >= 4) {
     		if(!sqlite.isDuplicateUser(username)) {
         		if(password.equals(verifyPassword)) {
-        			sqlite.closeConnection();
         			return "Success";
         		} else {
-        			sqlite.closeConnection();
         			return "Passwords do not match";
         		}
         	} else {
-        		sqlite.closeConnection();
         		return "A user with that name already exists";
         	}
     	} else {
-    		sqlite.closeConnection();
     		return "Too short username, needs to be 4 chars minimum";
     	}
     }
     
     private void createNewUser(String username, String password) {
-    	SQLiteJDBC sqlite = new SQLiteJDBC();
     	try {
 			sqlite.createUser(username, password);
 		} catch (DuplicateUserException e) {
 			e.printStackTrace();
 		}
+    }
+    
+    public void shutDownGracefully() {
     	sqlite.closeConnection();
+    	System.out.println("Server shut down gracefully");
     }
 
     @Override

@@ -10,8 +10,8 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.Color;
 import de.lessvoid.nifty.tools.SizeValue;
 import net.tankers.client.Client;
+import net.tankers.exceptions.DuplicateUserException;
 import net.tankers.main.Game;
-import net.tankers.server.sqlite.DuplicateUserException;
 import net.tankers.server.sqlite.SQLiteJDBC;
 
 /**

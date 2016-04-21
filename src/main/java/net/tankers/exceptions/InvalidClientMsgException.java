@@ -1,4 +1,4 @@
-package net.tankers.server;
+package net.tankers.exceptions;
 
 @SuppressWarnings("serial")
 public class InvalidClientMsgException extends Exception {

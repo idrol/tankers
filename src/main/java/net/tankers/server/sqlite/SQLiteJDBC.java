@@ -2,6 +2,8 @@ package net.tankers.server.sqlite;
 
 import java.sql.*;
 
+import net.tankers.exceptions.DuplicateUserException;
+
 public class SQLiteJDBC {
 	private Connection connection;
 	
