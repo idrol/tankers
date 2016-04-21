@@ -73,11 +73,14 @@ public class Client {
 
     public void decode(String msg){
         String msgType = msg.split(";")[0];
+        
         if(msgType.equals("object")){
             decodeObject(msg.split(";")[1]);
+            
         }else if(msgType.equals("user_info")){
         	
-        } else if(msgType.equals("registernotification")) {
+        }else if(msgType.equals("registernotification")){
+        	
         	decodeRegisterNotification(msg);
         }
     }

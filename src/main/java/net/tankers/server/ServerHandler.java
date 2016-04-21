@@ -8,6 +8,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
+import net.tankers.server.sqlite.DuplicateUserException;
 import net.tankers.server.sqlite.SQLiteJDBC;
 import net.tankers.utils.NetworkUtils;
 
@@ -60,55 +61,26 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         System.out.println(msg);
         String message_name = "";
-        if(msg.contains(";")){
-            message_name = msg.split(";")[0];
-        }else{
-            if(!msg.contains(":")){
-                message_name = msg;
-            }else{
-                System.err.println("A client tried to send an invalid message " + msg);
-            }
+        
+        try {
+        	message_name = constructValidMessage(msg);
+        } catch (InvalidClientMsgException e) {
+        	System.err.println("A client tried to send an invalid message " + msg);
         }
+        
         if(channelAuthenticated(ctx.channel())){
             switch (message_name){
                 case "search_match":
 
-                    break;
+                	break;
             }
+            
         }else{
             if(message_name.equals("login")){
-                String[] msgData = msg.split(";")[1].split(":");
-                String username = msgData[0];
-                String password = msgData[1];
-                boolean auth = authenticateUser(username, password);
-                System.out.println("AUTH: "+auth);
-                Player player = players.get(ctx.channel());
-                
-                if(auth){
-                    ctx.channel().writeAndFlush("login_status;1"+ NetworkUtils.ENDING);
-                    player.authenticated = auth;
-                    player.username = username;
-                    broadCast(player.sync());
-                    ctx.channel().writeAndFlush("user_info;0:0:"+channels.size()+ NetworkUtils.ENDING);
-                }else{
-                    ctx.channel().writeAndFlush("login_status;0"+ NetworkUtils.ENDING);
-                }
+                performLogin(msg, ctx);
                 
             } else if(message_name.equals("register")) {
-            	String[] msgData = msg.split(";")[1].split(":");
-                String username = msgData[0];
-                String password = msgData[1];
-                String verifyPassword = msgData[2];
-                
-                Player player = players.get(ctx.channel());
-                String credentialsStatus = verifyRegistrationCredentials(username,password,verifyPassword);
-                player.write("registernotification;" + credentialsStatus);
-                
-                if(credentialsStatus.equals("success")) {
-                	SQLiteJDBC sqlite = new SQLiteJDBC();
-                	sqlite.createUser(username, password);
-                	sqlite.closeConnection();
-                }
+            	performRegistration(msg, ctx);
                 
             } else {
             	System.out.println("Unauthenticated channel tried message: " + msg);
@@ -116,10 +88,57 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         }
     }
     
+    private String constructValidMessage(String msg) throws InvalidClientMsgException {
+    	if(msg.contains(";")){
+            return msg.split(";")[0];
+        }else{
+            if(!msg.contains(":")){
+                return msg;
+            }else{
+                throw new InvalidClientMsgException();
+            }
+        }
+    }
+    
+    private void performLogin(String msg, ChannelHandlerContext ctx) {
+    	String[] msgData = msg.split(";")[1].split(":");
+        String username = msgData[0];
+        String password = msgData[1];
+        boolean auth = authenticateUser(username, password);
+        System.out.println("AUTH: "+auth);
+        Player player = players.get(ctx.channel());
+        
+        if(auth){
+            ctx.channel().writeAndFlush("login_status;1"+ NetworkUtils.ENDING);
+            player.authenticated = auth;
+            player.username = username;
+            broadCast(player.sync());
+            ctx.channel().writeAndFlush("user_info;0:0:"+channels.size()+ NetworkUtils.ENDING);
+        }else{
+            ctx.channel().writeAndFlush("login_status;0"+ NetworkUtils.ENDING);
+        }
+    }
+    
     private boolean authenticateUser(String username, String password) {
     	SQLiteJDBC sqlite = new SQLiteJDBC();
-    	sqlite.printAllUsers();
     	return sqlite.validateUser(username, password);
+    }
+    
+    private void performRegistration(String msg, ChannelHandlerContext ctx) {
+    	String[] msgData = msg.split(";")[1].split(":");
+        String username = msgData[0];
+        String password = msgData[1];
+        String verifyPassword = msgData[2];
+        
+        Player player = players.get(ctx.channel());
+        String credentialsStatus = verifyRegistrationCredentials(username,password,verifyPassword);
+        player.write("registernotification;" + credentialsStatus);
+        
+        System.out.println("Registration notification: " + credentialsStatus);
+        
+        if(credentialsStatus.equals("success")) {
+        	createNewUser(username, password);
+        }
     }
     
     private String verifyRegistrationCredentials(String username, String password, String verifyPassword) {
@@ -130,20 +149,27 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         			sqlite.closeConnection();
         			return "Success";
         		} else {
-        			System.out.println("Registration - Passwords do not match");
         			sqlite.closeConnection();
         			return "Passwords do not match";
         		}
         	} else {
-        		System.out.println("Registration - Duplicate user");
         		sqlite.closeConnection();
         		return "A user with that name already exists";
         	}
     	} else {
-    		System.out.println("Registration - Too short username, needs to be 4 chars minimum");
     		sqlite.closeConnection();
     		return "Too short username, needs to be 4 chars minimum";
     	}
+    }
+    
+    private void createNewUser(String username, String password) {
+    	SQLiteJDBC sqlite = new SQLiteJDBC();
+    	try {
+			sqlite.createUser(username, password);
+		} catch (DuplicateUserException e) {
+			e.printStackTrace();
+		}
+    	sqlite.closeConnection();
     }
 
     @Override
