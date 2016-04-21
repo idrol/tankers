@@ -100,11 +100,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                 String password = msgData[1];
                 String verifyPassword = msgData[2];
                 
+                Player player = players.get(ctx.channel());
                 String credentialsStatus = verifyRegistrationCredentials(username,password,verifyPassword);
+                player.write("registernotification;" + credentialsStatus);
+                
                 if(credentialsStatus.equals("success")) {
                 	SQLiteJDBC sqlite = new SQLiteJDBC();
                 	sqlite.createUser(username, password);
-                	sqlite.printAllUsers();
                 	sqlite.closeConnection();
                 }
                 
@@ -126,21 +128,21 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     		if(!sqlite.isDuplicateUser(username)) {
         		if(password.equals(verifyPassword)) {
         			sqlite.closeConnection();
-        			return "success";
+        			return "Success";
         		} else {
         			System.out.println("Registration - Passwords do not match");
         			sqlite.closeConnection();
-        			return "passwordsdonotmatch";
+        			return "Passwords do not match";
         		}
         	} else {
         		System.out.println("Registration - Duplicate user");
         		sqlite.closeConnection();
-        		return "duplicateuser";
+        		return "A user with that name already exists";
         	}
     	} else {
     		System.out.println("Registration - Too short username, needs to be 4 chars minimum");
     		sqlite.closeConnection();
-    		return "tooshortusername";
+    		return "Too short username, needs to be 4 chars minimum";
     	}
     }
 

@@ -76,7 +76,9 @@ public class Client {
         if(msgType.equals("object")){
             decodeObject(msg.split(";")[1]);
         }else if(msgType.equals("user_info")){
-
+        	
+        } else if(msgType.equals("registernotification")) {
+        	decodeRegisterNotification(msg);
         }
     }
 
@@ -115,7 +117,12 @@ public class Client {
             objects.remove(Integer.parseInt(data[1]));
         }
     }
-
+    
+    public void decodeRegisterNotification(String msg) {
+    	String notification = msg.split(";")[0];
+    	System.out.println(notification);
+    }
+    
     public void stop() {
         group.shutdownGracefully();
     }
