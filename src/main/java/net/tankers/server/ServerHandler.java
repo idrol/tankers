@@ -73,17 +73,24 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         if(channelAuthenticated(ctx.channel())){
             switch (message_name){
                 case "search_match":
-
+                	System.out.println("Case: search_match");
                 	break;
             }
             
         }else{
+        	System.out.println("Message name: " + message_name);
             if(message_name.equals("login")){
+            	System.out.println("Performing login");
                 performLogin(msg, ctx);
                 
             } else if(message_name.equals("register")) {
-            	performRegistration(msg, ctx); 
-                
+            	try {
+            		System.out.println("Performing registration");
+            		performRegistration(msg, ctx); 
+            	} catch (ArrayIndexOutOfBoundsException e) {
+            		//In case username or password(s) are blank
+            		ctx.writeAndFlush("registernotification;Please fill in all the fields" + NetworkUtils.ENDING);
+            	}
             } else {
             	System.out.println("Unauthenticated channel tried message: " + msg);
             }
@@ -106,6 +113,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     	String[] msgData = msg.split(";")[1].split(":");
         String username = msgData[0];
         String password = msgData[1];
+        System.out.println("Trying to authenticate " + username);
         boolean auth = authenticateUser(username, password);
         System.out.println("AUTH: "+auth);
         Player player = players.get(ctx.channel());
@@ -143,7 +151,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     }
     
     private String verifyRegistrationCredentials(String username, String password, String verifyPassword) {
-    	if(username.length() >= 4) {
+    	if(username.length() >= 4 || password.length() >= 4) {
     		if(!sqlite.isDuplicateUser(username)) {
         		if(password.equals(verifyPassword)) {
         			return "Success";
@@ -154,7 +162,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         		return "A user with that name already exists";
         	}
     	} else {
-    		return "Too short username, needs to be 4 chars minimum";
+    		return "Too short username or password, need to be 4 chars minimum";
     	}
     }
     

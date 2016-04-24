@@ -16,6 +16,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Label;
+import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.tools.SizeValue;
+
 /**
  * Created by idrol on 13-04-2016.
  */
@@ -28,8 +33,10 @@ public class Client {
     private EventLoopGroup group = null;
     private Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
     public Game game;
+    private Nifty nifty;
 
-    public Client(String host, int port) {
+    public Client(String host, int port, Nifty nifty) {
+    	this.nifty = nifty;
         this.host = host;
         this.port = port;
         registerNetworkedEntityClass(Tank.class);
@@ -43,7 +50,7 @@ public class Client {
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ClientInitializer(this));
+                    .handler(new ClientInitializer(this,nifty));
             this.channel = bootstrap.connect(host, port).sync().channel();
             System.out.println("got to end");
         } catch (InterruptedException e) {
@@ -52,6 +59,7 @@ public class Client {
     }
     
     public void loginUser(String username, String password) {
+    	System.out.println("Sent login stuff");
     	writeMessage("login;"+username+":"+password);
     }
     
@@ -122,8 +130,11 @@ public class Client {
     }
     
     public void decodeRegisterNotification(String msg) {
-    	String notification = msg.split(";")[0];
-    	System.out.println(notification);
+    	String notification = msg.split(";")[1];
+    	Screen screen = nifty.getCurrentScreen();
+    	Label notificationLabel = screen.findNiftyControl("notification", Label.class);
+    	notificationLabel.setText(notification);
+    	notificationLabel.setWidth(new SizeValue("500px"));
     }
     
     public void stop() {

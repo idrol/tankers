@@ -1,5 +1,6 @@
 package net.tankers.client;
 
+import de.lessvoid.nifty.Nifty;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -13,9 +14,12 @@ import io.netty.handler.codec.string.StringEncoder;
  */
 public class ClientInitializer extends ChannelInitializer<SocketChannel> {
     private Client client;
-    public ClientInitializer(Client client) {
+    private Nifty nifty;
+    
+    public ClientInitializer(Client client, Nifty nifty) {
         super();
         this.client = client;
+        this.nifty = nifty;
     }
 
     @Override

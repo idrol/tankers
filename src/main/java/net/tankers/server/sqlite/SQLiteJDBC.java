@@ -73,6 +73,7 @@ public class SQLiteJDBC {
 			String query = "SELECT * FROM users";
 			resultSet = statement.executeQuery(query);
 			
+			System.out.println(">PRINT ALL USERS<");
 			while(resultSet.next()) {
 				System.out.println(resultSet.getString("username") + ":" + resultSet.getString("password"));
 			}
@@ -96,6 +97,7 @@ public class SQLiteJDBC {
 			resultSet = statement.executeQuery(query);
 			result = resultSet.getInt(1);
 			
+			resultSet.close();
 			statement.close();
 			
 		} catch (SQLException e) {

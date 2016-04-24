@@ -15,7 +15,7 @@ public class Game extends GameState {
     private Client client = null;
     private String username;
     private String password;
-
+    
     public Game(String username, String password) {
         this.username = username;
         this.password = password;
@@ -23,11 +23,13 @@ public class Game extends GameState {
 
     @Override
     public void init() {
+    	
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
-        client = new Client("localhost", 25565);
+        client = new Client("localhost", 25565, nifty);
         client.setGame(this);
         client.run();
+        client.loginUser(username, password);
         lobbyController = new LobbyController(this);
         lobbyController.setClient(client);
         try {

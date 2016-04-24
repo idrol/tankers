@@ -33,15 +33,12 @@ public class Register extends DefaultScreenController {
     	TextField usernameField = screen.findNiftyControl("username", TextField.class);
     	TextField passwordField = screen.findNiftyControl("password", TextField.class);
     	TextField verifyPasswordField = screen.findNiftyControl("password-verify", TextField.class);
-    	Label notificationLabel = screen.findNiftyControl("notification", Label.class);
-    	notificationLabel.setWidth(new SizeValue("500px"));
     	
     	String username = usernameField.getDisplayedText();
     	String password = passwordField.getRealText();
     	String verifyPassword = verifyPasswordField.getRealText();
-    	System.out.println(username+":"+password+":"+verifyPassword);
     	
-    	Client client = new Client("localhost", 25565);
+    	Client client = new Client("localhost", 25565,nifty);
     	client.run();
     	client.registerUser(username, password, verifyPassword);
     }
