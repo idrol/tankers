@@ -130,7 +130,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     }
     
     private boolean authenticateUser(String username, String password) {
-    	return sqlite.validateUser(username, password);
+    	boolean auth = sqlite.validateUser(username, password);
+    	System.out.println("authenticateUser returns " + auth);
+    	return auth;
     }
     
     private void performRegistration(String msg, ChannelHandlerContext ctx) {
@@ -151,7 +153,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     }
     
     private String verifyRegistrationCredentials(String username, String password, String verifyPassword) {
-    	if(username.length() >= 4 || password.length() >= 4) {
+    	if(username.length() >= 4 && password.length() >= 4) {
     		if(!sqlite.isDuplicateUser(username)) {
         		if(password.equals(verifyPassword)) {
         			return "Success";
