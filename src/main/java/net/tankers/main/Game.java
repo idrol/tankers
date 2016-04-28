@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 /**
  * Created by idrol on 13-04-2016.
  */
-public class Game extends GameState {
+public class Game {
 
     private LobbyController lobbyController = null;
     private Client client = null;
@@ -20,43 +20,4 @@ public class Game extends GameState {
         this.username = username;
         this.password = password;
     }
-
-    @Override
-    public void init() {
-    	
-        nifty.loadStyleFile("nifty-default-styles.xml");
-        nifty.loadControlFile("nifty-default-controls.xml");
-        client = new Client("localhost", 25565, nifty);
-        client.setGame(this);
-        client.run();
-        client.loginUser(username, password);
-        lobbyController = new LobbyController(this);
-        lobbyController.setClient(client);
-        try {
-            nifty.fromXml("main-screen", new FileInputStream(Main.pathPrefix+"lobby.nifty"), "lobby", lobbyController);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        nifty.gotoScreen("lobby");
-
-    }
-
-    @Override
-    public void update(float delta) {
-        if(nifty.update()){
-            isRunning = false;
-        }
-    }
-
-    @Override
-    public void render()  {
-        nifty.render(false);
-    }
-
-    @Override
-    public void cleanUp() {
-        client.stop();
-    }
-
-
 }
