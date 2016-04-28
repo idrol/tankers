@@ -31,6 +31,6 @@ public class MainScreenController extends DefaultScreenController {
 
     @NiftyEventSubscriber(id="quit")
     public void quit(final String id, final ButtonClickedEvent event) {
-        Main.currentState.halt();
+        nifty.exit();
     }
 }

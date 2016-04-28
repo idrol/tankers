@@ -14,7 +14,6 @@ import net.tankers.main.Game;
  */
 public class LobbyController extends DefaultScreenController {
     private Nifty nifty = null;
-    private Screen screen = null;
     private Client client = null;
     private Game game;
 
@@ -29,7 +28,6 @@ public class LobbyController extends DefaultScreenController {
     @Override
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
-        this.screen = screen;
         System.out.println("Bind succesfull");
     }
 

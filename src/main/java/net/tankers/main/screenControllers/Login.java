@@ -6,8 +6,7 @@ import de.lessvoid.nifty.controls.ButtonClickedEvent;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
-import net.tankers.main.Game;
-import net.tankers.main.Main;
+import net.tankers.client.Client;
 
 /**
  * Created by idrol on 13-04-2016.
@@ -33,7 +32,10 @@ public class Login extends DefaultScreenController {
         TextField usernameField = screen.findNiftyControl("username", TextField.class);
         TextField passwordField = screen.findNiftyControl("password", TextField.class);
         String username = usernameField.getDisplayedText();
-        String password = passwordField.getDisplayedText();
-        Main.switchState(new Game(username, password));
+        String password = passwordField.getRealText();
+        
+        Client client = new Client("localhost", 25565,nifty);
+    	client.run();
+    	client.loginUser(username, password);
     }
 }
