@@ -22,7 +22,7 @@ public class Main {
 	public static String pathPrefix = "";
     private static String intellijResourcePrefix = "build/resources/main/";
     private static String eclipseResourcePrefix = "bin/";
-	public static LwjglInputSystem lwjglInputSystem = null;
+	private LwjglInputSystem lwjglInputSystem = null;
 	
 	private Nifty nifty = null;
 	private long lastFrameTime = 0;
@@ -53,7 +53,7 @@ public class Main {
         
         initGL();
         initLWJGLInputSystem();
-        nifty = initNifty(Main.lwjglInputSystem);
+        nifty = initNifty(lwjglInputSystem);
 		loadNiftyXML();
         lastFrameTime = getTime();
         
@@ -76,7 +76,7 @@ public class Main {
 		    }
 			Display.update();
 		}
-         
+        shutdown(lwjglInputSystem);
         Display.destroy();
         lwjglInputSystem.shutdown();
     }
@@ -138,4 +138,9 @@ public class Main {
 		}
 	}
    
+	private static void shutdown(final LwjglInputSystem inputSystem) {
+	    inputSystem.shutdown();
+	    Display.destroy();
+	    System.exit(0);
+	  }
 }

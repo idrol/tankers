@@ -17,7 +17,7 @@ public class LobbyController extends DefaultScreenController {
     private Client client = null;
     private Game game;
 
-    public LobbyController(Game game){
+    public LobbyController(){
         this.game = game;
     }
 
