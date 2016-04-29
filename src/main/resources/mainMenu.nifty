@@ -22,6 +22,7 @@
         <layer childLayout="center">
             <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
                 <panel width="200px" childLayout="vertical">
+                	<control name="label" id="notification" text="" color="#000000"></control>
                     <control name="label" text="Username" color="#000000"></control>
                     <control margin="5px" name="textfield" maxLength="20" id="username"></control>
                     <control name="label" text="Password" color="#000000"></control>

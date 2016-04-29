@@ -38,17 +38,28 @@ public class Login extends DefaultScreenController {
         String username = usernameField.getDisplayedText();
         String password = passwordField.getRealText();
         
-        Client client = new Client("localhost", 25565,nifty);
+        Client client = new Client("localhost", 25565, nifty);
     	client.run();
     	client.loginUser(username, password);
-    	LobbyController lobbyController = new LobbyController();
-    	lobbyController.setClient(client);
     	
     	try {
-    		nifty.fromXml("main-screen", new FileInputStream(Main.pathPrefix+"lobby.nifty"), "lobby", lobbyController); 			
-    		nifty.gotoScreen("lobby");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+    		//Because of stuff being in separate threads, this is necessary,
+    		// but there is probably a muuuuuch better way to make sure the
+    		// login status gets updated in the Client
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
 		}
+    	
+    	if(client.isLoggedIn()) {
+	    	try {
+	    		LobbyController lobbyController = new LobbyController();
+	        	lobbyController.setClient(client);
+	    		nifty.fromXml("main-screen", new FileInputStream(Main.pathPrefix+"lobby.nifty"), "lobby", lobbyController); 			
+	    		nifty.gotoScreen("lobby");
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+    	}
     }
 }

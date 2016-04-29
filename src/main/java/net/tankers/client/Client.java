@@ -10,7 +10,11 @@ import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
 import net.tankers.entity.Tank;
 import net.tankers.main.Game;
+import net.tankers.main.Main;
+import net.tankers.main.screenControllers.LobbyController;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -34,6 +38,7 @@ public class Client {
     private Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
     public Game game;
     private Nifty nifty;
+    private boolean loggedIn = false;
 
     public Client(String host, int port, Nifty nifty) {
     	this.nifty = nifty;
@@ -84,13 +89,22 @@ public class Client {
         
         if(msgType.equals("object")){
             decodeObject(msg.split(";")[1]);
+        } else if (msgType.equals("login_status")) {
+        	if(msg.split(";")[1].equals("1")) {
+        		System.out.println("Setting loggedIn to " + msg.split(";")[1].equals("1"));
+        		this.loggedIn = true;
+        	}
             
         }else if(msgType.equals("user_info")){
         	
-        }else if(msgType.equals("registernotification")){
-        	
-        	decodeRegisterNotification(msg);
+        		
+        }else if(msgType.equals("notification")){
+        	decodeNotification(msg);
         }
+    }
+    
+    public boolean isLoggedIn() {
+    	return this.loggedIn;
     }
 
     public void decodeObject(String msg) {
@@ -129,7 +143,7 @@ public class Client {
         }
     }
     
-    public void decodeRegisterNotification(String msg) {
+    public void decodeNotification(String msg) {
     	String notification = msg.split(";")[1];
     	Screen screen = nifty.getCurrentScreen();
     	Label notificationLabel = screen.findNiftyControl("notification", Label.class);

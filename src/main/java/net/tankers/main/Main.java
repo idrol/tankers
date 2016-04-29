@@ -77,8 +77,6 @@ public class Main {
 			Display.update();
 		}
         shutdown(lwjglInputSystem);
-        Display.destroy();
-        lwjglInputSystem.shutdown();
     }
 	
 	private static void initGL(){

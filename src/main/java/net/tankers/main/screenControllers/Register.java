@@ -38,7 +38,7 @@ public class Register extends DefaultScreenController {
     	String password = passwordField.getRealText();
     	String verifyPassword = verifyPasswordField.getRealText();
     	
-    	Client client = new Client("localhost", 25565,nifty);
+    	Client client = new Client("localhost", 25565, nifty);
     	client.run();
     	client.registerUser(username, password, verifyPassword);
     }

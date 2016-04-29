@@ -89,7 +89,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             		performRegistration(msg, ctx); 
             	} catch (ArrayIndexOutOfBoundsException e) {
             		//In case username or password(s) are blank
-            		ctx.writeAndFlush("registernotification;Please fill in all the fields" + NetworkUtils.ENDING);
+            		ctx.writeAndFlush("notification;Please fill in all the fields" + NetworkUtils.ENDING);
             	}
             } else {
             	System.out.println("Unauthenticated channel tried message: " + msg);
@@ -126,13 +126,19 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             ctx.channel().writeAndFlush("user_info;0:0:"+channels.size()+ NetworkUtils.ENDING);
         }else{
             ctx.channel().writeAndFlush("login_status;0"+ NetworkUtils.ENDING);
+            player.write("notification;Incorrect username or password");
         }
     }
     
     private boolean authenticateUser(String username, String password) {
-    	boolean auth = sqlite.validateUser(username, password);
-    	System.out.println("authenticateUser returns " + auth);
-    	return auth;
+    	if(username.length() >= 4 || password.length() >= 4) {
+    		boolean auth = sqlite.validateUser(username, password);
+        	System.out.println("authenticateUser returns " + auth);
+        	return auth;
+    	} else {
+    		return false;
+    	}
+    	
     }
     
     private void performRegistration(String msg, ChannelHandlerContext ctx) {
@@ -143,7 +149,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         
         Player player = players.get(ctx.channel());
         String credentialsStatus = verifyRegistrationCredentials(username,password,verifyPassword);
-        player.write("registernotification;" + credentialsStatus);
+        player.write("notification;" + credentialsStatus);
         
         System.out.println("Registration notification: " + credentialsStatus);
         
