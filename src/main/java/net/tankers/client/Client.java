@@ -20,6 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.opengl.Display;
+
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.screen.Screen;
@@ -61,16 +63,6 @@ public class Client {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-    
-    public void loginUser(String username, String password) {
-    	System.out.println("Sent login stuff");
-    	writeMessage("login;"+username+":"+password);
-    }
-    
-    public void registerUser(String username, String password, String verifyPassword) {
-    	System.out.println("Sent registration stuff");
-    	writeMessage("register;"+username+":"+password+":"+verifyPassword);
     }
     
     public void setGame(Game game) {
@@ -143,12 +135,29 @@ public class Client {
         }
     }
     
+    public void loginUser(String username, String password) {
+    	System.out.println("Sent login stuff");
+    	writeMessage("login;"+username+":"+password);
+    }
+    
+    public void registerUser(String username, String password, String verifyPassword) {
+    	System.out.println("Sent registration stuff");
+    	writeMessage("register;"+username+":"+password+":"+verifyPassword);
+    }
+    
     public void decodeNotification(String msg) {
+    	try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+    	
     	String notification = msg.split(";")[1];
     	Screen screen = nifty.getCurrentScreen();
     	Label notificationLabel = screen.findNiftyControl("notification", Label.class);
     	notificationLabel.setText(notification);
-    	notificationLabel.setWidth(new SizeValue("500px"));
+    	
+    	System.out.println("Notification: "+notification);
     }
     
     public void stop() {

@@ -41,6 +41,7 @@ public class Register extends DefaultScreenController {
     	Client client = new Client("localhost", 25565, nifty);
     	client.run();
     	client.registerUser(username, password, verifyPassword);
+    	
     }
 
     @NiftyEventSubscriber(id="back")
