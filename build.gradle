@@ -51,7 +51,7 @@ repositories {
 dependencies {
 	compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
 	compile 'org.jbox2d:jbox2d:2.1.2.2'
-	compile 'io.netty:netty-all:4.0.4.Final'
+	compile 'io.netty:netty-all:4.0.36.Final'
 	compile 'lessvoid:nifty:1.4.1'
     compile 'lessvoid:nifty-default-controls:1.4.1'
     compile 'lessvoid:nifty-style-black:1.4.1'
