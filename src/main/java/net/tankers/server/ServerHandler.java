@@ -149,7 +149,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         
         System.out.println("Registration notification: " + credentialsStatus);
         
-        if(credentialsStatus.equals("success")) {
+        if(credentialsStatus.equalsIgnoreCase("Success")) {
         	createNewUser(username, password);
         }
     }
