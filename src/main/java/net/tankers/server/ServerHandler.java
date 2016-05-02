@@ -109,9 +109,19 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     }
     
     private void performLogin(String msg, ChannelHandlerContext ctx) {
+    	String username, password;
+    	
     	String[] msgData = msg.split(";")[1].split(":");
-        String username = msgData[0];
-        String password = msgData[1];
+    	
+    	try {
+    		username = msgData[0];
+    		password = msgData[1];
+    	} catch (ArrayIndexOutOfBoundsException e) {
+    		username = "";
+    		password = "";
+    		e.printStackTrace();
+    	}
+    	
         boolean auth = authenticateUser(username, password);
         Player player = players.get(ctx.channel());
         
