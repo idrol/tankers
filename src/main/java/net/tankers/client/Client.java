@@ -6,6 +6,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.ssl.*;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
 import net.tankers.entity.Tank;
@@ -19,6 +21,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.net.ssl.SSLException;
 
 import org.lwjgl.opengl.Display;
 
@@ -34,7 +38,6 @@ public class Client {
 
     private final String host;
     private final int port;
-
     private Channel channel;
     private EventLoopGroup group = null;
     private Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
@@ -53,15 +56,19 @@ public class Client {
     public void run() {
         group = new NioEventLoopGroup();
         try{
+        	final SslContext sslCtx = SslContextBuilder.forClient()
+        		.trustManager(InsecureTrustManagerFactory.INSTANCE).build();
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ClientInitializer(this,nifty));
+                    .handler(new ClientInitializer(this,nifty,sslCtx));
             this.channel = bootstrap.connect(host, port).sync().channel();
             System.out.println("got to end");
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (SSLException e) {
+        	e.printStackTrace();
         }
     }
     
