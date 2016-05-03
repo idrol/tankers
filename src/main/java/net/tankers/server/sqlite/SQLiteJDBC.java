@@ -9,6 +9,7 @@ public class SQLiteJDBC {
 	
 	public SQLiteJDBC() {
 		connectToDatabase("database");
+		setPragmas();
 		initializeUserTable();
 	}
 	
@@ -21,6 +22,18 @@ public class SQLiteJDBC {
 			System.err.println("Couldn't connect to database '" + databaseName + "'");
 			e.printStackTrace();
 		}
+	}
+	
+	private void setPragmas() {
+		try {
+			Statement statement = connection.createStatement();
+			String pragmas = "journal_mode=wal";
+			statement.execute("pragma " + pragmas);
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void closeConnection() {
