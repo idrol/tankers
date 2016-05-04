@@ -54,4 +54,29 @@
             </panel>
         </layer>
     </screen>
+    <screen id="lobby" controller="net.tankers.main.screenControllers.LobbyController">
+        <layer childLayout="center">
+            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+                <panel width="200px" childLayout="vertical">
+                    <control name="label" text="" id="username"></control>
+                    <control name="label" text="" id="online-users"></control>
+                    <control name="label" text="" id="played"></control>
+                    <control name="label" text="" id="won"></control>
+                    <control name="button" id="search-match" label="Search game"></control>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
+    <screen id="search" controller="net.tankers.main.screenControllers.SearchController">
+        <layer childLayout="center">
+            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+                <panel width="200px" childLayout="vertical">
+                    <control name="label" text="Searching.." id="status"></control>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
+    <screen id="game" controller="net.tankers.main.screenControllers.GameController">
+
+    </screen>
 </nifty>
