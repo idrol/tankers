@@ -62,7 +62,10 @@
                     <control name="label" text="" id="online-users"></control>
                     <control name="label" text="" id="played"></control>
                     <control name="label" text="" id="won"></control>
-                    <control name="button" id="search-match" label="Search game"></control>
+                    <panel childLayout="horizontal">
+                        <control margin="5px" name="button" id="search-match" label="Search game" align="center" valign="center"></control>
+                        <control margin="5px" name="button" label="Back" id="back" align="center" valign="center"></control>
+                    </panel>
                 </panel>
             </panel>
         </layer>

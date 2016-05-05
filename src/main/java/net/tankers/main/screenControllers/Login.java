@@ -51,9 +51,17 @@ public class Login extends DefaultScreenController {
 		}
     	
     	if(client.isLoggedIn()) {
-    		LobbyController lobbyController = new LobbyController();
-        	lobbyController.setClient(client);			
-    		nifty.gotoScreen("lobby");
+			LobbyController lobbyController = new LobbyController();
+			try {
+	    		//Because of stuff being in separate threads and
+	    		//it takes time for client to receive response from server
+				Thread.sleep(200);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+	    	lobbyController.setClient(client);
+			nifty.gotoScreen("lobby");
+			
     	}
     }
 }

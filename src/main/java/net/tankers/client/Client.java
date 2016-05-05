@@ -38,7 +38,7 @@ public class Client {
 
     private final String host;
     private final int port;
-    private Channel channel;
+    private static Channel channel;
     private EventLoopGroup group = null;
     private Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
     public Game game;
@@ -171,7 +171,7 @@ public class Client {
         group.shutdownGracefully();
     }
 
-    public void writeMessage(String message) {
+    public static void writeMessage(String message) {
         channel.writeAndFlush(message + "\r\n");
     }
 

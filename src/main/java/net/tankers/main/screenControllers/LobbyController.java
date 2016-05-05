@@ -13,13 +13,9 @@ import net.tankers.main.Game;
  * Created by idrol on 13-04-2016.
  */
 public class LobbyController extends DefaultScreenController {
-    private Nifty nifty = null;
-    private Client client = null;
+    private Nifty nifty;
+    private Client client;
     private Game game;
-
-    public LobbyController(){
-        this.game = game;
-    }
 
     public void setClient(Client client) {
         this.client = client;
@@ -28,17 +24,12 @@ public class LobbyController extends DefaultScreenController {
     @Override
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
-        System.out.println("Bind succesfull");
+        System.out.println("Bind succesfull - LobbyController");
     }
 
     @NiftyEventSubscriber(id="search-match")
     public void searchmatch(final String id, final ButtonClickedEvent event){
-        client.writeMessage("search_match");
-    }
-
-
-    @NiftyEventSubscriber(id="chat")
-    public void sendMessage(final String id, final ChatTextSendEvent event) {
-        client.writeMessage(event.getText());
+    	Client.writeMessage("search_match");
+        nifty.gotoScreen("search");
     }
 }
