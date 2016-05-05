@@ -5,10 +5,13 @@
     <useStyles filename="nifty-default-styles.xml" />
     <useControls filename="nifty-default-controls.xml" />
     <screen id="start" controller="net.tankers.main.screenControllers.MainScreenController">
+   	    <layer id="background" childLayout="center">
+      		<image filename="tankersbg.jpg"></image>
+    	</layer>
         <layer childLayout="center">
-            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+            <panel childLayout="center">
                 <panel width="200px" childLayout="vertical">
-                    <control margin="5px" name="button" label="Login" id="Login" align="center" valign="center"></control>
+                    <control margin="5px" name="button" label="Login" id="Login" align="center" valign="center" background="#ffffff"></control>
                     <control margin="5px" name="button" label="Register" id="Register" align="center" valign="center"></control>
                     <control margin="5px" name="button" label="Quit" id="quit" align="center" valign="center"></control>
                 </panel>
@@ -19,8 +22,11 @@
 
     </screen>
     <screen id="login" controller="net.tankers.main.screenControllers.Login">
+      	<layer id="background" childLayout="center">
+      		<image filename="tankersbg.jpg"></image>
+    	</layer>
         <layer childLayout="center">
-            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+            <panel childLayout="center">
                 <panel width="200px" childLayout="vertical">
                 	<control width="500px" name="label" id="notification" text="" color="#000000"></control>
                     <control name="label" text="Username" color="#000000"></control>
@@ -36,8 +42,11 @@
         </layer>
     </screen>
     <screen id="register" controller="net.tankers.main.screenControllers.Register">
+    	<layer id="background" childLayout="center">
+      		<image filename="tankersbg.jpg"></image>
+    	</layer>
         <layer childLayout="center">
-            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+            <panel childLayout="center">
                 <panel width="200px" childLayout="vertical">
                 	<control width="500px" name="label" id="notification" text="" color="#000000"></control>
                     <control name="label" text="Username" color="#000000"></control>
@@ -55,8 +64,11 @@
         </layer>
     </screen>
     <screen id="lobby" controller="net.tankers.main.screenControllers.LobbyController">
+    	<layer id="background" childLayout="center">
+      		<image filename="tankersbg.jpg"></image>
+    	</layer>
         <layer childLayout="center">
-            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+            <panel width="100%" height="100%" childLayout="center">
                 <panel width="200px" childLayout="vertical">
                     <control name="label" text="" id="username"></control>
                     <control name="label" text="" id="online-users"></control>
@@ -71,8 +83,11 @@
         </layer>
     </screen>
     <screen id="search" controller="net.tankers.main.screenControllers.SearchController">
+    	<layer id="background" childLayout="center">
+      		<image filename="tankersbg.jpg"></image>
+    	</layer>
         <layer childLayout="center">
-            <panel width="100%" height="100%" childLayout="center" backgroundColor="#ffffff">
+            <panel width="100%" height="100%" childLayout="center">
                 <panel width="200px" childLayout="vertical">
                     <control name="label" text="Searching.." id="status"></control>
                 </panel>
