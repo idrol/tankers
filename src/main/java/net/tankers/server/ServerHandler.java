@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by idrol on 13-04-2016.
@@ -74,6 +75,15 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             switch (message_name){
                 case "search_match":
                 	System.out.println("Case: search_match");
+                	PlayerQueueHandler.addPlayerToQueue(players.get(ctx.channel()));
+                	PlayerQueueHandler.printPlayers();
+                	
+                	if(PlayerQueueHandler.size()>1) {
+                		PlayerQueueHandler.pollPlayer().write("notification;Match found!");
+                		PlayerQueueHandler.pollPlayer().write("notification;Match found!");
+                		System.out.println("Match Found");
+                	}
+                	
                 	break;
             }
             
