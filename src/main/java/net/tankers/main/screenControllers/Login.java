@@ -61,7 +61,6 @@ public class Login extends DefaultScreenController {
 			}
 	    	lobbyController.setClient(client);
 			nifty.gotoScreen("lobby");
-			
     	}
     }
 }

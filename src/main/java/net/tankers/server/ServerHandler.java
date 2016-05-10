@@ -76,12 +76,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                 case "search_match":
                 	System.out.println("Case: search_match");
                 	PlayerQueueHandler.addPlayerToQueue(players.get(ctx.channel()));
-                	PlayerQueueHandler.printPlayers();
                 	
                 	if(PlayerQueueHandler.size()>1) {
-                		PlayerQueueHandler.pollPlayer().write("notification;Match found!");
-                		PlayerQueueHandler.pollPlayer().write("notification;Match found!");
-                		System.out.println("Match Found");
+                		handleMatchFound();
                 	}
                 	
                 	break;
@@ -196,6 +193,17 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 		} catch (DuplicateUserException e) {
 			e.printStackTrace();
 		}
+    }
+    
+    private void handleMatchFound() {
+    	Player player1 = PlayerQueueHandler.pollPlayer();
+    	Player player2 = PlayerQueueHandler.pollPlayer();
+		player1.write("notification;Match found!");
+		player2.write("notification;Match found!");
+		player1.write("match_found;" + player2.username);
+		player2.write("match_found;" + player1.username);
+		
+		System.out.println("Match Found");
     }
     
     public void shutDownGracefully() {

@@ -93,12 +93,13 @@ public class Client {
         		System.out.println("Setting loggedIn to " + msg.split(";")[1].equals("1"));
         		this.loggedIn = true;
         	}
-            
-        }else if(msgType.equals("user_info")){
+        } else if(msgType.equals("user_info")){
         	
         		
-        }else if(msgType.equals("notification")){
+        } else if(msgType.equals("notification")){
         	decodeNotification(msg);
+        } else if(msgType.equals("match_found")) {
+        	matchFound(msg);
         }
     }
     
@@ -152,7 +153,7 @@ public class Client {
     	writeMessage("register;"+username+":"+password+":"+verifyPassword);
     }
     
-    public void decodeNotification(String msg) {
+    private void decodeNotification(String msg) {
     	try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
@@ -165,6 +166,11 @@ public class Client {
     	notificationLabel.setText(notification);
     	
     	System.out.println("Notification: "+notification);
+    }
+    
+    private void matchFound(String msg) {
+    	String opponent = msg.split(";")[1];
+    	System.out.println("Match found: " + opponent);
     }
     
     public void stop() {
