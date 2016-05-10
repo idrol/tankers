@@ -171,6 +171,15 @@ public class Client {
     private void matchFound(String msg) {
     	String opponent = msg.split(";")[1];
     	System.out.println("Match found: " + opponent);
+    	
+    	try {
+    		//Just to make the matchmaking "cooler"
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} 
+    	
+    	nifty.gotoScreen("game");
     }
     
     public void stop() {
