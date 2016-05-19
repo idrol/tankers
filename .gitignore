@@ -22,3 +22,8 @@ hs_err_pid*
 .gradle/
 /bin/
 build/
+
+#SQLite
+*.db
+*.db-shm
+*.db-wal

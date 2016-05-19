@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.handler.codec.base64.Base64Decoder;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
@@ -13,10 +14,7 @@ import net.tankers.exceptions.InvalidClientMsgException;
 import net.tankers.server.sqlite.SQLiteJDBC;
 import net.tankers.utils.NetworkUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -27,11 +25,16 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     static final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     private List<NetworkedEntity> entities = new ArrayList<NetworkedEntity>();
     private Map<Channel, Player> players = new HashMap<Channel, Player>();
+    private List<Match> matches = new LinkedList<>();
     private SQLiteJDBC sqlite = new SQLiteJDBC();
     private Server server;
 
     public ServerHandler(Server server) {
         this.server = server;
+    }
+
+    public List<Match> getMatches() {
+        return matches;
     }
 
     @Override
@@ -82,6 +85,18 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                 	}
                 	
                 	break;
+                case "route":
+                    String[] data = msg.split(";")[1].split(":");
+                    if(data[0].equals("match")){
+                        Match match = matches.get(Integer.parseInt(data[2]));
+                        Channel channel = ctx.channel();
+                        Player player = players.get(channel);
+                        // Make sure that only a player participating in a match exchanges data. Avoids some hacks
+                        if(MatchHandler.validateData(player, match)){
+                            MatchHandler.handleMessage(match, player, new String(Base64.getDecoder().decode(data[2].getBytes())));
+                        }
+                    }
+                    break;
             }
             
         }else{
@@ -198,11 +213,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     private void handleMatchFound() {
     	Player player1 = PlayerQueueHandler.pollPlayer();
     	Player player2 = PlayerQueueHandler.pollPlayer();
-		player1.write("notification;Match found!");
-		player2.write("notification;Match found!");
-		player1.write("match_found;" + player2.username);
-		player2.write("match_found;" + player1.username);
-		
+        Match match = new Match(player1, player2, server);
+		matches.add(match);
+        match.init();
+        match.broadCast("match_id;" + matches.indexOf(match));
+        match.start();
 		System.out.println("Match Found");
     }
     

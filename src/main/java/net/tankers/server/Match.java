@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Created by idrol on 20-04-2016.
  */
-public class Match implements Runnable{
+public class Match extends Thread{
     private Player player1;
     private Player player2;
     private Server server;
@@ -20,6 +20,10 @@ public class Match implements Runnable{
         this.player1 = player1;
         this.player2 = player2;
         this.server = server;
+    }
+
+    public boolean hasPlayer(Player player) {
+        return player2 == player || player1 == player;
     }
 
     public void broadCast(String msg) {
@@ -39,21 +43,29 @@ public class Match implements Runnable{
 
     }
 
-    @Override
-    public void run() {
+    public void init() {
+        broadCast("notification;Match found!");
         player1.write("match_found;"+player2.username);
         player2.write("match_found;"+player1.username);
+    }
+
+    @Override
+    public void run() {
         broadCast("match_map;default");
         while(!playerWon){
-            if(!player1Queue.isEmpty()){
-                for(String message: player1Queue){
-                    processMessage(message, player1);
-                }
+            update();
+        }
+    }
+
+    public void update() {
+        if(!player1Queue.isEmpty()){
+            for(String message: player1Queue){
+                processMessage(message, player1);
             }
-            if(!player2Queue.isEmpty()){
-                for(String message: player2Queue){
-                    processMessage(message, player2);
-                }
+        }
+        if(!player2Queue.isEmpty()){
+            for(String message: player2Queue){
+                processMessage(message, player2);
             }
         }
     }

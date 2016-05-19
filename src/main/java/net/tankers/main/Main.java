@@ -20,7 +20,7 @@ import org.lwjgl.util.glu.GLU;
  
 public class Main {
 	public static String pathPrefix = "";
-    private static String intellijResourcePrefix = "build/resources/main/";
+    private static String intellijResourcePrefix = "build/";
     private static String eclipseResourcePrefix = "bin/";
 	private LwjglInputSystem lwjglInputSystem = null;
 	
