@@ -5,17 +5,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.handler.codec.base64.Base64Decoder;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
-import net.tankers.exceptions.DuplicateUserException;
 import net.tankers.exceptions.InvalidClientMsgException;
 import net.tankers.server.sqlite.SQLiteJDBC;
 import net.tankers.utils.NetworkUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by idrol on 13-04-2016.
@@ -26,11 +23,14 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     private List<NetworkedEntity> entities = new ArrayList<NetworkedEntity>();
     private Map<Channel, Player> players = new HashMap<Channel, Player>();
     private List<Match> matches = new LinkedList<>();
-    private SQLiteJDBC sqlite = new SQLiteJDBC();
     private Server server;
+    private SQLiteJDBC sqlite = new SQLiteJDBC();
+    private AnalyticsHandler analyticsHandler = new AnalyticsHandler(sqlite);
+    private UserHandler userHandler = new UserHandler(sqlite);
 
     public ServerHandler(Server server) {
         this.server = server;
+        userHandler.printAllUsers();
     }
 
     public List<Match> getMatches() {
@@ -144,7 +144,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     		e.printStackTrace();
     	}
     	
-        boolean auth = authenticateUser(username, password);
+        boolean auth = userHandler.authenticateUser(username, password);
         Player player = players.get(ctx.channel());
         
         if(auth){
@@ -159,55 +159,21 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         }
     }
     
-    private boolean authenticateUser(String username, String password) {
-    	if(username.length() >= 4 || password.length() >= 4) {
-    		boolean auth = sqlite.validateUser(username, password);
-        	return auth;
-    	} else {
-    		return false;
-    	}
-    	
-    }
-    
-    private void performRegistration(String msg, ChannelHandlerContext ctx) {
+    void performRegistration(String msg, ChannelHandlerContext ctx) {
     	String[] msgData = msg.split(";")[1].split(":");
         String username = msgData[0];
         String password = msgData[1];
         String verifyPassword = msgData[2];
         
         Player player = players.get(ctx.channel());
-        String credentialsStatus = verifyRegistrationCredentials(username,password,verifyPassword);
+        String credentialsStatus = userHandler.verifyRegistrationCredentials(username,password,verifyPassword);
         player.write("notification;" + credentialsStatus);
         
         System.out.println("Registration notification: " + credentialsStatus);
         
         if(credentialsStatus.equalsIgnoreCase("Success")) {
-        	createNewUser(username, password);
+        	userHandler.createNewUser(username, password);
         }
-    }
-    
-    private String verifyRegistrationCredentials(String username, String password, String verifyPassword) {
-    	if(username.length() >= 4 && password.length() >= 4) {
-    		if(!sqlite.isDuplicateUser(username)) {
-        		if(password.equals(verifyPassword)) {
-        			return "Success";
-        		} else {
-        			return "Passwords do not match";
-        		}
-        	} else {
-        		return "A user with that name already exists";
-        	}
-    	} else {
-    		return "Too short username or password, need to be 4 chars minimum";
-    	}
-    }
-    
-    private void createNewUser(String username, String password) {
-    	try {
-			sqlite.createUser(username, password);
-		} catch (DuplicateUserException e) {
-			e.printStackTrace();
-		}
     }
     
     private void handleMatchFound() {
