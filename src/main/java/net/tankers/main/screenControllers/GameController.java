@@ -2,6 +2,7 @@ package net.tankers.main.screenControllers;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by Adrian on 21-05-2016.
@@ -17,11 +18,17 @@ public class GameController extends RenderableScreenController {
 
     @Override
     public void render() {
-
+        glBegin(GL_QUADS);
+            glColor3f(1, 0, 0);
+            glVertex2i(200, 0);
+            glVertex2i(100, 0);
+            glVertex2i(100, 100);
+            glVertex2i(200, 100);
+        glEnd();
     }
 
     @Override
     public void update(float delta) {
-        System.out.println("Update test");
+
     }
 }

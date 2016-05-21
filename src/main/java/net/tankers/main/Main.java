@@ -5,6 +5,7 @@ import de.lessvoid.nifty.nulldevice.NullSoundDevice;
 import de.lessvoid.nifty.render.batch.BatchRenderDevice;
 import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
 import de.lessvoid.nifty.renderer.lwjgl.render.LwjglBatchRenderBackendCoreProfileFactory;
+import de.lessvoid.nifty.renderer.lwjgl.render.LwjglBatchRenderBackendFactory;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
@@ -59,13 +60,13 @@ public class Main {
         nifty = initNifty(lwjglInputSystem);
 		loadNiftyXML();
         lastFrameTime = getTime();
-        
+        //nifty.gotoScreen("game");
 		while(!Display.isCloseRequested() && isRunning){
 			float delta = getDelta();
 			update(delta);
 			
 			// Clear the screen and depth buffer
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);  
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			         
 			// set the color of the quad (R,G,B,A)
 			GL11.glColor3f(0.5f,0.5f,1.0f);
@@ -93,7 +94,7 @@ public class Main {
 	
 	private Nifty initNifty(final LwjglInputSystem lwjglInputSystem) {
 		return new Nifty(
-				new BatchRenderDevice(LwjglBatchRenderBackendCoreProfileFactory.create()), 
+				new BatchRenderDevice(LwjglBatchRenderBackendFactory.create()),
 				new NullSoundDevice(), 
 				lwjglInputSystem, 
 				new AccurateTimeProvider());
@@ -136,6 +137,7 @@ public class Main {
 			((RenderableScreenController) screenController).render();
 		}
 		nifty.render(false);
+
 
 	}
 	
