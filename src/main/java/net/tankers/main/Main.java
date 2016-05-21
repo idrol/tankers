@@ -5,12 +5,15 @@ import de.lessvoid.nifty.nulldevice.NullSoundDevice;
 import de.lessvoid.nifty.render.batch.BatchRenderDevice;
 import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
 import de.lessvoid.nifty.renderer.lwjgl.render.LwjglBatchRenderBackendCoreProfileFactory;
+import de.lessvoid.nifty.screen.DefaultScreenController;
+import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
 import net.tankers.main.screenControllers.MainScreenController;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import net.tankers.main.screenControllers.RenderableScreenController;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
@@ -75,6 +78,7 @@ public class Main {
 		        System.err.println(glerrmsg);
 		    }
 			Display.update();
+			Display.sync(60);
 		}
         shutdown(lwjglInputSystem);
     }
@@ -117,13 +121,22 @@ public class Main {
 	}
 	
 	public void update(float delta) {
+		ScreenController screenController = nifty.getCurrentScreen().getScreenController();
+		if(screenController instanceof RenderableScreenController){
+			((RenderableScreenController) screenController).update(delta);
+		}
         if(nifty.update()){
             isRunning = false;
         }
 	}
 	
 	public void render() {
-        nifty.render(false);
+		ScreenController screenController = nifty.getCurrentScreen().getScreenController();
+		if(screenController instanceof RenderableScreenController){
+			((RenderableScreenController) screenController).render();
+		}
+		nifty.render(false);
+
 	}
 	
 	private void initLWJGLInputSystem() {
