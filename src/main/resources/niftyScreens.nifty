@@ -11,6 +11,7 @@
         <layer childLayout="center">
             <panel childLayout="center">
                 <panel width="200px" childLayout="vertical">
+                	<control width="500px" name="label" id="notification" text="" color="#000000"></control>
                     <control margin="5px" name="button" label="Login" id="Login" align="center" valign="center" background="#ffffff"></control>
                     <control margin="5px" name="button" label="Register" id="Register" align="center" valign="center"></control>
                     <control margin="5px" name="button" label="Quit" id="quit" align="center" valign="center"></control>

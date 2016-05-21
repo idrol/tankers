@@ -1,14 +1,14 @@
 package net.tankers.main;
 
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.nulldevice.NullSoundDevice;
 import de.lessvoid.nifty.render.batch.BatchRenderDevice;
 import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
-import de.lessvoid.nifty.renderer.lwjgl.render.LwjglBatchRenderBackendCoreProfileFactory;
 import de.lessvoid.nifty.renderer.lwjgl.render.LwjglBatchRenderBackendFactory;
-import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
+import net.tankers.client.Client;
 import net.tankers.main.screenControllers.MainScreenController;
 
 import java.io.FileInputStream;
@@ -31,6 +31,7 @@ public class Main {
 	private Nifty nifty = null;
 	private long lastFrameTime = 0;
 	protected boolean isRunning = true;
+	private static Client client;
 	
     public static void main(String[] argv) {
         System.out.println(argv[0]);
@@ -46,7 +47,7 @@ public class Main {
     }
 	
 	public void start() {
-		
+		Analytics.setGameStartTime(System.currentTimeMillis());
         try {
             Display.setDisplayMode(new DisplayMode(1366,768));
             Display.create();
@@ -60,7 +61,15 @@ public class Main {
         nifty = initNifty(lwjglInputSystem);
 		loadNiftyXML();
         lastFrameTime = getTime();
-        //nifty.gotoScreen("game");
+        
+	    Client client = new Client("localhost", 25565, nifty);
+	    try {
+	    	client.run();
+	    } catch (Exception e) {
+	    	Label notificationLabel = nifty.getCurrentScreen().findNiftyControl("notification", Label.class);
+	    	notificationLabel.setText("Failed connecting to server. Please restart client when server is running");
+	    }
+
 		while(!Display.isCloseRequested() && isRunning){
 			float delta = getDelta();
 			update(delta);
@@ -132,13 +141,13 @@ public class Main {
 	}
 	
 	public void render() {
-		ScreenController screenController = nifty.getCurrentScreen().getScreenController();
-		if(screenController instanceof RenderableScreenController){
-			((RenderableScreenController) screenController).render();
+		if(nifty.getCurrentScreen() != null) {
+			ScreenController screenController = nifty.getCurrentScreen().getScreenController();
+			if(screenController instanceof RenderableScreenController){
+				((RenderableScreenController) screenController).render();
+			}
+			nifty.render(false);
 		}
-		nifty.render(false);
-
-
 	}
 	
 	private void initLWJGLInputSystem() {
@@ -152,8 +161,16 @@ public class Main {
 	}
    
 	private static void shutdown(final LwjglInputSystem inputSystem) {
+		Analytics.setGameQuitTime(System.currentTimeMillis());
 	    inputSystem.shutdown();
 	    Display.destroy();
+	    
+	    Client.writeMessage("timeplayed;"+Analytics.getTimePlayed());
+	    Client.stop();
+	    
+	    System.out.println("Played for " 
+	    		+ Analytics.getTimePlayed()
+	    		+ "s");
 	    System.exit(0);
 	  }
 }

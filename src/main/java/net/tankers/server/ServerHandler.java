@@ -112,6 +112,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             		//In case username or password(s) are blank
             		ctx.writeAndFlush("notification;Please fill in all the fields" + NetworkUtils.ENDING);
             	}
+            } else if(message_name.equals("timeplayed")) {
+            	try {
+            		analyticsHandler.insertSessionTime(msg.split(";")[1].split(":")[0]);
+            	} catch (ArrayIndexOutOfBoundsException e) {
+            		e.printStackTrace();
+            	}
+            	
             } else {
             	System.out.println("Unauthenticated channel tried message: " + msg);
             }

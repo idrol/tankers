@@ -15,27 +15,25 @@ public class AnalyticsHandler {
 		initializeSessionPlayedMatchesTable();
 	}
 	
-	public void insertSessionTime(String username, String sessionTimeInSeconds) {
-		sqlite.insertInto("sessiontimes", "('username', 'sessionTime') "
-				+ "VALUES ('" + username + "','"+ sessionTimeInSeconds +"')");
+	public void insertSessionTime(String sessionTimeInSeconds) {
+		sqlite.insertInto("sessiontimes", "('sessionTime') "
+				+ "VALUES ('"+ sessionTimeInSeconds +"')");
 	}
 	
-	public void insertSessionPlayedMatches(String username, String playedMatches) {
-		sqlite.insertInto("playedmatches", "('username', 'playedMatches') "
-				+ "VALUES ('" + username + "','"+ playedMatches +"')");
+	public void insertSessionPlayedMatches(String playedMatches) {
+		sqlite.insertInto("playedmatches", "('playedMatches') "
+				+ "VALUES ('"+ playedMatches +"')");
 	}
 	
 	private void initializeSessionTimesTable() {
 		sqlite.createTable("sessiontimes", 
 				"uniqueid integer PRIMARY KEY AUTOINCREMENT," +
-				" username TEXT NOT NULL," +
 				" sessionTime TEXT NOT NULL");
 	}
 	
 	private void initializeSessionPlayedMatchesTable() {
 		sqlite.createTable("playedmatches", 
 				"uniqueid integer PRIMARY KEY AUTOINCREMENT," +
-				" username TEXT NOT NULL," +
 				" playedMatches TEXT NOT NULL");
 	}
 }

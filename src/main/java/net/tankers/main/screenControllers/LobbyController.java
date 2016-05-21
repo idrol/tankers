@@ -14,12 +14,6 @@ import net.tankers.main.Game;
  */
 public class LobbyController extends DefaultScreenController {
     private Nifty nifty;
-    private Client client;
-    private Game game;
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
 
     @Override
     public void bind(Nifty nifty, Screen screen) {

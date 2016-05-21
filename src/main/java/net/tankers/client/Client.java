@@ -39,11 +39,11 @@ public class Client {
     private final String host;
     private final int port;
     private static Channel channel;
-    private EventLoopGroup group = null;
+    private static EventLoopGroup group = null;
     private Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
     public Game game;
     private Nifty nifty;
-    private boolean loggedIn = false;
+    private static boolean loggedIn = false;
 
     public Client(String host, int port, Nifty nifty) {
     	this.nifty = nifty;
@@ -52,8 +52,8 @@ public class Client {
         registerNetworkedEntityClass(Tank.class);
         registerNetworkedEntityClass(Player.class);
     }
-
-    public void run() {
+    
+	public void run() {
         group = new NioEventLoopGroup();
         try{
         	final SslContext sslCtx = SslContextBuilder.forClient()
@@ -103,8 +103,8 @@ public class Client {
         }
     }
     
-    public boolean isLoggedIn() {
-    	return this.loggedIn;
+    public static boolean isLoggedIn() {
+    	return loggedIn;
     }
 
     public void decodeObject(String msg) {
@@ -143,7 +143,7 @@ public class Client {
         }
     }
     
-    public void loginUser(String username, String password) {
+    public static void loginUser(String username, String password) {
     	System.out.println("Sent login stuff");
     	writeMessage("login;"+username+":"+password);
     }
@@ -182,12 +182,15 @@ public class Client {
     	nifty.gotoScreen("game");
     }
     
-    public void stop() {
+    public static void stop() {
         group.shutdownGracefully();
     }
 
     public static void writeMessage(String message) {
-        channel.writeAndFlush(message + "\r\n");
+    	if(channel != null)
+    		channel.writeAndFlush(message + "\r\n");
+    	else
+    		System.err.println("Failed to write message to server: Not connected to server");
     }
 
 }

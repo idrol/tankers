@@ -37,10 +37,8 @@ public class Login extends DefaultScreenController {
         TextField passwordField = screen.findNiftyControl("password", TextField.class);
         String username = usernameField.getDisplayedText();
         String password = passwordField.getRealText();
-        
-        Client client = new Client("localhost", 25565, nifty);
-    	client.run();
-    	client.loginUser(username, password);
+
+    	Client.loginUser(username, password);
     	
     	try {
     		//Because of stuff being in separate threads and
@@ -50,8 +48,7 @@ public class Login extends DefaultScreenController {
 			e1.printStackTrace();
 		}
     	
-    	if(client.isLoggedIn()) {
-			LobbyController lobbyController = new LobbyController();
+    	if(Client.isLoggedIn()) {
 			try {
 	    		//Because of stuff being in separate threads and
 	    		//it takes time for client to receive response from server
@@ -59,7 +56,6 @@ public class Login extends DefaultScreenController {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-	    	lobbyController.setClient(client);
 			nifty.gotoScreen("lobby");
     	}
     }
