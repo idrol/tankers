@@ -4,16 +4,10 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.nulldevice.NullSoundDevice;
 import de.lessvoid.nifty.render.batch.BatchRenderDevice;
 import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
-import de.lessvoid.nifty.renderer.lwjgl.render.LwjglBatchRenderBackendCoreProfileFactory;
 import de.lessvoid.nifty.renderer.lwjgl.render.LwjglBatchRenderBackendFactory;
-import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
 import net.tankers.main.screenControllers.MainScreenController;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import net.tankers.main.screenControllers.RenderableScreenController;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -21,6 +15,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
  
 public class Main {
 	public static String pathPrefix = "";
@@ -60,7 +57,7 @@ public class Main {
         nifty = initNifty(lwjglInputSystem);
 		loadNiftyXML();
         lastFrameTime = getTime();
-        //nifty.gotoScreen("game");
+        nifty.gotoScreen("game");
 		while(!Display.isCloseRequested() && isRunning){
 			float delta = getDelta();
 			update(delta);

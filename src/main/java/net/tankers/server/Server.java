@@ -1,9 +1,5 @@
 package net.tankers.server;
 
-import java.security.cert.CertificateException;
-
-import javax.net.ssl.SSLException;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -13,6 +9,9 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+
+import javax.net.ssl.SSLException;
+import java.security.cert.CertificateException;
 
 /**
  * Created by idrol on 13-04-2016.

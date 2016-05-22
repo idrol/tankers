@@ -1,8 +1,8 @@
 package net.tankers.server;
 
-import java.sql.Connection;
-
 import net.tankers.server.sqlite.SQLiteJDBC;
+
+import java.sql.Connection;
 
 public class AnalyticsHandler {
 	private SQLiteJDBC sqlite;

@@ -1,12 +1,12 @@
 package net.tankers.server;
 
+import net.tankers.exceptions.DuplicateUserException;
+import net.tankers.server.sqlite.SQLiteJDBC;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import net.tankers.exceptions.DuplicateUserException;
-import net.tankers.server.sqlite.SQLiteJDBC;
 
 public class UserHandler {
 	private SQLiteJDBC sqlite;

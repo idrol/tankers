@@ -1,8 +1,5 @@
 package net.tankers.main.screenControllers;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ButtonClickedEvent;
@@ -10,7 +7,6 @@ import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
 import net.tankers.client.Client;
-import net.tankers.main.Main;
 
 /**
  * Created by idrol on 13-04-2016.
