@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class Client {
 
-    private static String host;
+    private static String host = null;
     private static int port = 25565;
     private static Channel channel;
     
@@ -118,7 +118,7 @@ public class Client {
             if(objects.get(Integer.parseInt(data[1])) == null){
                 try {
                     Class<?> clazz = Class.forName(data[0]);
-                    Constructor<?> ctor = clazz.getConstructor(Client.class, Integer.class);
+                    Constructor<?> ctor = clazz.getConstructor(Integer.class);
                     System.out.println("Instantiated new remote object");
                     Object object = ctor.newInstance(Integer.parseInt(data[1]));
                     if(object instanceof NetworkedEntity){

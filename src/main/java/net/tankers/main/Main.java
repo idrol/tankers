@@ -62,9 +62,10 @@ public class Main {
         lastFrameTime = getTime();
         
 	    Client.init(nifty);
-	    Client.setHost("localhost");
+	    
         
 	    try {
+	    	Client.setHost("localhost");
 	    	Client.run();
 	    } catch (Exception e) {
 	    	Label notificationLabel = nifty.getCurrentScreen().findNiftyControl("notification", Label.class);
