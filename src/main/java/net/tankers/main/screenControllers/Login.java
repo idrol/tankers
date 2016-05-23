@@ -35,24 +35,5 @@ public class Login extends DefaultScreenController {
         String password = passwordField.getRealText();
 
     	Client.loginUser(username, password);
-    	
-    	try {
-    		//Because of stuff being in separate threads and
-    		//it takes time for client to receive response from server
-			Thread.sleep(200);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-    	
-    	if(Client.isLoggedIn()) {
-			try {
-	    		//Because of stuff being in separate threads and
-	    		//it takes time for client to receive response from server
-				Thread.sleep(200);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-			nifty.gotoScreen("lobby");
-    	}
     }
 }

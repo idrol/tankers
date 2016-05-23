@@ -36,7 +36,6 @@ public class Client {
     private static Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
     
     private static Nifty nifty;
-    private static boolean loggedIn = false;
     
     public static void init(Nifty nifty) {
     	Client.nifty = nifty;
@@ -94,8 +93,7 @@ public class Client {
             decodeObject(msg.split(";")[1]);
         } else if (msgType.equals("login_status")) {
         	if(msg.split(";")[1].equals("1")) {
-        		System.out.println("Setting loggedIn to " + msg.split(";")[1].equals("1"));
-        		loggedIn = true;
+        		nifty.gotoScreen("lobby");
         	}
         } else if(msgType.equals("user_info")){
         	
@@ -105,10 +103,6 @@ public class Client {
         } else if(msgType.equals("match_found")) {
         	matchFound(msg);
         }
-    }
-    
-    public static boolean isLoggedIn() {
-    	return loggedIn;
     }
 
     private static void decodeObject(String msg) {
