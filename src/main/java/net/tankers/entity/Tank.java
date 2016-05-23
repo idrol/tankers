@@ -15,7 +15,7 @@ public class Tank extends NetworkedEntity {
 
     private Player player;
 
-    public Tank(Client client, Integer instanceID) {
+    public Tank(Integer instanceID) {
         super(instanceID);
     }
 

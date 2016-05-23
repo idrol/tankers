@@ -64,14 +64,10 @@ public class Main {
 	    Client.init(nifty);
 	    
         
-	    try {
-	    	Client.setHost("localhost");
-	    	Client.run();
-	    } catch (Exception e) {
-	    	Label notificationLabel = nifty.getCurrentScreen().findNiftyControl("notification", Label.class);
-	    	notificationLabel.setText("Failed connecting to server. Please restart client when server is running");
-	    }
+	    	
 		if(DEBUG_GAME){
+			Client.setHost("localhost");
+	    	Client.run();
 			Client.loginUser("abcd", "abcd");
 			try {
 				Thread.sleep(200);
