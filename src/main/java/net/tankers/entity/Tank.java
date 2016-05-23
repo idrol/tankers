@@ -3,6 +3,8 @@ package net.tankers.entity;
 import io.netty.channel.Channel;
 import net.tankers.client.Client;
 import net.tankers.server.Server;
+import net.tankers.utils.NetworkUtils;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -11,16 +13,25 @@ import java.util.List;
  */
 public class Tank extends NetworkedEntity {
 
+    private Player player;
+
     public Tank(Client client, Integer instanceID) {
         super(client, instanceID);
     }
 
-    public Tank(Server server, Channel channel) {
-        super(server, channel);
+    public Tank(Server server, Player player) {
+        super(server);
+        this.player = player;
+    }
+
+
+    @Override
+    public void decodeDataClient(String[] data) {
+
     }
 
     @Override
-    public void decodeData(String[] data) {
+    public void decodeDataServer(String[] data) {
 
     }
 
@@ -41,6 +52,24 @@ public class Tank extends NetworkedEntity {
 
     @Override
     public void updateClient(float delta) {
+        if(Keyboard.isKeyDown(Keyboard.KEY_W)){
+            if(!Keyboard.isKeyDown(Keyboard.KEY_S)){
+                Client.writeMessage(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "key_pressed:key_w");
+            }
+        }else{
+            if(Keyboard.isKeyDown(Keyboard.KEY_S)){
+                Client.writeMessage(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "key_pressed:key_s");
+            }
+        }
 
+        if(Keyboard.isKeyDown(Keyboard.KEY_A)){
+            if(!Keyboard.isKeyDown(Keyboard.KEY_D)){
+                Client.writeMessage(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "key_pressed:key_a");
+            }
+        }else{
+            if(Keyboard.isKeyDown(Keyboard.KEY_D)){
+                Client.writeMessage(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "key_pressed:key_d");
+            }
+        }
     }
 }

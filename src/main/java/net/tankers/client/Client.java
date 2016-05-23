@@ -46,6 +46,14 @@ public class Client {
         registerNetworkedEntityClass(Player.class);
     }
 
+    public static void update(float delta) {
+        for(HashMap<Integer, NetworkedEntity> map: entities.values()){
+            for(NetworkedEntity entity: map.values()){
+                entity.updateClient(delta);
+            }
+        }
+    }
+
     public static void render() {
         for(HashMap<Integer, NetworkedEntity> map: entities.values()){
             map.values().forEach(NetworkedEntity::render);
@@ -101,7 +109,7 @@ public class Client {
     	return loggedIn;
     }
 
-    public void decodeObject(String msg) {
+    private void decodeObject(String msg) {
         String[] data = msg.split(":");
         HashMap<Integer, NetworkedEntity> objects = entities.get(data[0]);
         if(data[2].equals("create")){
@@ -109,6 +117,7 @@ public class Client {
                 try {
                     Class<?> clazz = Class.forName(data[0]);
                     Constructor<?> ctor = clazz.getConstructor(Client.class, Integer.class);
+                    System.out.println("Instantiated new remote object");
                     Object object = ctor.newInstance(this, Integer.parseInt(data[1]));
                     if(object instanceof NetworkedEntity){
                         NetworkedEntity entity = (NetworkedEntity) object;
@@ -131,7 +140,7 @@ public class Client {
         }else if(data[2].equals("update")){
             String[] data2 = new String[data.length-3];
             System.arraycopy(data, 3, data2, 0, data.length - 3);
-            objects.get(Integer.parseInt(data[1])).decodeData(data2);
+            objects.get(Integer.parseInt(data[1])).decodeDataClient(data2);
         }else if(data[2].equals("delete")){
             objects.remove(Integer.parseInt(data[1]));
         }

@@ -18,7 +18,6 @@ public abstract class NetworkedEntity extends Entity {
     protected Server server = null;
     protected Client client = null;
     protected boolean isServer;
-    protected Channel channel;
 
 
     public NetworkedEntity(Client client, Integer instanceID) {
@@ -27,16 +26,11 @@ public abstract class NetworkedEntity extends Entity {
         isServer = false;
     }
 
-    public NetworkedEntity(Server server, Channel channel){
+    public NetworkedEntity(Server server){
         objectIdentifier = this.getClass().getSimpleName();
         this.instanceID = instances;
         instances++;
         isServer = true;
-        this.channel = channel;
-    }
-
-    public Channel getChannel() {
-        return channel;
     }
 
     public void setServer(Server server){
@@ -55,7 +49,10 @@ public abstract class NetworkedEntity extends Entity {
         return instanceID;
     }
 
-    public abstract void decodeData(String[] data);
+    // Client side only function
+    public abstract void decodeDataClient(String[] data);
+
+    public abstract void decodeDataServer(String[] data);
 
     public abstract String[] encodeData(String variable);
 

@@ -1,7 +1,9 @@
 package net.tankers.server;
 
 import net.tankers.entity.Player;
+import net.tankers.entity.Tank;
 
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -15,6 +17,7 @@ public class Match extends Thread{
     private boolean playerWon = false;
     private Queue<String> player1Queue = new ConcurrentLinkedQueue<>();
     private Queue<String> player2Queue = new ConcurrentLinkedQueue<>();
+    private Tank tank1, tank2;
 
     public Match(Player player1, Player player2, Server server){
         this.player1 = player1;
@@ -24,6 +27,13 @@ public class Match extends Thread{
 
     public boolean hasPlayer(Player player) {
         return player2 == player || player1 == player;
+    }
+
+    public void broadCast(List<String> msgs) {
+        for(String msg: msgs){
+            player1.write(msg);
+            player2.write(msg);
+        }
     }
 
     public void broadCast(String msg) {
@@ -52,6 +62,10 @@ public class Match extends Thread{
     @Override
     public void run() {
         broadCast("match_map;default");
+        tank1 = new Tank(server, player1);
+        tank2 = new Tank(server, player2);
+        broadCast(tank1.sync());
+        broadCast(tank2.sync());
         while(!playerWon){
             update();
         }

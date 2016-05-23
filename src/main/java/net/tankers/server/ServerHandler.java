@@ -59,6 +59,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         }
     }
 
+    protected void sendMessages(Channel channel, List<String> msgs) {
+        for(String msg: msgs){
+            channel.write(msg + NetworkUtils.ENDING);
+        }
+        channel.flush();
+    }
+
     private boolean channelAuthenticated(Channel channel) {
         return players.get(channel).authenticated;
     }
@@ -158,7 +165,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             ctx.channel().writeAndFlush("login_status;1"+ NetworkUtils.ENDING);
             player.authenticated = auth;
             player.username = username;
-            broadCast(player.sync());
+            sendMessages(ctx.channel(), player.sync());
             ctx.channel().writeAndFlush("user_info;0:0:"+channels.size()+ NetworkUtils.ENDING);
         }else{
             ctx.channel().writeAndFlush("login_status;0"+ NetworkUtils.ENDING);

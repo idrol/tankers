@@ -29,24 +29,6 @@ public class GameController extends RenderableScreenController {
 
     @Override
     public void update(float delta) {
-        if(Keyboard.isKeyDown(Keyboard.KEY_W)){
-            if(!Keyboard.isKeyDown(Keyboard.KEY_S)){
-                Client.writeMessage("key_pressed;key_w");
-            }
-        }else{
-            if(Keyboard.isKeyDown(Keyboard.KEY_S)){
-                Client.writeMessage("key_pressed;key_s");
-            }
-        }
-
-        if(Keyboard.isKeyDown(Keyboard.KEY_A)){
-            if(!Keyboard.isKeyDown(Keyboard.KEY_D)){
-                Client.writeMessage("key_pressed;key_a");
-            }
-        }else{
-            if(Keyboard.isKeyDown(Keyboard.KEY_D)){
-                Client.writeMessage("key_pressed;key_d");
-            }
-        }
+        Client.update(delta);
     }
 }

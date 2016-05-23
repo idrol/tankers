@@ -12,13 +12,15 @@ import java.util.List;
  */
 public class Player extends NetworkedEntity {
     public String username = "";
+    private Channel channel;
 
     public Player(Client client, Integer instanceID) {
         super(client, instanceID);
     }
 
     public Player(Server server, Channel channel) {
-        super(server, channel);
+        super(server);
+        this.channel = channel;
     }
 
     public boolean authenticated = false;
@@ -34,7 +36,7 @@ public class Player extends NetworkedEntity {
     }
 
     @Override
-    public void decodeData(String[] data){
+    public void decodeDataClient(String[] data){
         System.out.println("Decoding data sent to Player instance " + data[0]);
         if(data[0].equals("username")){
             username = data[1];
@@ -45,6 +47,11 @@ public class Player extends NetworkedEntity {
                 authenticated = false;
             }
         }
+    }
+
+    @Override
+    public void decodeDataServer(String[] data) {
+
     }
 
     @Override

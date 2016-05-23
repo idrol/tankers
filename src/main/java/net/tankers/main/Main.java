@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
  
 public class Main {
+	private static final boolean DEBUG_GAME = true;
 	public static String pathPrefix = "";
     private static String intellijResourcePrefix = "build/";
     private static String eclipseResourcePrefix = "bin/";
@@ -68,8 +69,17 @@ public class Main {
 	    	Label notificationLabel = nifty.getCurrentScreen().findNiftyControl("notification", Label.class);
 	    	notificationLabel.setText("Failed connecting to server. Please restart client when server is running");
 	    }
+		if(DEBUG_GAME){
+			Client.loginUser("idrol", "test");
+			try {
+				Thread.sleep(200);
+				Client.writeMessage("search_match");
+				nifty.gotoScreen("search");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
-        nifty.gotoScreen("game");
+		}
 
 		while(!Display.isCloseRequested() && isRunning){
 			float delta = getDelta();
