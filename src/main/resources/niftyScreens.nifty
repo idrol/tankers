@@ -4,6 +4,7 @@
 	   xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
     <useStyles filename="nifty-default-styles.xml" />
     <useControls filename="nifty-default-controls.xml" />
+    
     <screen id="start" controller="net.tankers.main.screenControllers.MainScreenController">
    	    <layer id="background" childLayout="center">
       		<image filename="tankersbg.jpg"></image>
@@ -12,6 +13,11 @@
             <panel childLayout="center">
                 <panel width="200px" childLayout="vertical">
                 	<control width="500px" name="label" id="notification" text="" color="#000000"></control>
+                    <panel childLayout="horizontal" align="center" marginBottom="30">
+                		<control name="label" text="Server IP:" color="#000000" marginRight="5"></control>
+	                    <control name="textfield" maxLength="100" width="100" id="serverip"></control>
+	                    <control name="button" label="Connect" id="Connect" align="center" valign="center" marginLeft="5"></control>      
+                    </panel>
                     <control margin="5px" name="button" label="Login" id="Login" align="center" valign="center" background="#ffffff"></control>
                     <control margin="5px" name="button" label="Register" id="Register" align="center" valign="center"></control>
                     <control margin="5px" name="button" label="Quit" id="quit" align="center" valign="center"></control>
@@ -19,9 +25,7 @@
             </panel>
         </layer>
     </screen>
-    <screen id="lobby" controller="net.tankers.main.screenControllers.Lobby">
-
-    </screen>
+    
     <screen id="login" controller="net.tankers.main.screenControllers.Login">
       	<layer id="background" childLayout="center">
       		<image filename="tankersbg.jpg"></image>
@@ -42,6 +46,7 @@
             </panel>
         </layer>
     </screen>
+    
     <screen id="register" controller="net.tankers.main.screenControllers.Register">
     	<layer id="background" childLayout="center">
       		<image filename="tankersbg.jpg"></image>
@@ -64,6 +69,7 @@
             </panel>
         </layer>
     </screen>
+    
     <screen id="lobby" controller="net.tankers.main.screenControllers.LobbyController">
     	<layer id="background" childLayout="center">
       		<image filename="tankersbg.jpg"></image>
@@ -83,6 +89,7 @@
             </panel>
         </layer>
     </screen>
+    
     <screen id="search" controller="net.tankers.main.screenControllers.SearchController">
     	<layer id="background" childLayout="center">
       		<image filename="tankersbg.jpg"></image>
