@@ -1,35 +1,27 @@
 package net.tankers.client;
 
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Label;
+import de.lessvoid.nifty.screen.Screen;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.ssl.*;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
 import net.tankers.entity.Tank;
 import net.tankers.main.Game;
-import net.tankers.main.Main;
-import net.tankers.main.screenControllers.LobbyController;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import javax.net.ssl.SSLException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.net.ssl.SSLException;
-
-import org.lwjgl.opengl.Display;
-
-import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.Label;
-import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.tools.SizeValue;
 
 /**
  * Created by idrol on 13-04-2016.
@@ -39,9 +31,10 @@ public class Client {
     private final String host;
     private final int port;
     private static Channel channel;
+    
     private static EventLoopGroup group = null;
-    private Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
-    public Game game;
+    private static Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
+    
     private Nifty nifty;
     private static boolean loggedIn = false;
 
@@ -52,8 +45,15 @@ public class Client {
         registerNetworkedEntityClass(Tank.class);
         registerNetworkedEntityClass(Player.class);
     }
-    
-	public void run() {
+
+    public static void render() {
+        for(HashMap<Integer, NetworkedEntity> map: entities.values()){
+            map.values().forEach(NetworkedEntity::render);
+        }
+    }
+
+
+    public void run() {
         group = new NioEventLoopGroup();
         try{
         	final SslContext sslCtx = SslContextBuilder.forClient()
@@ -63,17 +63,11 @@ public class Client {
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new ClientInitializer(this,nifty,sslCtx));
-            this.channel = bootstrap.connect(host, port).sync().channel();
+            channel = bootstrap.connect(host, port).sync().channel();
             System.out.println("got to end");
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | SSLException e) {
             e.printStackTrace();
-        } catch (SSLException e) {
-        	e.printStackTrace();
         }
-    }
-    
-    public void setGame(Game game) {
-    	this.game = game;
     }
 
     public void registerNetworkedEntityClass(Class<?> entityClass){

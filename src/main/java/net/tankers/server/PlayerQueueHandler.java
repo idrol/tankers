@@ -1,10 +1,8 @@
 package net.tankers.server;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import net.tankers.entity.Player;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PlayerQueueHandler {
 	private static ConcurrentLinkedQueue<Player> playerQueue = new ConcurrentLinkedQueue<Player>();

@@ -3,9 +3,6 @@ package net.tankers.main;
 import net.tankers.client.Client;
 import net.tankers.main.screenControllers.LobbyController;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 /**
  * Created by idrol on 13-04-2016.
  */

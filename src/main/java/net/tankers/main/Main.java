@@ -10,10 +10,6 @@ import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
 import net.tankers.client.Client;
 import net.tankers.main.screenControllers.MainScreenController;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import net.tankers.main.screenControllers.RenderableScreenController;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -21,6 +17,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
  
 public class Main {
 	public static String pathPrefix = "";
@@ -69,6 +68,8 @@ public class Main {
 	    	Label notificationLabel = nifty.getCurrentScreen().findNiftyControl("notification", Label.class);
 	    	notificationLabel.setText("Failed connecting to server. Please restart client when server is running");
 	    }
+
+        nifty.gotoScreen("game");
 
 		while(!Display.isCloseRequested() && isRunning){
 			float delta = getDelta();

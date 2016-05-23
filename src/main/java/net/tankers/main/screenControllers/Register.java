@@ -3,16 +3,10 @@ package net.tankers.main.screenControllers;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ButtonClickedEvent;
-import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.tools.Color;
-import de.lessvoid.nifty.tools.SizeValue;
 import net.tankers.client.Client;
-import net.tankers.exceptions.DuplicateUserException;
-import net.tankers.main.Game;
-import net.tankers.server.sqlite.SQLiteJDBC;
 
 /**
  * Created by idrol on 13-04-2016.
