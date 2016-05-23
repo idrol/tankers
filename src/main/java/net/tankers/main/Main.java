@@ -22,7 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
  
 public class Main {
-	private static final boolean DEBUG_GAME = true;
+	private static final boolean DEBUG_GAME = false;
 	public static String pathPrefix = "";
     private static String intellijResourcePrefix = "build/";
     private static String eclipseResourcePrefix = "bin/";
@@ -31,7 +31,6 @@ public class Main {
 	private Nifty nifty = null;
 	private long lastFrameTime = 0;
 	protected boolean isRunning = true;
-	private static Client client;
 	
     public static void main(String[] argv) {
         System.out.println(argv[0]);
@@ -62,15 +61,17 @@ public class Main {
 		loadNiftyXML();
         lastFrameTime = getTime();
         
-	    Client client = new Client("localhost", 25565, nifty);
+	    Client.init(nifty);
+	    Client.setHost("localhost");
+        
 	    try {
-	    	client.run();
+	    	Client.run();
 	    } catch (Exception e) {
 	    	Label notificationLabel = nifty.getCurrentScreen().findNiftyControl("notification", Label.class);
 	    	notificationLabel.setText("Failed connecting to server. Please restart client when server is running");
 	    }
 		if(DEBUG_GAME){
-			Client.loginUser("idrol", "test");
+			Client.loginUser("abcd", "abcd");
 			try {
 				Thread.sleep(200);
 				Client.writeMessage("search_match");

@@ -28,22 +28,24 @@ import java.util.Map;
  */
 public class Client {
 
-    private final String host;
-    private final int port;
+    private static String host;
+    private static int port = 25565;
     private static Channel channel;
     
     private static EventLoopGroup group = null;
     private static Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
     
-    private Nifty nifty;
+    private static Nifty nifty;
     private static boolean loggedIn = false;
-
-    public Client(String host, int port, Nifty nifty) {
-    	this.nifty = nifty;
-        this.host = host;
-        this.port = port;
-        registerNetworkedEntityClass(Tank.class);
+    
+    public static void init(Nifty nifty) {
+    	Client.nifty = nifty;
+    	registerNetworkedEntityClass(Tank.class);
         registerNetworkedEntityClass(Player.class);
+    }
+    
+    public static void setHost(String host) {
+    	Client.host = host;
     }
 
     public static void update(float delta) {
@@ -61,7 +63,7 @@ public class Client {
     }
 
 
-    public void run() {
+    public static void run() {
         group = new NioEventLoopGroup();
         try{
         	final SslContext sslCtx = SslContextBuilder.forClient()
@@ -70,7 +72,7 @@ public class Client {
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ClientInitializer(this,nifty,sslCtx));
+                    .handler(new ClientInitializer(sslCtx));
             channel = bootstrap.connect(host, port).sync().channel();
             System.out.println("got to end");
         } catch (InterruptedException | SSLException e) {
@@ -78,14 +80,14 @@ public class Client {
         }
     }
 
-    public void registerNetworkedEntityClass(Class<?> entityClass){
+    public static void registerNetworkedEntityClass(Class<?> entityClass){
         if(!NetworkedEntity.class.isAssignableFrom(entityClass)){
             throw new UnsupportedOperationException("Tried to add " + entityClass.getCanonicalName() + " to registry");
         }
         entities.put(entityClass.getName(), new HashMap<Integer, NetworkedEntity>());
     }
 
-    public void decode(String msg){
+    public static void decode(String msg){
         String msgType = msg.split(";")[0];
         
         if(msgType.equals("object")){
@@ -93,7 +95,7 @@ public class Client {
         } else if (msgType.equals("login_status")) {
         	if(msg.split(";")[1].equals("1")) {
         		System.out.println("Setting loggedIn to " + msg.split(";")[1].equals("1"));
-        		this.loggedIn = true;
+        		loggedIn = true;
         	}
         } else if(msgType.equals("user_info")){
         	
@@ -109,7 +111,7 @@ public class Client {
     	return loggedIn;
     }
 
-    private void decodeObject(String msg) {
+    private static void decodeObject(String msg) {
         String[] data = msg.split(":");
         HashMap<Integer, NetworkedEntity> objects = entities.get(data[0]);
         if(data[2].equals("create")){
@@ -118,11 +120,10 @@ public class Client {
                     Class<?> clazz = Class.forName(data[0]);
                     Constructor<?> ctor = clazz.getConstructor(Client.class, Integer.class);
                     System.out.println("Instantiated new remote object");
-                    Object object = ctor.newInstance(this, Integer.parseInt(data[1]));
+                    Object object = ctor.newInstance(Integer.parseInt(data[1]));
                     if(object instanceof NetworkedEntity){
                         NetworkedEntity entity = (NetworkedEntity) object;
                         int instanceId = entity.getInstanceID();
-                        entity.setClient(this);
                         objects.put(instanceId, entity);
                     }
                 } catch (ClassNotFoundException e) {
@@ -151,12 +152,12 @@ public class Client {
     	writeMessage("login;"+username+":"+password);
     }
     
-    public void registerUser(String username, String password, String verifyPassword) {
+    public static void registerUser(String username, String password, String verifyPassword) {
     	System.out.println("Sent registration stuff");
     	writeMessage("register;"+username+":"+password+":"+verifyPassword);
     }
     
-    private void decodeNotification(String msg) {
+    private static void decodeNotification(String msg) {
     	try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
@@ -171,7 +172,7 @@ public class Client {
     	System.out.println("Notification: "+notification);
     }
     
-    private void matchFound(String msg) {
+    private static void matchFound(String msg) {
     	String opponent = msg.split(";")[1];
     	System.out.println("Match found: " + opponent);
     	

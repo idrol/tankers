@@ -20,7 +20,7 @@ public abstract class NetworkedEntity extends Entity {
     protected boolean isServer;
 
 
-    public NetworkedEntity(Client client, Integer instanceID) {
+    public NetworkedEntity(Integer instanceID) {
         objectIdentifier = this.getClass().getSimpleName();
         this.instanceID = instanceID;
         isServer = false;
@@ -35,10 +35,6 @@ public abstract class NetworkedEntity extends Entity {
 
     public void setServer(Server server){
         this.server = server;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 
     public void setNetworkState(boolean isServer){

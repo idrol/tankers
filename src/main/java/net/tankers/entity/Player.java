@@ -14,8 +14,8 @@ public class Player extends NetworkedEntity {
     public String username = "";
     private Channel channel;
 
-    public Player(Client client, Integer instanceID) {
-        super(client, instanceID);
+    public Player(Integer instanceID) {
+        super(instanceID);
     }
 
     public Player(Server server, Channel channel) {

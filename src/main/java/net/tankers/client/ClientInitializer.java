@@ -14,15 +14,11 @@ import io.netty.handler.ssl.SslContext;
  * Created by idrol on 13-04-2016.
  */
 public class ClientInitializer extends ChannelInitializer<SocketChannel> {
-    private Client client;
-    private Nifty nifty;
     private final SslContext sslCtx;
     
-    public ClientInitializer(Client client, Nifty nifty, SslContext sslCtx) {
+    public ClientInitializer(SslContext sslCtx) {
         super();
         this.sslCtx = sslCtx;
-        this.client = client;
-        this.nifty = nifty;
     }
 
     @Override
@@ -35,6 +31,6 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("decoder", new StringDecoder());
         pipeline.addLast("encoder", new StringEncoder());
 
-        pipeline.addLast("handler", new ClientHandler(client));
+        pipeline.addLast("handler", new ClientHandler());
     }
 }

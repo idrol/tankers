@@ -8,16 +8,14 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * Created by idrol on 13-04-2016.
  */
 public class ClientHandler extends SimpleChannelInboundHandler<String> {
-    private Client client;
 
-    public ClientHandler(Client client) {
+    public ClientHandler() {
         super();
-        this.client = client;
     }
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         System.out.println(msg);
-        client.decode(msg);
+        Client.decode(msg);
     }
 
     @Override
