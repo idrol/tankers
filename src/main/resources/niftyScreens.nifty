@@ -103,7 +103,22 @@
             </panel>
         </layer>
     </screen>
+    
     <screen id="game" controller="net.tankers.main.screenControllers.GameController">
 
+    </screen>
+    
+    <screen id="lostconnection" controller="net.tankers.main.screenControllers.LostConController">
+    	<layer id="background" childLayout="center">
+      		<image filename="tankersbg.jpg"></image>
+    	</layer>
+        <layer childLayout="center">
+            <panel width="100%" height="100%" childLayout="center">
+                <panel width="100%" childLayout="vertical">
+                	<control width="500px" name="label" id="notification" text="Lost connection to server" color="#000000"></control>
+                	<control margin="5px" name="button" label="Retry connection" id="reconnect" align="center" valign="center"></control>
+                </panel>
+            </panel>
+        </layer>
     </screen>
 </nifty>
