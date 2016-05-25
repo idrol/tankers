@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class UserHandler {
 	private SQLiteJDBC sqlite;
 	private Connection connection;
@@ -65,8 +67,10 @@ public class UserHandler {
 	
 	private void createUser(String username, String password) throws DuplicateUserException {
 		if(!isDuplicateUser(username)) {
+			String hashedpassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
+			
 			sqlite.insertInto("users", "('username', 'password') "
-					+ "VALUES ('" + username + "','"+ password +"')");
+					+ "VALUES ('" + username + "','"+ hashedpassword +"')");
 		} else {
 			throw new DuplicateUserException(username);
 		}
@@ -100,30 +104,27 @@ public class UserHandler {
 	
 	private boolean validateUser(String username, String password) {
 		ResultSet resultSet;
-		int result = 0;
-		
+		String hashedPass;
 		try {
 			Statement statement = connection.createStatement();
 			
-			String query = "SELECT EXISTS(SELECT username, password "
+			String query = "SELECT password "
 					+ "FROM users "
-					+ "WHERE username='" + username + "' AND password='" + password +"' LIMIT 1)";
+					+ "WHERE username='" + username + "'";
 			
 			resultSet = statement.executeQuery(query);
-			result = resultSet.getInt(1);
+			hashedPass = resultSet.getString("password");
 			
 			resultSet.close();
 			statement.close();
 			
+			if(BCrypt.checkpw(password, hashedPass))
+				return true;
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		if(result == 1) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 	
 	boolean authenticateUser(String username, String password) {
