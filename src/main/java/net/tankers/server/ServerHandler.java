@@ -125,7 +125,12 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             	} catch (ArrayIndexOutOfBoundsException e) {
             		e.printStackTrace();
             	}
-            	
+            } else if(message_name.equals("matchesplayed")) {
+            	try {
+            		analyticsHandler.insertSessionPlayedMatches(msg.split(";")[1].split(":")[0]);
+            	} catch (ArrayIndexOutOfBoundsException e) {
+            		e.printStackTrace();
+            	}
             } else {
             	System.out.println("Unauthenticated channel tried message: " + msg);
             }

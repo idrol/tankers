@@ -12,6 +12,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import net.tankers.client.analytics.MatchesPlayed;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
 import net.tankers.entity.Tank;
@@ -178,6 +179,7 @@ public class Client {
 		} 
     	
     	nifty.gotoScreen("game");
+    	MatchesPlayed.incrementMatchesPlayed();
     }
     
     public static void stop() {
