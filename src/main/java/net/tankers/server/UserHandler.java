@@ -148,15 +148,15 @@ public class UserHandler {
     	if(username.length() >= 4 && password.length() >= 4) {
     		if(!isDuplicateUser(username)) {
         		if(password.equals(verifyPassword)) {
-        			return "Success";
+        			return "success";
         		} else {
-        			return "Passwords do not match";
+        			return "passwordsnotmatching";
         		}
         	} else {
-        		return "A user with that name already exists";
+        		return "duplicateuser";
         	}
     	} else {
-    		return "Too short username or password, need to be 4 chars minimum";
+    		return "tooshortuserpass";
     	}
     }
     

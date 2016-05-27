@@ -164,15 +164,23 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         String password = msgData[1];
         String verifyPassword = msgData[2];
         
+        
         Player player = players.get(ctx.channel());
         String credentialsStatus = userHandler.verifyRegistrationCredentials(username,password,verifyPassword);
+        String messageToSend = null;
         
-        if(credentialsStatus.equalsIgnoreCase("Success")) {
+        if(credentialsStatus.equals("success")) {
         	userHandler.createNewUser(username, password);
-        	credentialsStatus = "Successfully registered user " + username;
+        	messageToSend = "Successfully registered user " + username;
+        } else if (credentialsStatus.equals("passwordsnotmatching")) {
+        	messageToSend = "The passwords do not match";
+        } else if (credentialsStatus.equals("duplicateuser")) {
+        	messageToSend = "A user with that name already exists";
+        } else if (credentialsStatus.equals("tooshortuserpass")) {
+        	messageToSend = "Too short username or password, need to be 4 chars minimum";
         }
         
-        player.write("notification;" + credentialsStatus);
+        player.write("notification;" + messageToSend);
     }
     
     private void handleMatchFound() {
