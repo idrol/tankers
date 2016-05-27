@@ -38,6 +38,8 @@ public class Client {
     private static Map<String, HashMap<Integer, NetworkedEntity>> entities = new HashMap<String, HashMap<Integer, NetworkedEntity>>();
     
     private static Nifty nifty;
+
+    public static String username;
     
     public static void init(Nifty nifty) {
     	Client.nifty = nifty;
@@ -98,7 +100,10 @@ public class Client {
         } else if (msgType.equals("login_status")) {
         	if(msg.split(";")[1].equals("1")) {
         		nifty.gotoScreen("lobby");
-        	}
+
+                nifty.getCurrentScreen().findNiftyControl("username", Label.class).setText("Logged in as '" + username + "'");
+
+            }
         } else if(msgType.equals("user_info")){
         	
         		
@@ -144,12 +149,13 @@ public class Client {
             objects.remove(Integer.parseInt(data[1]));
         }
     }
-    
+
     public static void loginUser(String username, String password) {
     	System.out.println("Sent login stuff");
     	writeMessage("login;"+username+":"+password);
+        Client.username = username;
     }
-    
+
     public static void registerUser(String username, String password, String verifyPassword) {
     	System.out.println("Sent registration stuff");
     	writeMessage("register;"+username+":"+password+":"+verifyPassword);

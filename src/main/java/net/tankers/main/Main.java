@@ -23,7 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
  
 public class Main {
-	private static final boolean DEBUG_GAME = true;
+	private static final boolean DEBUG_GAME = false;
 	public static String pathPrefix = "";
     private static String intellijResourcePrefix = "build/";
     private static String eclipseResourcePrefix = "bin/";

@@ -33,7 +33,9 @@ public class Register extends DefaultScreenController {
     	String verifyPassword = verifyPasswordField.getRealText();
     	
     	Client.registerUser(username, password, verifyPassword);
-    	
+
+        passwordField.setText("");
+        verifyPasswordField.setText("");
     }
 
     @NiftyEventSubscriber(id="back")

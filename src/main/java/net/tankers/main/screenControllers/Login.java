@@ -35,5 +35,7 @@ public class Login extends DefaultScreenController {
         String password = passwordField.getRealText();
 
     	Client.loginUser(username, password);
+        Client.username = username;
+        passwordField.setText("");
     }
 }

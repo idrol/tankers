@@ -24,4 +24,9 @@ public class PlayerQueueHandler {
 	public static Player pollPlayer() {
 		return playerQueue.poll();
 	}
+
+	public static void removePlayer(Player player) {
+		playerQueue.remove(player);
+		System.out.println("Player " + player.username + " removed from queue");
+	}
 }
