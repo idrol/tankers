@@ -1,6 +1,6 @@
-package net.tankers.main;
+package net.tankers.client.analytics;
 
-public class Analytics {
+public class TimePlayed {
 	private static long gameStartTime;
 	private static long gameQuitTime;
 
@@ -9,7 +9,7 @@ public class Analytics {
 	}
 
 	public static void setGameStartTime(long gameStartTime) {
-		Analytics.gameStartTime = gameStartTime;
+		TimePlayed.gameStartTime = gameStartTime;
 	}
 
 	public static long getGameQuitTime() {
@@ -17,10 +17,10 @@ public class Analytics {
 	}
 
 	public static void setGameQuitTime(long gameQuitTime) {
-		Analytics.gameQuitTime = gameQuitTime;
+		TimePlayed.gameQuitTime = gameQuitTime;
 	}
 	
 	public static double getTimePlayed() {
-		return (Analytics.getGameQuitTime() - Analytics.getGameStartTime())/1000.0;
+		return (TimePlayed.getGameQuitTime() - TimePlayed.getGameStartTime())/1000.0;
 	}
 }

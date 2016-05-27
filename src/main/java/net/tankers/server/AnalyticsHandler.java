@@ -2,15 +2,11 @@ package net.tankers.server;
 
 import net.tankers.server.sqlite.SQLiteJDBC;
 
-import java.sql.Connection;
-
 public class AnalyticsHandler {
 	private SQLiteJDBC sqlite;
-	private Connection connection;
 	
 	AnalyticsHandler(SQLiteJDBC sqlite) {
 		this.sqlite = sqlite;
-		this.connection = sqlite.getConnection();
 		initializeSessionTimesTable();
 		initializeSessionPlayedMatchesTable();
 	}

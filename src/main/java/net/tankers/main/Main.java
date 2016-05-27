@@ -1,7 +1,6 @@
 package net.tankers.main;
 
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.nulldevice.NullSoundDevice;
 import de.lessvoid.nifty.render.batch.BatchRenderDevice;
 import de.lessvoid.nifty.renderer.lwjgl.input.LwjglInputSystem;
@@ -9,6 +8,8 @@ import de.lessvoid.nifty.renderer.lwjgl.render.LwjglBatchRenderBackendFactory;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.spi.time.impl.AccurateTimeProvider;
 import net.tankers.client.Client;
+import net.tankers.client.analytics.MatchesPlayed;
+import net.tankers.client.analytics.TimePlayed;
 import net.tankers.main.screenControllers.MainScreenController;
 import net.tankers.main.screenControllers.RenderableScreenController;
 import org.lwjgl.LWJGLException;
@@ -46,7 +47,7 @@ public class Main {
     }
 	
 	public void start() {
-		Analytics.setGameStartTime(System.currentTimeMillis());
+		TimePlayed.setGameStartTime(System.currentTimeMillis());
         try {
             Display.setDisplayMode(new DisplayMode(1366,768));
             Display.create();
@@ -170,15 +171,16 @@ public class Main {
 	}
    
 	private static void shutdown(final LwjglInputSystem inputSystem) {
-		Analytics.setGameQuitTime(System.currentTimeMillis());
+		TimePlayed.setGameQuitTime(System.currentTimeMillis());
 	    inputSystem.shutdown();
 	    Display.destroy();
 	    
-	    Client.writeMessage("timeplayed;"+Analytics.getTimePlayed());
+	    Client.writeMessage("timeplayed;"+TimePlayed.getTimePlayed());
+	    Client.writeMessage("matchesplayed;"+MatchesPlayed.getMatchesPlayed());
 	    Client.stop();
 	    
 	    System.out.println("Played for " 
-	    		+ Analytics.getTimePlayed()
+	    		+ TimePlayed.getTimePlayed()
 	    		+ "s");
 	    System.exit(0);
 	  }
