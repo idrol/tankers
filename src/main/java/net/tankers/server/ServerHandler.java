@@ -213,6 +213,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         Player player = players.get(ctx.channel());
         entities.remove(player);
         players.remove(ctx.channel());
+        PlayerQueueHandler.removePlayer(player);
         broadCast(player.remove());
         ctx.close();
     }
