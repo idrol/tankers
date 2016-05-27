@@ -166,13 +166,17 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         
         Player player = players.get(ctx.channel());
         String credentialsStatus = userHandler.verifyRegistrationCredentials(username,password,verifyPassword);
-        player.write("notification;" + credentialsStatus);
-        
+
+        if(credentialsStatus.equalsIgnoreCase("Success"))
+            credentialsStatus = "Successfully registered user " + username;
+
         System.out.println("Registration notification: " + credentialsStatus);
         
         if(credentialsStatus.equalsIgnoreCase("Success")) {
         	userHandler.createNewUser(username, password);
         }
+
+        player.write("notification;" + credentialsStatus);
     }
     
     private void handleMatchFound() {

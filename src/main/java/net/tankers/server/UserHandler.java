@@ -145,7 +145,7 @@ public class UserHandler {
     	if(username.length() >= 4 && password.length() >= 4) {
     		if(!isDuplicateUser(username)) {
         		if(password.equals(verifyPassword)) {
-        			return "Successfully registered '" + username + "'";
+        			return "Success";
         		} else {
         			return "Passwords do not match";
         		}
