@@ -101,8 +101,6 @@ public class Client {
         	if(msg.split(";")[1].equals("1")) {
         		nifty.gotoScreen("lobby");
 
-                nifty.getCurrentScreen().findNiftyControl("username", Label.class).setText("Logged in as '" + username + "'");
-
             }
         } else if(msgType.equals("user_info")){
         	
