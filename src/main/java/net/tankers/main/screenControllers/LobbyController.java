@@ -3,6 +3,7 @@ package net.tankers.main.screenControllers;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ButtonClickedEvent;
+import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
 import net.tankers.client.Client;
@@ -17,6 +18,7 @@ public class LobbyController extends DefaultScreenController {
     @Override
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
+        nifty.getCurrentScreen().findNiftyControl("username", Label.class).setText(Client.username);
         System.out.println("Bind succesfull - LobbyController");
     }
 

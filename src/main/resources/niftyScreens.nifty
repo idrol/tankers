@@ -78,7 +78,7 @@
         <layer childLayout="center">
             <panel width="100%" height="100%" childLayout="center">
                 <panel width="200px" childLayout="vertical">
-                    <control name="label" text="" id="username"></control>
+                    <control name="label" text="username" id="username" color="#000000"></control>
                     <control name="label" text="" id="online-users"></control>
                     <control name="label" text="" id="played"></control>
                     <control name="label" text="" id="won"></control>
