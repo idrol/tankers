@@ -105,22 +105,26 @@ public class UserHandler {
 	private boolean validateUser(String username, String password) {
 		ResultSet resultSet;
 		String hashedPass;
+		Statement statement;
 		try {
-			Statement statement = connection.createStatement();
-			
+			statement = connection.createStatement();
+
 			String query = "SELECT password "
 					+ "FROM users "
 					+ "WHERE username='" + username + "'";
-			
+
 			resultSet = statement.executeQuery(query);
 			hashedPass = resultSet.getString("password");
-			
-			resultSet.close();
-			statement.close();
-			
-			if(BCrypt.checkpw(password, hashedPass))
+
+
+			if (BCrypt.checkpw(password, hashedPass)) {
+				resultSet.close();
+				statement.close();
 				return true;
-			
+			} else {
+				resultSet.close();
+				statement.close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
