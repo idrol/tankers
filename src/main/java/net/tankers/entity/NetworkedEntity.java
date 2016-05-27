@@ -2,6 +2,7 @@ package net.tankers.entity;
 
 import io.netty.channel.Channel;
 import net.tankers.client.Client;
+import net.tankers.server.Match;
 import net.tankers.server.Server;
 import net.tankers.utils.NetworkUtils;
 
@@ -51,14 +52,6 @@ public abstract class NetworkedEntity extends Entity {
     public abstract void decodeDataServer(String[] data);
 
     public abstract String[] encodeData(String variable);
-
-    public void update(float delta) {
-        if(isServer){
-            updateServer(delta);
-        }else{
-            updateClient(delta);
-        }
-    }
 
     public List<String> sync(){
         List<String> msg = new ArrayList<String>();

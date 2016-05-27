@@ -13,6 +13,7 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import net.tankers.client.analytics.MatchesPlayed;
+import net.tankers.entity.Entity;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
 import net.tankers.entity.Tank;
@@ -58,7 +59,9 @@ public class Client {
 
     public static void render() {
         for(HashMap<Integer, NetworkedEntity> map: entities.values()){
-            map.values().forEach(NetworkedEntity::render);
+            for(Entity entity: map.values()){
+                entity.render();
+            }
         }
     }
 

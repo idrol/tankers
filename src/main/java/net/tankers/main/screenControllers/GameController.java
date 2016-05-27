@@ -24,6 +24,7 @@ public class GameController extends RenderableScreenController {
 
     @Override
     public void render() {
+        Client.render();
         map.render();
     }
 

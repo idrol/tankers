@@ -2,6 +2,7 @@ package net.tankers.entity;
 
 import io.netty.channel.Channel;
 import net.tankers.client.Client;
+import net.tankers.server.Match;
 import net.tankers.server.Server;
 import net.tankers.utils.NetworkUtils;
 
@@ -13,6 +14,8 @@ import java.util.List;
 public class Player extends NetworkedEntity {
     public String username = "";
     private Channel channel;
+    public boolean isInMatch = false;
+    public Match match;
 
     public Player(Integer instanceID) {
         super(instanceID);

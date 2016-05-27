@@ -9,8 +9,7 @@ public class DefaultMap extends Map {
 
     @Override
     public void init() {
-        nonSyncedObjects.add(new Entity().setPos(100, 100).setSize(20, 20).setColor(1, 0, 0));
-        nonSyncedObjects.add(new Entity().setPos(400, 300).setSize(20, 20).setColor(1, 0, 0));
+
     }
 
 }

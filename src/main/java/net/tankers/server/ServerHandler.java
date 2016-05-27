@@ -72,79 +72,59 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        System.out.println(msg);
-        String message_name = "";
-        
-        try {
-        	message_name = constructValidMessage(msg);
-        } catch (InvalidClientMsgException e) {
-        	System.err.println("A client tried to send an invalid message " + msg);
-        }
-        
-        if(channelAuthenticated(ctx.channel())){
-            switch (message_name){
-                case "search_match":
-                	System.out.println("Case: search_match");
-                	PlayerQueueHandler.addPlayerToQueue(players.get(ctx.channel()));
-                	
-                	if(PlayerQueueHandler.size()>1) {
-                		handleMatchFound();
-                	}
-                	
-                	break;
-                case "route":
-                    String[] data = msg.split(";")[1].split(":");
-                    if(data[0].equals("match")){
-                        Match match = matches.get(Integer.parseInt(data[2]));
-                        Channel channel = ctx.channel();
-                        Player player = players.get(channel);
-                        // Make sure that only a player participating in a match exchanges data. Avoids some hacks
-                        if(MatchHandler.validateData(player, match)){
-                            MatchHandler.handleMessage(match, player, new String(Base64.getDecoder().decode(data[2].getBytes())));
+        Player player = players.get(ctx.channel());
+        if(player != null && player.isInMatch){
+            player.match.receivedMessage(msg, player);
+        }else {
+            String message_name = "";
+
+            try {
+                message_name = NetworkUtils.constructValidMessage(msg)[0];
+            } catch (InvalidClientMsgException e) {
+                System.err.println("A client tried to send an invalid message " + msg);
+            }
+
+            if(channelAuthenticated(ctx.channel())){
+                switch (message_name){
+                    case "search_match":
+                        System.out.println("Case: search_match");
+                        PlayerQueueHandler.addPlayerToQueue(players.get(ctx.channel()));
+
+                        if(PlayerQueueHandler.size()>1) {
+                            handleMatchFound();
                         }
-                    }
-                    break;
-            }
-            
-        }else{
-        	System.out.println("Message name: " + message_name);
-            if(message_name.equals("login")){
-                performLogin(msg, ctx);
-                
-            } else if(message_name.equals("register")) {
-            	try {
-            		performRegistration(msg, ctx); 
-            	} catch (ArrayIndexOutOfBoundsException e) {
-            		
-            		//In case username or password(s) are blank
-            		ctx.writeAndFlush("notification;Please fill in all the fields" + NetworkUtils.ENDING);
-            	}
-            } else if(message_name.equals("timeplayed")) {
-            	try {
-            		analyticsHandler.insertSessionTime(msg.split(";")[1].split(":")[0]);
-            	} catch (ArrayIndexOutOfBoundsException e) {
-            		e.printStackTrace();
-            	}
-            } else if(message_name.equals("matchesplayed")) {
-            	try {
-            		analyticsHandler.insertSessionPlayedMatches(msg.split(";")[1].split(":")[0]);
-            	} catch (ArrayIndexOutOfBoundsException e) {
-            		e.printStackTrace();
-            	}
-            } else {
-            	System.out.println("Unauthenticated channel tried message: " + msg);
-            }
-        }
-    }
-    
-    private String constructValidMessage(String msg) throws InvalidClientMsgException {
-    	if(msg.contains(";")){
-            return msg.split(";")[0];
-        }else{
-            if(!msg.contains(":")){
-                return msg;
+
+                        break;
+                }
+
             }else{
-                throw new InvalidClientMsgException();
+                System.out.println("Message name: " + message_name);
+                if(message_name.equals("login")){
+                    performLogin(msg, ctx);
+
+                } else if(message_name.equals("register")) {
+                    try {
+                        performRegistration(msg, ctx);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+
+                        //In case username or password(s) are blank
+                        ctx.writeAndFlush("notification;Please fill in all the fields" + NetworkUtils.ENDING);
+                    }
+                } else if(message_name.equals("timeplayed")) {
+                    try {
+                        analyticsHandler.insertSessionTime(msg.split(";")[1].split(":")[0]);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
+                } else if(message_name.equals("matchesplayed")) {
+                    try {
+                        analyticsHandler.insertSessionPlayedMatches(msg.split(";")[1].split(":")[0]);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Unauthenticated channel tried message: " + msg);
+                }
             }
         }
     }
@@ -198,7 +178,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     private void handleMatchFound() {
     	Player player1 = PlayerQueueHandler.pollPlayer();
     	Player player2 = PlayerQueueHandler.pollPlayer();
+        player1.isInMatch = true;
+        player2.isInMatch = true;
         Match match = new Match(player1, player2, server);
+        player1.match = match;
+        player2.match = match;
 		matches.add(match);
         match.init();
         match.broadCast("match_id;" + matches.indexOf(match));

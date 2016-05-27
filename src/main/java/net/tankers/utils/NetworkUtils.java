@@ -1,6 +1,7 @@
 package net.tankers.utils;
 
 import net.tankers.entity.NetworkedEntity;
+import net.tankers.exceptions.InvalidClientMsgException;
 
 /**
  * Created by idrol on 18-04-2016.
@@ -26,4 +27,15 @@ public final class NetworkUtils {
         return base;
     }
 
+    public static String[] constructValidMessage(String msg) throws InvalidClientMsgException {
+        if(msg.contains(";")){
+            return msg.split(";");
+        }else{
+            if(!msg.contains(":")){
+                return new String[] {msg};
+            }else{
+                throw new InvalidClientMsgException();
+            }
+        }
+    }
 }

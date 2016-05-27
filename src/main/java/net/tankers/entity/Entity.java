@@ -7,9 +7,9 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Entity {
 
-    private int x, y;
-    private int sizeX, sizeY;
-    private float r = 0, g = 0, b = 0;
+    protected int x, y;
+    protected int sizeX, sizeY;
+    private float r = 1f, g = 0, b = 0;
 
     public Entity setPos(int x, int y) {
         this.x = x;
@@ -31,6 +31,7 @@ public class Entity {
     }
 
     public void render() {
+        //System.out.println("Entity def render" + x + ", " + y + ", " + sizeX + ", " + sizeY);
         glPushMatrix();
             glBegin(GL_QUADS);
                 glColor3f(r, g, b);

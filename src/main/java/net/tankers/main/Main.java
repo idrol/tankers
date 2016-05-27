@@ -23,7 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
  
 public class Main {
-	private static final boolean DEBUG_GAME = false;
+	private static final boolean DEBUG_GAME = true;
 	public static String pathPrefix = "";
     private static String intellijResourcePrefix = "build/";
     private static String eclipseResourcePrefix = "bin/";
@@ -69,7 +69,7 @@ public class Main {
 		if(DEBUG_GAME){
 			Client.setHost("localhost");
 	    	Client.run();
-			Client.loginUser("abcd", "abcd");
+			Client.loginUser("idrol", "pass");
 			try {
 				Thread.sleep(200);
 				Client.writeMessage("search_match");
