@@ -104,28 +104,31 @@ public class UserHandler {
 	
 	private boolean validateUser(String username, String password) {
 		ResultSet resultSet;
-		String hashedPass = "";
+		String hashedPass = null;
 		Statement statement;
 		try {
 			statement = connection.createStatement();
 
-			String query = "SELECT password "
+			String query = "SELECT * "
 					+ "FROM users "
 					+ "WHERE username='" + username + "'";
 
 			resultSet = statement.executeQuery(query);
+			
 			while (resultSet.next()) {
 				hashedPass = resultSet.getString("password");
 			}
-
-			if (BCrypt.checkpw(password, hashedPass)) {
-				resultSet.close();
-				statement.close();
-				return true;
-			} else {
-				resultSet.close();
-				statement.close();
+			
+			resultSet.close();
+			statement.close();
+			System.out.println("Username: " + username + "HashedPass: " + hashedPass);
+			
+			if (hashedPass != null) {
+				if (BCrypt.checkpw(password, hashedPass)) {
+					return true;
+				}
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
