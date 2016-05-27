@@ -104,7 +104,7 @@ public class UserHandler {
 	
 	private boolean validateUser(String username, String password) {
 		ResultSet resultSet;
-		String hashedPass;
+		String hashedPass = "";
 		Statement statement;
 		try {
 			statement = connection.createStatement();
@@ -114,8 +114,9 @@ public class UserHandler {
 					+ "WHERE username='" + username + "'";
 
 			resultSet = statement.executeQuery(query);
-			hashedPass = resultSet.getString("password");
-
+			while (resultSet.next()) {
+				hashedPass = resultSet.getString("password");
+			}
 
 			if (BCrypt.checkpw(password, hashedPass)) {
 				resultSet.close();
