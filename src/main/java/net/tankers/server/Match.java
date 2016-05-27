@@ -107,6 +107,11 @@ public class Match extends Thread{
         }
     }
 
+    // This player won the game
+    public void endGame(Player winner, Player loser) {
+
+    }
+
     public void update() {
         float delta = getDelta();
         tank1.updateServer(delta);
