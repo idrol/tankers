@@ -27,5 +27,6 @@ public class PlayerQueueHandler {
 
 	public static void removePlayer(Player player) {
 		playerQueue.remove(player);
+		System.out.println("Player " + player.username + " removed from queue");
 	}
 }

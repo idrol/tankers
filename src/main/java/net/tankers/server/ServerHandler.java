@@ -218,8 +218,15 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
         Player player = players.get(ctx.channel());
         entities.remove(player);
         players.remove(ctx.channel());
-        PlayerQueueHandler.removePlayer(player);
         broadCast(player.remove());
         ctx.close();
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        Player player = players.get(ctx.channel());
+        PlayerQueueHandler.removePlayer(player);
+        System.out.println("Removed player " + player.username + " from match-queue, channel '" + ctx.channel() + "'");
+        ctx.fireChannelInactive();
     }
 }
