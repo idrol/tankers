@@ -109,7 +109,7 @@ public class Client {
         } else if(msgType.equals("match_found")) {
         	matchFound(msg);
         } else if(msgType.equals("match_result")) {
-            nifty.gotoScreen("lobby");
+            matchEnded(msg);
         }
     }
 
@@ -189,6 +189,27 @@ public class Client {
     	nifty.gotoScreen("game");
     	MatchesPlayed.incrementMatchesPlayed();
     }
+
+    private static void matchEnded(String msg) {
+        String result = msg.split(":")[0];
+        int reason = Integer.parseInt(msg.split(":")[1]);
+        String textToShow;
+
+        if(result.equals("won")) {
+            textToShow = "You won the match";
+        } else {
+            textToShow = "You lost the match";
+        }
+
+        if(reason == 1) {
+            textToShow += "!";
+        } else {
+            textToShow += " due to forfeit";
+        }
+
+        nifty.getScreen("lobby").findNiftyControl("notification", Label.class).setText(msg);
+        nifty.gotoScreen("lobby");
+    }
     
     public static void stop() {
         group.shutdownGracefully();
@@ -200,5 +221,4 @@ public class Client {
     	else
     		System.err.println("Failed to write message to server: Not connected to server");
     }
-
 }
