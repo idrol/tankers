@@ -40,6 +40,7 @@ public class Client {
     private static Nifty nifty;
 
     public static String username;
+    public static String currentNotification;
     
     public static void init(Nifty nifty) {
     	Client.nifty = nifty;
@@ -190,7 +191,7 @@ public class Client {
     	MatchesPlayed.incrementMatchesPlayed();
     }
 
-    private static void matchEnded(String msg) {
+    public static void matchEnded(String msg) {
         String result = msg.split(":")[0];
         int reason = Integer.parseInt(msg.split(":")[1]);
         String textToShow;
@@ -207,7 +208,7 @@ public class Client {
             textToShow += " due to forfeit";
         }
 
-        nifty.getScreen("lobby").findNiftyControl("notification", Label.class).setText(msg);
+        currentNotification = textToShow;
         nifty.gotoScreen("lobby");
     }
     
