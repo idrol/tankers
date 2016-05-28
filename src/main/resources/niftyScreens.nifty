@@ -110,9 +110,9 @@
         <layer childLayout="center">
             <panel childLayout="center">
                 <panel width="200px" childLayout="vertical">
-                    <control width="500px" name="label" id="notification" text="" color="#000000"></control>
+                    <control width="500px" name="label" id="notification" text="" color="#FFFFFF"></control>
                     <panel childLayout="horizontal">
-                        <control margin="5px" name="button" label="Go back to lobby" id="backtolobby" align="center" valign="center"></control>
+                        <control margin="5px" name="button" label="Go back to lobby" id="backtolobby" align="center" valign="center" visible="false"></control>
                     </panel>
                 </panel>
             </panel>

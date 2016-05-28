@@ -41,6 +41,7 @@ public class Client {
 
     public static String username;
     public static String currentNotification;
+    public static Boolean renderResult = false;
     
     public static void init(Nifty nifty) {
     	Client.nifty = nifty;
@@ -202,7 +203,7 @@ public class Client {
         }
 
         currentNotification = textToShow;
-        nifty.gotoScreen("lobby");
+        renderResult = true;
     }
     
     public static void stop() {

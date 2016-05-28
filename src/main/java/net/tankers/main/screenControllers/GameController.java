@@ -16,17 +16,24 @@ import org.lwjgl.input.Keyboard;
 public class GameController extends RenderableScreenController {
     private Nifty nifty;
     private Map map;
+    private Screen screen = null;
+
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
+        this.screen = screen;
         map = new DefaultMap();
         map.init();
     }
 
     @Override
     public void render() {
-        nifty.getCurrentScreen().findNiftyControl("notification", Label.class).setText(Client.currentNotification);
+        if(Client.renderResult) {
+            screen.findNiftyControl("notification", Label.class).setText(Client.currentNotification);
+            screen.findElementById("backtolobby").setVisible(true);
+        }
+
         Client.render();
         map.render();
     }
@@ -39,6 +46,7 @@ public class GameController extends RenderableScreenController {
     @NiftyEventSubscriber(id="backtolobby")
     public void logout(final String id, final ButtonClickedEvent event) {
         Client.currentNotification = "";
+        screen.findElementById("backtolobby").setVisible(false);
         nifty.gotoScreen("lobby");
     }
 }
