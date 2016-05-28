@@ -162,12 +162,6 @@ public class Client {
     }
     
     private static void decodeNotification(String msg) {
-    	try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-    	
     	String notification = msg.split(";")[1];
     	Screen screen = nifty.getCurrentScreen();
     	Label notificationLabel = screen.findNiftyControl("notification", Label.class);

@@ -24,6 +24,7 @@ public class Login extends DefaultScreenController {
 
     @NiftyEventSubscriber(id="back")
     public void back(final String id, final ButtonClickedEvent event) {
+
         nifty.gotoScreen("start");
     }
 

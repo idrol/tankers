@@ -85,7 +85,7 @@
                     <control name="label" text="" id="won"></control>
                     <panel childLayout="horizontal">
                         <control margin="5px" name="button" id="search-match" label="Search game" align="center" valign="center"></control>
-                        <control margin="5px" name="button" label="Back" id="back" align="center" valign="center"></control>
+                        <control margin="5px" name="button" label="Log out" id="logout" align="center" valign="center"></control>
                     </panel>
                 </panel>
             </panel>
@@ -107,7 +107,16 @@
     </screen>
     
     <screen id="game" controller="net.tankers.main.screenControllers.GameController">
-
+        <layer childLayout="center">
+            <panel childLayout="center">
+                <panel width="200px" childLayout="vertical">
+                    <control width="500px" name="label" id="notification" text="" color="#000000"></control>
+                    <panel childLayout="horizontal">
+                        <control margin="5px" name="button" label="Go back to lobby" id="backtolobby" align="center" valign="center"></control>
+                    </panel>
+                </panel>
+            </panel>
+        </layer>
     </screen>
     
     <screen id="lostconnection" controller="net.tankers.main.screenControllers.LostConController">

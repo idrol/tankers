@@ -19,7 +19,6 @@ public class LobbyController extends DefaultScreenController {
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         nifty.getCurrentScreen().findNiftyControl("username", Label.class).setText(Client.username);
-        nifty.getCurrentScreen().findNiftyControl("notification", Label.class).setText(Client.currentNotification);
         System.out.println("Bind succesfull - LobbyController");
     }
 
@@ -28,5 +27,10 @@ public class LobbyController extends DefaultScreenController {
         nifty.getCurrentScreen().findNiftyControl("notification", Label.class).setText("");
     	Client.writeMessage("search_match");
         nifty.gotoScreen("search");
+    }
+
+    @NiftyEventSubscriber(id="logout")
+    public void logout(final String id, final ButtonClickedEvent event) {
+        nifty.gotoScreen("start");
     }
 }
