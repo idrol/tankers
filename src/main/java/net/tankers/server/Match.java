@@ -4,18 +4,28 @@ import net.tankers.entity.Player;
 import net.tankers.entity.Tank;
 import net.tankers.exceptions.InvalidClientMsgException;
 import net.tankers.utils.NetworkUtils;
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.*;
 import org.lwjgl.Sys;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by idrol on 20-04-2016.
+ *
+ * 1 meter = 30 pixels
+ *
  */
 public class Match extends Thread{
     public static final int WON = 1;
     public static final int FORFEIT = 2;
+
+    public static final int PIXELS_PER_METER = 30;
 
     private Player player1;
     private Player player2;
@@ -26,10 +36,14 @@ public class Match extends Thread{
     private Tank tank1, tank2;
     private long lastFrame;
 
+    private World world = new World(new Vec2(0, 0));
+    private Set<Body> bodies = new HashSet<>();
+
     public Match(Player player1, Player player2, Server server){
         this.player1 = player1;
         this.player2 = player2;
         this.server = server;
+        world.setAllowSleep(true);
     }
 
     public boolean hasPlayer(Player player) {
@@ -95,6 +109,19 @@ public class Match extends Thread{
         broadCast("notification;Match found!");
         player1.write("match_found;"+player2.username);
         player2.write("match_found;"+player1.username);
+        setupObjects();
+    }
+
+    public static float toMeters(float pixels) {
+        return pixels/PIXELS_PER_METER;
+    }
+
+    public static float toPixels(float meters) {
+        return meters * PIXELS_PER_METER;
+    }
+
+    public void setupObjects() {
+
     }
 
     @Override
@@ -102,6 +129,8 @@ public class Match extends Thread{
         broadCast("match_map;default");
         tank1 = new Tank(server, this, player1, 100, 100);
         tank2 = new Tank(server, this, player2, 200, 100);
+        tank1.setup(world, bodies);
+        tank2.setup(world, bodies);
         broadCast(tank1.sync());
         broadCast(tank2.sync());
         lastFrame = getTime();
@@ -123,7 +152,7 @@ public class Match extends Thread{
 
     public void update() {
         float delta = getDelta();
-
+        world.step(1f/60f, 8, 3);
         tank1.updateServer(delta);
         tank2.updateServer(delta);
         String message;
@@ -136,7 +165,6 @@ public class Match extends Thread{
             processMessage(message, player2);
         }
 
-        System.out.println(delta);
         long timeToSleep = (long)16.6666667 - (getTime() - lastFrame);
         if(timeToSleep < 0) timeToSleep = 0;
         try {
