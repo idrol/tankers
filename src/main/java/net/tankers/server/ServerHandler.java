@@ -217,8 +217,14 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Player player = players.get(ctx.channel());
-        PlayerQueueHandler.removePlayer(player);
-        System.out.println("Removed player " + player.username + " from match-queue, channel '" + ctx.channel() + "'");
+        if(player.isInMatch){
+            System.out.println("player " + player.username + " was in match notifying of forfeit.");
+            Player winner = player.match.getOtherPlayer(player);
+            player.match.endGame(winner, player, Match.FORFEIT);
+        }else{
+            PlayerQueueHandler.removePlayer(player);
+            System.out.println("Removed player " + player.username + " from match-queue, channel '" + ctx.channel() + "'");
+        }
         ctx.fireChannelInactive();
     }
 }

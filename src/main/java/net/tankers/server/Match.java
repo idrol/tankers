@@ -14,6 +14,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Created by idrol on 20-04-2016.
  */
 public class Match extends Thread{
+    public static final int WON = 1;
+    public static final int FORFEIT = 2;
+
     private Player player1;
     private Player player2;
     private Server server;
@@ -108,12 +111,17 @@ public class Match extends Thread{
     }
 
     // This player won the game
-    public void endGame(Player winner, Player loser) {
-
+    public void endGame(Player winner, Player loser, int reason) {
+        playerWon = true;
+        player1.isInMatch = false;
+        player2.isInMatch = false;
+        player1.match = null;
+        player2.match = null;
     }
 
     public void update() {
         float delta = getDelta();
+
         tank1.updateServer(delta);
         tank2.updateServer(delta);
         String message;
@@ -125,13 +133,22 @@ public class Match extends Thread{
             message = player2Queue.poll();
             processMessage(message, player2);
         }
+
         System.out.println(delta);
-        long timeToSleep = (long)16.6666667 - (long)delta;
+        long timeToSleep = (long)16.6666667 - (getTime() - lastFrame);
         if(timeToSleep < 0) timeToSleep = 0;
         try {
             Thread.sleep(timeToSleep);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public Player getOtherPlayer(Player player) {
+        if(player1 == player) {
+            return player2;
+        }else{
+            return player1;
         }
     }
 }

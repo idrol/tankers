@@ -16,10 +16,10 @@ public class Tank extends NetworkedEntity {
 
     private Player player;
     private Match match;
-    boolean moveForward = false;
-    boolean moveBackward = false;
-    boolean rotateLeft = false;
-    boolean rotateRight = false;
+    private boolean moveForward = false;
+    private boolean moveBackward = false;
+    private boolean rotateLeft = false;
+    private boolean rotateRight = false;
 
     public Tank(Integer instanceID) {
         super(instanceID);
