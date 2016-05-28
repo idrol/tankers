@@ -100,7 +100,6 @@ public class Client {
         } else if (msgType.equals("login_status")) {
         	if(msg.split(";")[1].equals("1")) {
         		nifty.gotoScreen("lobby");
-
             }
         } else if(msgType.equals("user_info")){
         	
@@ -109,6 +108,8 @@ public class Client {
         	decodeNotification(msg);
         } else if(msgType.equals("match_found")) {
         	matchFound(msg);
+        } else if(msgType.equals("match_result")) {
+            nifty.gotoScreen("lobby");
         }
     }
 
