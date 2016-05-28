@@ -103,23 +103,19 @@ public class Tank extends NetworkedEntity {
         float speed = 0.5f;
         if(moveForward != moveBackward) {
             if(moveForward) {
-                xVel -= speed * Math.sin(Math.toDegrees(body.getAngle()));
-                yVel -= speed * Math.cos(Math.toDegrees(body.getAngle()));
-                //setPos(x, y - (int)(0.25f*delta));
+                xVel = (float)(speed * Math.sin(body.getAngle()));
+                yVel = -(float)(speed * Math.cos(body.getAngle()));
             }else {
-                xVel += speed * Math.sin(Math.toDegrees(body.getAngle()));
-                yVel += speed * Math.cos(Math.toDegrees(body.getAngle()));
-                //setPos(x, y + (int) (0.25f * delta));
+                xVel = -(float)(speed * Math.sin(body.getAngle()));
+                yVel = (float)(speed * Math.cos(body.getAngle()));
             }
         }
         float angularVel = 0;
         if(rotateLeft != rotateRight) {
             if(rotateLeft) {
                 angularVel = 0.5f;
-                //setPos(x - (int)(0.25f*delta), y);
             }else{
                 angularVel = -0.5f;
-                //setPos(x + (int)(0.25f*delta), y);
             }
         }
         body.setAngularVelocity(angularVel);
