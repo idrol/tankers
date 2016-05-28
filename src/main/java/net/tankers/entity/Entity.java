@@ -1,5 +1,11 @@
 package net.tankers.entity;
 
+import net.tankers.server.Match;
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.dynamics.*;
+
+import java.util.Set;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -8,9 +14,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class Entity {
 
     protected int x, y;
-    protected float rotZ = 0.5f;
+    protected int rotZ = 0;
     protected int sizeX, sizeY;
     private float r = 1f, g = 0, b = 0;
+    protected Body body;
 
     public Entity setPos(int x, int y) {
         this.x = x;
@@ -24,6 +31,11 @@ public class Entity {
         return this;
     }
 
+    public Entity setRot(int z) {
+        rotZ = z;
+        return this;
+    }
+
     public Entity setColor(float r, float g, float b) {
         this.r = r;
         this.g = g;
@@ -31,17 +43,32 @@ public class Entity {
         return this;
     }
 
+    public void setup(World world, Set<Body> bodies) {
+        BodyDef boxDef = new BodyDef();
+        boxDef.position.set(Match.toMeters(x), Match.toMeters(y));
+        boxDef.type = BodyType.DYNAMIC;
+        PolygonShape boxShape = new PolygonShape();
+        boxShape.setAsBox(Match.toMeters(sizeX)/2, Match.toMeters(sizeY)/2);
+        Body box = world.createBody(boxDef);
+        FixtureDef boxFixture = new FixtureDef();
+        boxFixture.density = 1f;
+        boxFixture.shape = boxShape;
+        box.createFixture(boxFixture);
+        body = box;
+        bodies.add(box);
+    }
+
     public void render() {
         //System.out.println("Entity def render" + x + ", " + y + ", " + sizeX + ", " + sizeY);
         glPushMatrix();
             glTranslatef(x, y, 0);
+            glRotatef(rotZ, 0, 0, 1);
             glBegin(GL_QUADS);
                 glColor3f(r, g, b);
-                glRotatef(rotZ, 0, 0, 1);
-                glVertex2i(0, 0);
-                glVertex2i(0, sizeY);
-                glVertex2i(sizeX, sizeY);
-                glVertex2i(sizeX, 0);
+                glVertex2i(-sizeX/2, -sizeY/2);
+                glVertex2i(-sizeX/2, sizeY/2);
+                glVertex2i(sizeX/2, sizeY/2);
+                glVertex2i(sizeX/2, -sizeY/2);
             glEnd();
         glPopMatrix();
     }

@@ -79,7 +79,6 @@ public class Client {
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new ClientInitializer(sslCtx));
             channel = bootstrap.connect(host, port).sync().channel();
-            System.out.println("got to end");
         } catch (InterruptedException | SSLException e) {
             e.printStackTrace();
         }
@@ -190,7 +189,8 @@ public class Client {
     }
     
     public static void stop() {
-        group.shutdownGracefully();
+        if(group != null)
+            group.shutdownGracefully();
     }
 
     public static void writeMessage(String message) {

@@ -5,7 +5,9 @@ import net.tankers.client.Client;
 import net.tankers.server.Match;
 import net.tankers.server.Server;
 import net.tankers.utils.NetworkUtils;
+import org.jbox2d.common.Vec2;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.util.List;
 
@@ -46,6 +48,8 @@ public class Tank extends NetworkedEntity {
             sizeX = Integer.parseInt(data[1]);
         }else if(data[0].equals("sizeY")){
             sizeY = Integer.parseInt(data[1]);
+        }else if(data[0].equals("rotZ")) {
+            rotZ = Integer.parseInt(data[1]);
         }
     }
 
@@ -66,6 +70,13 @@ public class Tank extends NetworkedEntity {
     }
 
     @Override
+    public Entity setRot(int z) {
+        super.setRot(z);
+        match.broadCast(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "rotZ:" + rotZ);
+        return this;
+    }
+
+    @Override
     public void decodeDataServer(String[] data) {
 
     }
@@ -81,25 +92,42 @@ public class Tank extends NetworkedEntity {
         msg.add(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "posY:" + y);
         msg.add(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "sizeX:" + sizeX);
         msg.add(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "sizeY:" + sizeY);
+        msg.add(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "rotZ:" + rotZ);
         return msg;
     }
 
     @Override
     public void updateServer(float delta) {
+        float xVel = 0;
+        float yVel = 0;
+        float speed = 0.5f;
         if(moveForward != moveBackward) {
             if(moveForward) {
-                setPos(x, y - (int)(0.25f*delta));
+                xVel -= speed * Math.sin(Math.toDegrees(body.getAngle()));
+                yVel -= speed * Math.cos(Math.toDegrees(body.getAngle()));
+                //setPos(x, y - (int)(0.25f*delta));
             }else {
-                setPos(x, y + (int) (0.25f * delta));
+                xVel += speed * Math.sin(Math.toDegrees(body.getAngle()));
+                yVel += speed * Math.cos(Math.toDegrees(body.getAngle()));
+                //setPos(x, y + (int) (0.25f * delta));
             }
         }
+        float angularVel = 0;
         if(rotateLeft != rotateRight) {
             if(rotateLeft) {
-                setPos(x - (int)(0.25f*delta), y);
+                angularVel = 0.5f;
+                //setPos(x - (int)(0.25f*delta), y);
             }else{
-                setPos(x + (int)(0.25f*delta), y);
+                angularVel = -0.5f;
+                //setPos(x + (int)(0.25f*delta), y);
             }
         }
+        body.setAngularVelocity(angularVel);
+        body.setLinearVelocity(new Vec2(xVel, yVel));
+
+        Vec2 position = body.getPosition().mul(Match.PIXELS_PER_METER);
+        setPos((int)position.x, (int)position.y);
+        setRot((int)Math.toDegrees(body.getAngle()));
     }
 
     @Override
@@ -129,12 +157,15 @@ public class Tank extends NetworkedEntity {
                 }else{
                     Client.writeMessage("key_released;key_d");
                 }
+            }else if(Keyboard.getEventKey() == Keyboard.KEY_SPACE){
+                if(Keyboard.getEventKeyState()) {
+                    Client.writeMessage("fire_em;all");
+                }
             }
         }
     }
 
     public void pressed(String key) {
-        System.out.println("Press");
         switch (key) {
             case "key_w":
                 moveForward = true;
