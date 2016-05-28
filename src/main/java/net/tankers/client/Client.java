@@ -172,22 +172,14 @@ public class Client {
     
     private static void matchFound(String msg) {
     	String opponent = msg.split(";")[1];
-    	System.out.println("Match found: " + opponent);
-    	
-    	try {
-    		//Just to make the matchmaking "cooler"
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} 
-    	
     	nifty.gotoScreen("game");
     	MatchesPlayed.incrementMatchesPlayed();
     }
 
     public static void matchEnded(String msg) {
-        String result = msg.split(":")[0];
-        int reason = Integer.parseInt(msg.split(":")[1]);
+        String arguments = msg.split(";")[1];
+        String result = arguments.split(":")[0];
+        int reason = Integer.parseInt(arguments.split(":")[1]);
         String textToShow;
 
         if(result.equals("won")) {
@@ -201,7 +193,7 @@ public class Client {
         } else {
             textToShow += " due to forfeit";
         }
-
+        System.out.println(msg);
         currentNotification = textToShow;
         renderResult = true;
     }

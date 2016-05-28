@@ -106,7 +106,6 @@ public class Match extends Thread{
     }
 
     public void init() {
-        broadCast("notification;Match found!");
         player1.write("match_found;"+player2.username);
         player2.write("match_found;"+player1.username);
         setupObjects();
