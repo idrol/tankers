@@ -40,6 +40,7 @@ public class Client {
     private static Nifty nifty;
 
     public static String username;
+    public static String currentNotification;
     
     public static void init(Nifty nifty) {
     	Client.nifty = nifty;
@@ -99,7 +100,6 @@ public class Client {
         } else if (msgType.equals("login_status")) {
         	if(msg.split(";")[1].equals("1")) {
         		nifty.gotoScreen("lobby");
-
             }
         } else if(msgType.equals("user_info")){
         	
@@ -108,6 +108,8 @@ public class Client {
         	decodeNotification(msg);
         } else if(msgType.equals("match_found")) {
         	matchFound(msg);
+        } else if(msgType.equals("match_result")) {
+            matchEnded(msg);
         }
     }
 
@@ -187,6 +189,27 @@ public class Client {
     	nifty.gotoScreen("game");
     	MatchesPlayed.incrementMatchesPlayed();
     }
+
+    public static void matchEnded(String msg) {
+        String result = msg.split(":")[0];
+        int reason = Integer.parseInt(msg.split(":")[1]);
+        String textToShow;
+
+        if(result.equals("won")) {
+            textToShow = "You won the match";
+        } else {
+            textToShow = "You lost the match";
+        }
+
+        if(reason == 1) {
+            textToShow += "!";
+        } else {
+            textToShow += " due to forfeit";
+        }
+
+        currentNotification = textToShow;
+        nifty.gotoScreen("lobby");
+    }
     
     public static void stop() {
         if(group != null)
@@ -199,5 +222,4 @@ public class Client {
     	else
     		System.err.println("Failed to write message to server: Not connected to server");
     }
-
 }

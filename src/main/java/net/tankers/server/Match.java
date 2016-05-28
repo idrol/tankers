@@ -146,6 +146,8 @@ public class Match extends Thread{
         player2.isInMatch = false;
         player1.match = null;
         player2.match = null;
+        winner.write("match_result;won:" + reason);
+        loser.write("match_result;lost:" + reason);
     }
 
     public void update() {
