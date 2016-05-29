@@ -38,6 +38,7 @@ public class Client {
 
     public static String username;
     public static String currentNotification;
+    public static Boolean renderResult = false;
     
     public static void init(Nifty nifty) {
     	Client.nifty = nifty;
@@ -159,12 +160,6 @@ public class Client {
     }
     
     private static void decodeNotification(String msg) {
-    	try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-    	
     	String notification = msg.split(";")[1];
     	Screen screen = nifty.getCurrentScreen();
     	Label notificationLabel = screen.findNiftyControl("notification", Label.class);
@@ -175,22 +170,16 @@ public class Client {
     
     private static void matchFound(String msg) {
     	String opponent = msg.split(";")[1];
-    	System.out.println("Match found: " + opponent);
-    	
-    	try {
-    		//Just to make the matchmaking "cooler"
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} 
-    	
-    	nifty.gotoScreen("game");
+        nifty.getScreen("lobby").findNiftyControl("gamesearchlabel", Label.class).setText("");
+        System.out.println("Match found against: " + opponent);
+        nifty.gotoScreen("game");
     	MatchesPlayed.incrementMatchesPlayed();
     }
 
     public static void matchEnded(String msg) {
-        String result = msg.split(":")[0];
-        int reason = Integer.parseInt(msg.split(":")[1]);
+        String arguments = msg.split(";")[1];
+        String result = arguments.split(":")[0];
+        int reason = Integer.parseInt(arguments.split(":")[1]);
         String textToShow;
 
         if(result.equals("won")) {
@@ -204,9 +193,9 @@ public class Client {
         } else {
             textToShow += " due to forfeit";
         }
-
+        System.out.println(msg);
         currentNotification = textToShow;
-        nifty.gotoScreen("lobby");
+        renderResult = true;
     }
     
     public static void stop() {

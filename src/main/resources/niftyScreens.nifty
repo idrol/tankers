@@ -78,6 +78,7 @@
         <layer childLayout="center">
             <panel width="100%" height="100%" childLayout="center">
                 <panel width="200px" childLayout="vertical">
+                    <control width="500px" name="label" id="gamesearchlabel" text="" color="#000000"></control>
                     <control width="500px" name="label" id="notification" text="" color="#000000"></control>
                     <control name="label" text="username" id="username" color="#000000"></control>
                     <control name="label" text="" id="online-users"></control>
@@ -85,29 +86,20 @@
                     <control name="label" text="" id="won"></control>
                     <panel childLayout="horizontal">
                         <control margin="5px" name="button" id="search-match" label="Search game" align="center" valign="center"></control>
-                        <control margin="5px" name="button" label="Back" id="back" align="center" valign="center"></control>
+                        <control margin="5px" name="button" label="Log out" id="logout" align="center" valign="center"></control>
                     </panel>
                 </panel>
             </panel>
         </layer>
     </screen>
     
-    <screen id="search" controller="net.tankers.main.screenControllers.SearchController">
-    	<layer id="background" childLayout="center">
-      		<image filename="tankersbg.jpg"></image>
-    	</layer>
+    <screen id="game" controller="net.tankers.main.screenControllers.GameController">
         <layer childLayout="center">
-            <panel width="100%" height="100%" childLayout="center">
-                <panel width="100%" childLayout="vertical">
-                	<control width="500px" name="label" id="notification" text="" color="#000000"></control>
-                    <control name="label" text="Searching.." id="status" color="#000000"></control>
-                </panel>
+            <panel childLayout="vertical">
+                <control width="500px" name="label" id="notification" text="" color="#FFFFFF"></control>
+                <control margin="5px" name="button" label="Go back to lobby" id="backtolobby" align="center" valign="center" visible="false"></control>
             </panel>
         </layer>
-    </screen>
-    
-    <screen id="game" controller="net.tankers.main.screenControllers.GameController">
-
     </screen>
     
     <screen id="lostconnection" controller="net.tankers.main.screenControllers.LostConController">
