@@ -1,5 +1,6 @@
 package net.tankers.entity;
 
+import net.tankers.server.EntityUserData;
 import net.tankers.server.Match;
 import net.tankers.server.Server;
 import net.tankers.utils.NetworkUtils;
@@ -14,9 +15,9 @@ import java.util.Set;
  * Created by local-admin on 28-05-2016.
  */
 public class Shell extends NetworkedEntity {
-
     private Match match;
     private Player player;
+    public boolean shouldDie = false;
 
     public Shell(Integer instanceID) {
         super(instanceID);
@@ -30,6 +31,10 @@ public class Shell extends NetworkedEntity {
         sizeY = 10;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     public void setup(World world, Set<Body> bodies, int angle, Vec2 vel) {
         BodyDef boxDef = new BodyDef();
         boxDef.position.set(Match.toMeters(x), Match.toMeters(y));
@@ -41,6 +46,9 @@ public class Shell extends NetworkedEntity {
         FixtureDef boxFixture = new FixtureDef();
         boxFixture.density = 1f;
         boxFixture.shape = boxShape;
+        EntityUserData entityUserData = new EntityUserData(this);
+        entityUserData.sensor_id = Entity.SHELL_SENSOR;
+        boxFixture.userData = entityUserData;
         box.createFixture(boxFixture);
         body = box;
         body.setLinearVelocity(vel);
@@ -61,6 +69,13 @@ public class Shell extends NetworkedEntity {
         match.broadCast(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "posX:" + x);
         match.broadCast(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "posY:" + y);
         return this;
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        match.broadCast(NetworkUtils.encodeBase(this, NetworkUtils.DELETE));
+        match.removeShell(this);
     }
 
     @Override
@@ -111,6 +126,7 @@ public class Shell extends NetworkedEntity {
         Vec2 position = body.getPosition().mul(Match.PIXELS_PER_METER);
         setPos((int)position.x, (int)position.y);
         setRot((int)Math.toDegrees(body.getAngle()));
+        if(shouldDie) destroy();
     }
 
     @Override

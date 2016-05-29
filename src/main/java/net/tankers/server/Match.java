@@ -43,6 +43,7 @@ public class Match extends Thread{
         this.player2 = player2;
         this.server = server;
         world.setAllowSleep(true);
+        world.setContactListener(new ShellContactListener());
     }
 
     public World getWorld() {
@@ -56,6 +57,10 @@ public class Match extends Thread{
     public void addShell(Shell shell) {
         shells.add(shell);
         broadCast(shell.sync());
+    }
+
+    public void removeShell(Shell shell) {
+        shells.remove(shell);
     }
 
     public boolean hasPlayer(Player player) {
@@ -120,7 +125,6 @@ public class Match extends Thread{
     public void init() {
         player1.write("match_found;"+player2.username);
         player2.write("match_found;"+player1.username);
-        setupObjects();
     }
 
     public static float toMeters(float pixels) {
@@ -129,10 +133,6 @@ public class Match extends Thread{
 
     public static float toPixels(float meters) {
         return meters * PIXELS_PER_METER;
-    }
-
-    public void setupObjects() {
-
     }
 
     @Override
@@ -152,6 +152,7 @@ public class Match extends Thread{
 
     // This player won the game
     public void endGame(Player winner, Player loser, int reason) {
+        System.out.println("Ending game");
         playerWon = true;
         player1.isInMatch = false;
         player2.isInMatch = false;
@@ -166,7 +167,7 @@ public class Match extends Thread{
         world.step(1f/60f, 8, 3);
         tank1.updateServer(delta);
         tank2.updateServer(delta);
-        for(Shell shell: shells){
+        for(Shell shell: new LinkedList<>(shells)){
             shell.updateServer(delta);
         }
         String message;

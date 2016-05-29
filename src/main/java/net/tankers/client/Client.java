@@ -8,6 +8,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.InternetProtocolFamily;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -142,7 +143,10 @@ public class Client {
         }else if(data[2].equals("update")){
             String[] data2 = new String[data.length-3];
             System.arraycopy(data, 3, data2, 0, data.length - 3);
-            objects.get(Integer.parseInt(data[1])).decodeDataClient(data2);
+            NetworkedEntity entity = objects.get(Integer.parseInt(data[1]));
+            if(entity != null){
+                entity.decodeDataClient(data2);
+            }
         }else if(data[2].equals("delete")){
             objects.remove(Integer.parseInt(data[1]));
         }

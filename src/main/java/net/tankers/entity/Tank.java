@@ -2,14 +2,18 @@ package net.tankers.entity;
 
 import io.netty.channel.Channel;
 import net.tankers.client.Client;
+import net.tankers.server.EntityUserData;
 import net.tankers.server.Match;
 import net.tankers.server.Server;
 import net.tankers.utils.NetworkUtils;
+import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.*;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by idrol on 15-04-2016.
@@ -35,6 +39,20 @@ public class Tank extends NetworkedEntity {
         this.match = match;
         sizeX = 30;
         sizeY = 30;
+    }
+
+    @Override
+    public void wasHitByShell(Shell shell) {
+        if(shell.getPlayer() != player){
+            // Was shot shud die
+            match.endGame(shell.getPlayer(), player, Match.WON);
+        }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        match.broadCast(NetworkUtils.encodeBase(this, NetworkUtils.DELETE));
     }
 
 
@@ -74,6 +92,25 @@ public class Tank extends NetworkedEntity {
         super.setRot(z);
         match.broadCast(NetworkUtils.encodeBase(this, NetworkUtils.UPDATE) + "rotZ:" + rotZ);
         return this;
+    }
+
+    @Override
+    public void setup(World world, Set<Body> bodies) {
+        BodyDef boxDef = new BodyDef();
+        boxDef.position.set(Match.toMeters(x), Match.toMeters(y));
+        boxDef.type = BodyType.DYNAMIC;
+        PolygonShape boxShape = new PolygonShape();
+        boxShape.setAsBox(Match.toMeters(sizeX)/2, Match.toMeters(sizeY)/2);
+        Body box = world.createBody(boxDef);
+        FixtureDef boxFixture = new FixtureDef();
+        boxFixture.density = 1f;
+        boxFixture.shape = boxShape;
+        EntityUserData entityUserData = new EntityUserData(this);
+        entityUserData.sensor_id = Entity.TANK_SENSOR;
+        boxFixture.userData = entityUserData;
+        box.createFixture(boxFixture);
+        body = box;
+        bodies.add(box);
     }
 
     @Override
@@ -127,11 +164,16 @@ public class Tank extends NetworkedEntity {
     }
 
     public void fire() {
+        float length = 50;
         float speed = 0.75f;
         Vec2 pos = new Vec2(Match.toMeters(x), Match.toMeters(y));
         Vec2 vel = new Vec2((float)(speed * Math.sin(body.getAngle())), -(float)(speed * Math.cos(body.getAngle())));
         pos.add(vel).add(vel);
         Shell shell = new Shell(server, match, player);
+        shell.x = x + (int)(length * Math.sin(body.getAngle()));
+        shell.y = y - (int)(length * Math.cos(body.getAngle()));
+        System.out.println("Tank is at " + x + ", " + y);
+        System.out.println("Spawning shell at " + shell.x + ", " + shell.y);
         shell.setup(match.getWorld(), match.getBodies(), rotZ, vel);
         match.addShell(shell);
     }

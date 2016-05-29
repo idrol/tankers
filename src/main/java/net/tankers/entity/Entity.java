@@ -1,5 +1,6 @@
 package net.tankers.entity;
 
+import net.tankers.server.EntityUserData;
 import net.tankers.server.Match;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.*;
@@ -12,7 +13,9 @@ import static org.lwjgl.opengl.GL11.*;
  * Created by idrol on 13-04-2016.
  */
 public class Entity {
-
+    public static final int GENERIC_ENTITY_SENSOR = 1;
+    public static final int SHELL_SENSOR = 2;
+    public static final int TANK_SENSOR = 3;
     protected int x, y;
     protected int rotZ = 0;
     protected int sizeX, sizeY;
@@ -31,6 +34,10 @@ public class Entity {
         return this;
     }
 
+    public void wasHitByShell(Shell shell) {
+
+    }
+
     public Entity setRot(int z) {
         rotZ = z;
         return this;
@@ -43,6 +50,10 @@ public class Entity {
         return this;
     }
 
+    public void destroy(){
+        body.getWorld().destroyBody(body);
+    }
+
     public void setup(World world, Set<Body> bodies) {
         BodyDef boxDef = new BodyDef();
         boxDef.position.set(Match.toMeters(x), Match.toMeters(y));
@@ -53,6 +64,7 @@ public class Entity {
         FixtureDef boxFixture = new FixtureDef();
         boxFixture.density = 1f;
         boxFixture.shape = boxShape;
+        boxFixture.userData = new EntityUserData(this);
         box.createFixture(boxFixture);
         body = box;
         bodies.add(box);
