@@ -126,6 +126,16 @@ public class Tank extends NetworkedEntity {
         setRot((int)Math.toDegrees(body.getAngle()));
     }
 
+    public void fire() {
+        float speed = 0.75f;
+        Vec2 pos = new Vec2(Match.toMeters(x), Match.toMeters(y));
+        Vec2 vel = new Vec2((float)(speed * Math.sin(body.getAngle())), -(float)(speed * Math.cos(body.getAngle())));
+        pos.add(vel).add(vel);
+        Shell shell = new Shell(server, match, player);
+        shell.setup(match.getWorld(), match.getBodies(), rotZ, vel);
+        match.addShell(shell);
+    }
+
     @Override
     public void updateClient(float delta) {
         while(Keyboard.next()){
@@ -155,7 +165,7 @@ public class Tank extends NetworkedEntity {
                 }
             }else if(Keyboard.getEventKey() == Keyboard.KEY_SPACE){
                 if(Keyboard.getEventKeyState()) {
-                    Client.writeMessage("fire_em;all");
+                    Client.writeMessage("key_pressed;fire");
                 }
             }
         }
@@ -174,6 +184,9 @@ public class Tank extends NetworkedEntity {
                 break;
             case "key_d":
                 rotateRight = true;
+                break;
+            case "fire":
+                fire();
                 break;
         }
     }

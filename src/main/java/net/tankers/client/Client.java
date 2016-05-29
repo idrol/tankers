@@ -13,10 +13,7 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import net.tankers.client.analytics.MatchesPlayed;
-import net.tankers.entity.Entity;
-import net.tankers.entity.NetworkedEntity;
-import net.tankers.entity.Player;
-import net.tankers.entity.Tank;
+import net.tankers.entity.*;
 import net.tankers.main.Game;
 
 import javax.net.ssl.SSLException;
@@ -46,6 +43,7 @@ public class Client {
     	Client.nifty = nifty;
     	registerNetworkedEntityClass(Tank.class);
         registerNetworkedEntityClass(Player.class);
+        registerNetworkedEntityClass(Shell.class);
     }
     
     public static void setHost(String host) {
