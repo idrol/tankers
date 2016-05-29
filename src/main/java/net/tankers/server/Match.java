@@ -1,6 +1,7 @@
 package net.tankers.server;
 
 import net.tankers.entity.Player;
+import net.tankers.entity.Shell;
 import net.tankers.entity.Tank;
 import net.tankers.exceptions.InvalidClientMsgException;
 import net.tankers.utils.NetworkUtils;
@@ -9,10 +10,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.lwjgl.Sys;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -34,6 +32,7 @@ public class Match extends Thread{
     private Queue<String> player1Queue = new ConcurrentLinkedQueue<>();
     private Queue<String> player2Queue = new ConcurrentLinkedQueue<>();
     private Tank tank1, tank2;
+    private List<Shell> shells = new LinkedList<>();
     private long lastFrame;
 
     private World world = new World(new Vec2(0, 0));
@@ -44,6 +43,19 @@ public class Match extends Thread{
         this.player2 = player2;
         this.server = server;
         world.setAllowSleep(true);
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public Set<Body> getBodies() {
+        return bodies;
+    }
+
+    public void addShell(Shell shell) {
+        shells.add(shell);
+        broadCast(shell.sync());
     }
 
     public boolean hasPlayer(Player player) {
@@ -154,6 +166,9 @@ public class Match extends Thread{
         world.step(1f/60f, 8, 3);
         tank1.updateServer(delta);
         tank2.updateServer(delta);
+        for(Shell shell: shells){
+            shell.updateServer(delta);
+        }
         String message;
         while(!player1Queue.isEmpty()){
             message = player1Queue.poll();
