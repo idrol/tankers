@@ -175,6 +175,7 @@ public class Client {
     private static void matchFound(String msg) {
     	String opponent = msg.split(";")[1];
         nifty.getScreen("lobby").findNiftyControl("gamesearchlabel", Label.class).setText("");
+        nifty.getScreen("lobby").findElementById("cancelsearch").setVisible(false);
         System.out.println("Match found against: " + opponent);
         nifty.gotoScreen("game");
     	MatchesPlayed.incrementMatchesPlayed();
