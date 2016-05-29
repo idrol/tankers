@@ -23,6 +23,7 @@ public class GameController extends RenderableScreenController {
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
+        System.out.println("Bind to GameController");
         map = new DefaultMap();
         map.init();
     }
@@ -44,8 +45,10 @@ public class GameController extends RenderableScreenController {
     }
 
     @NiftyEventSubscriber(id="backtolobby")
-    public void logout(final String id, final ButtonClickedEvent event) {
+    public void backtolobby(final String id, final ButtonClickedEvent event) {
         Client.currentNotification = "";
+        screen.findNiftyControl("notification", Label.class).setText(Client.currentNotification);
+        Client.renderResult = false;
         screen.findElementById("backtolobby").setVisible(false);
         nifty.gotoScreen("lobby");
     }

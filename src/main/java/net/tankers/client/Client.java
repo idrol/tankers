@@ -172,7 +172,9 @@ public class Client {
     
     private static void matchFound(String msg) {
     	String opponent = msg.split(";")[1];
-    	nifty.gotoScreen("game");
+        nifty.getScreen("lobby").findNiftyControl("gamesearchlabel", Label.class).setText("");
+        System.out.println("Match found against: " + opponent);
+        nifty.gotoScreen("game");
     	MatchesPlayed.incrementMatchesPlayed();
     }
 

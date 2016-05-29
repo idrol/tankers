@@ -14,19 +14,20 @@ import net.tankers.main.Game;
  */
 public class LobbyController extends DefaultScreenController {
     private Nifty nifty;
+    private Screen screen;
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
-        nifty.getCurrentScreen().findNiftyControl("username", Label.class).setText(Client.username);
+        this.screen = screen;
+        screen.findNiftyControl("username", Label.class).setText(Client.username);
         System.out.println("Bind succesfull - LobbyController");
     }
 
     @NiftyEventSubscriber(id="search-match")
     public void searchmatch(final String id, final ButtonClickedEvent event){
-        nifty.getCurrentScreen().findNiftyControl("notification", Label.class).setText("");
+        screen.findNiftyControl("gamesearchlabel", Label.class).setText("Searching for a match..");
     	Client.writeMessage("search_match");
-        nifty.gotoScreen("search");
     }
 
     @NiftyEventSubscriber(id="logout")
