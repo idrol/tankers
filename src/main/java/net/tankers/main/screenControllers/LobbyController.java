@@ -38,6 +38,7 @@ public class LobbyController extends DefaultScreenController {
         nifty.gotoScreen("start");
         Client.username = "";
         Client.writeMessage("cancel_search");
+        Client.writeMessage("logout");
     }
 
     @NiftyEventSubscriber(id="cancelsearch")

@@ -94,9 +94,17 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                             handleMatchFound();
                         }
                         break;
+
                     case "cancel_search":
                         System.out.println("Case: cancel_search");
                         PlayerQueueHandler.removePlayer(players.get(ctx.channel()));
+                        break;
+
+                    case "logout":
+                        if(player.authenticated) {
+                            player.authenticated = false;
+                        }
+                        break;
                 }
 
             }else{
