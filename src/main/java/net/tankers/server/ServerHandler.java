@@ -9,7 +9,10 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import net.tankers.entity.NetworkedEntity;
 import net.tankers.entity.Player;
 import net.tankers.exceptions.InvalidClientMsgException;
+import net.tankers.server.sqlite.PlayedMatchesHandler;
+import net.tankers.server.sqlite.PlayedTimeHandler;
 import net.tankers.server.sqlite.SQLiteJDBC;
+import net.tankers.server.sqlite.UserHandler;
 import net.tankers.utils.NetworkUtils;
 
 import java.util.*;
@@ -25,8 +28,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     private List<Match> matches = new LinkedList<>();
     private Server server;
     private SQLiteJDBC sqlite = new SQLiteJDBC();
-    private AnalyticsHandler analyticsHandler = new AnalyticsHandler(sqlite);
+    private PlayedTimeHandler playedTimeHandler = new PlayedTimeHandler(sqlite);
     private UserHandler userHandler = new UserHandler(sqlite);
+    private PlayedMatchesHandler playedMatchesHandler = new PlayedMatchesHandler(sqlite);
 
     public ServerHandler(Server server) {
         this.server = server;
@@ -122,13 +126,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                     }
                 } else if(message_name.equals("timeplayed")) {
                     try {
-                        analyticsHandler.insertSessionTime(msg.split(";")[1].split(":")[0]);
+                        playedTimeHandler.insertSessionTime(msg.split(";")[1].split(":")[0]);
                     } catch (ArrayIndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
                 } else if(message_name.equals("matchesplayed")) {
                     try {
-                        analyticsHandler.insertSessionPlayedMatches(msg.split(";")[1].split(":")[0]);
+                        playedMatchesHandler.insertSessionPlayedMatches(msg.split(";")[1].split(":")[0]);
                     } catch (ArrayIndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }

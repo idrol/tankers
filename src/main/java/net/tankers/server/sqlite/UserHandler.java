@@ -1,4 +1,4 @@
-package net.tankers.server;
+package net.tankers.server.sqlite;
 
 import net.tankers.exceptions.DuplicateUserException;
 import net.tankers.server.sqlite.SQLiteJDBC;
@@ -14,7 +14,7 @@ public class UserHandler {
 	private SQLiteJDBC sqlite;
 	private Connection connection;
 	
-	UserHandler(SQLiteJDBC sqlite) {
+	public UserHandler(SQLiteJDBC sqlite) {
 		this.sqlite = sqlite;
 		this.connection = sqlite.getConnection();
 		initializeUserTable();
@@ -135,7 +135,7 @@ public class UserHandler {
 		return false;
 	}
 	
-	boolean authenticateUser(String username, String password) {
+	public boolean authenticateUser(String username, String password) {
     	if(username.length() >= 4 || password.length() >= 4) {
     		boolean auth = validateUser(username, password);
         	return auth;
@@ -144,7 +144,7 @@ public class UserHandler {
     	}
     }
     
-    String verifyRegistrationCredentials(String username, String password, String verifyPassword) {
+    public String verifyRegistrationCredentials(String username, String password, String verifyPassword) {
     	if(username.length() >= 4 && password.length() >= 4) {
     		if(!isDuplicateUser(username)) {
         		if(password.equals(verifyPassword)) {
@@ -160,7 +160,7 @@ public class UserHandler {
     	}
     }
     
-    void createNewUser(String username, String password) {
+    public void createNewUser(String username, String password) {
     	try {
 			createUser(username, password);
 		} catch (DuplicateUserException e) {
