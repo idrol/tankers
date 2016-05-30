@@ -3,6 +3,7 @@ package net.tankers.main.screenControllers;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ButtonClickedEvent;
+import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
@@ -40,6 +41,8 @@ public class Register extends DefaultScreenController {
 
     @NiftyEventSubscriber(id="back")
     public void back(final String id, final ButtonClickedEvent event) {
+        screen.findNiftyControl("username", TextField.class).setText("");
+        screen.findNiftyControl("notification", Label.class).setText("");
         nifty.gotoScreen("start");
     }
     

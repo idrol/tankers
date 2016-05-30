@@ -4,6 +4,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ButtonClickedEvent;
 import de.lessvoid.nifty.controls.Label;
+import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
 import net.tankers.client.Client;
@@ -39,6 +40,7 @@ public class LobbyController extends DefaultScreenController {
     public void logout(final String id, final ButtonClickedEvent event) {
         screen.findElementById("cancelsearch").setVisible(false);
         screen.findNiftyControl("gamesearchlabel", Label.class).setText("");
+        nifty.getScreen("login").findNiftyControl("username", TextField.class).setText("");
         nifty.gotoScreen("start");
         Client.username = "";
         Client.writeMessage("cancel_search");

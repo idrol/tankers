@@ -41,8 +41,10 @@ public class MainScreenController extends DefaultScreenController {
             Client.setHost(serverhost);
         	Client.run();
         	notificationField.setColor(NiftyThemeColors.goodNotification);
-        	
-        	if (notificationField.getText().equals("")) {
+
+            System.out.println("Connected to: '" + serverhost + "'");
+
+        	if (serverhost.length() == 0) {
         		serverhost = "localhost";
         	}
 
@@ -52,6 +54,7 @@ public class MainScreenController extends DefaultScreenController {
             screen.findElementById("Login").setVisible(true);
             screen.findElementById("Register").setVisible(true);
             screen.findElementById("connectPanel").setVisible(false);
+            serverHostField.setText("");
         	
         } catch (Exception e) {
         	e.printStackTrace();
@@ -68,6 +71,7 @@ public class MainScreenController extends DefaultScreenController {
         screen.findElementById("Login").setVisible(false);
         screen.findElementById("Register").setVisible(false);
         screen.findElementById("connectPanel").setVisible(true);
+        TextField serverHostField = screen.findNiftyControl("serverhost", TextField.class);
         Label notificationField = screen.findNiftyControl("notification", Label.class);
         notificationField.setColor(NiftyThemeColors.defaultColor);
         notificationField.setText("Disconnected from the server");
