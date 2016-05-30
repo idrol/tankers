@@ -11,8 +11,8 @@ import java.sql.Statement;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserHandler {
-	private SQLiteJDBC sqlite;
-	private Connection connection;
+	private final SQLiteJDBC sqlite;
+	private final Connection connection;
 	
 	public UserHandler(SQLiteJDBC sqlite) {
 		this.sqlite = sqlite;

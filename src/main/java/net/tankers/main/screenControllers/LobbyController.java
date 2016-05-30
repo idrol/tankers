@@ -20,7 +20,9 @@ public class LobbyController extends DefaultScreenController {
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
-        screen.findNiftyControl("username", Label.class).setText(Client.username);
+        screen.findNiftyControl("username", Label.class).setText("Logged in as '" + Client.username+"'");
+        screen.findNiftyControl("played", Label.class).setText("Matches played: " + Client.totalMatches);
+        screen.findNiftyControl("won", Label.class).setText("Matches won: " + Client.wonMatches);
         screen.findElementById("cancelsearch").setVisible(false);
         screen.findNiftyControl("gamesearchlabel", Label.class).setText("");
         System.out.println("Bind succesfull - LobbyController");
@@ -35,6 +37,8 @@ public class LobbyController extends DefaultScreenController {
 
     @NiftyEventSubscriber(id="logout")
     public void logout(final String id, final ButtonClickedEvent event) {
+        screen.findElementById("cancelsearch").setVisible(false);
+        screen.findNiftyControl("gamesearchlabel", Label.class).setText("");
         nifty.gotoScreen("start");
         Client.username = "";
         Client.writeMessage("cancel_search");

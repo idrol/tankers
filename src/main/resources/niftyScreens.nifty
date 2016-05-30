@@ -81,10 +81,10 @@
                     <control name="button" id="cancelsearch" label="Cancel search" align="center" valign="center" visible="false"></control>
                     <control width="500px" name="label" id="gamesearchlabel" text="" color="#000000"></control>
                     <control width="500px" name="label" id="notification" text="" color="#000000"></control>
-                    <control name="label" text="username" id="username" color="#000000"></control>
-                    <control name="label" text="" id="online-users"></control>
-                    <control name="label" text="" id="played"></control>
-                    <control name="label" text="" id="won"></control>
+                    <control width="500px" name="label" text="username" id="username" color="#000000"></control>
+                    <control width="500px" name="label" text="" id="online-users"></control>
+                    <control width="500px" name="label" text="" id="played" color="#000000"></control>
+                    <control width="500px" name="label" text="" id="won" color="#000000"></control>
                     <panel childLayout="horizontal">
                         <control margin="5px" name="button" id="search-match" label="Search game" align="center" valign="center"></control>
                         <control margin="5px" name="button" label="Log out" id="logout" align="center" valign="center"></control>
