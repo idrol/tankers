@@ -19,8 +19,4 @@ public class TimePlayed {
 	public static void setGameQuitTime(long gameQuitTime) {
 		TimePlayed.gameQuitTime = gameQuitTime;
 	}
-	
-	public static double getTimePlayed() {
-		return (TimePlayed.getGameQuitTime() - TimePlayed.getGameStartTime())/1000.0;
-	}
 }

@@ -4,6 +4,8 @@ import net.tankers.entity.Player;
 import net.tankers.entity.Shell;
 import net.tankers.entity.Tank;
 import net.tankers.exceptions.InvalidClientMsgException;
+import net.tankers.server.sqlite.PlayedMatchesHandler;
+import net.tankers.server.sqlite.SQLiteJDBC;
 import net.tankers.utils.NetworkUtils;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -24,6 +26,7 @@ public class Match extends Thread{
     public static final int FORFEIT = 2;
 
     public static final int PIXELS_PER_METER = 30;
+    private final PlayedMatchesHandler playedMatchesHandler;
 
     private Player player1;
     private Player player2;
@@ -35,13 +38,16 @@ public class Match extends Thread{
     private List<Shell> shells = new LinkedList<>();
     private long lastFrame;
 
+    private long matchStartTime, matchEndTime, duration;
+
     private World world = new World(new Vec2(0, 0));
     private Set<Body> bodies = new HashSet<>();
 
-    public Match(Player player1, Player player2, Server server){
+    public Match(Player player1, Player player2, Server server, PlayedMatchesHandler playedMatchesHandler){
         this.player1 = player1;
         this.player2 = player2;
         this.server = server;
+        this.playedMatchesHandler = playedMatchesHandler;
         world.setAllowSleep(true);
         world.setContactListener(new ShellContactListener());
     }
@@ -125,6 +131,7 @@ public class Match extends Thread{
     public void init() {
         player1.write("match_found;"+player2.username);
         player2.write("match_found;"+player1.username);
+        matchStartTime = System.currentTimeMillis();
     }
 
     public static float toMeters(float pixels) {
@@ -160,6 +167,9 @@ public class Match extends Thread{
         player2.match = null;
         winner.write("match_result;won:" + reason);
         loser.write("match_result;lost:" + reason);
+        matchEndTime = System.currentTimeMillis();
+        duration = (matchEndTime - matchStartTime);
+        playedMatchesHandler.insertPlayedMatch(duration, winner.username, loser.username);
     }
 
     public void update() {

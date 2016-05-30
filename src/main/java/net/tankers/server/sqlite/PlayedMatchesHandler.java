@@ -17,6 +17,11 @@ public class PlayedMatchesHandler {
                 "loser TEXT NOT NULL");
     }
 
+    public void insertPlayedMatch(long duration, String winner, String loser) {
+        sqlite.insertInto("matches", "('duration','winner','loser') "
+                + "VALUES ('" + duration + "', '" + winner + "', '" + loser + "')");
+    }
+
     private void initializeSessionPlayedMatchesTable() {
         sqlite.createTable("sessionplayedmatches",
                 "uniqueid integer PRIMARY KEY AUTOINCREMENT," +

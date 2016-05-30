@@ -126,7 +126,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                     }
                 } else if(message_name.equals("timeplayed")) {
                     try {
-                        playedTimeHandler.insertSessionTime(msg.split(";")[1].split(":")[0]);
+                        String variables = msg.split(";")[1];
+                        playedTimeHandler.insertSessionTime(variables.split(":")[0], variables.split(":")[1]);
                     } catch (ArrayIndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
@@ -202,7 +203,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     	Player player2 = PlayerQueueHandler.pollPlayer();
         player1.isInMatch = true;
         player2.isInMatch = true;
-        Match match = new Match(player1, player2, server);
+        Match match = new Match(player1, player2, server, playedMatchesHandler);
         player1.match = match;
         player2.match = match;
 		matches.add(match);

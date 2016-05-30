@@ -175,12 +175,12 @@ public class Main {
 	    inputSystem.shutdown();
 	    Display.destroy();
 	    
-	    Client.writeMessage("timeplayed;"+TimePlayed.getTimePlayed());
+	    Client.writeMessage("timeplayed;"+TimePlayed.getGameStartTime() + ":" + TimePlayed.getGameQuitTime());
 	    Client.writeMessage("matchesplayed;"+MatchesPlayed.getMatchesPlayed());
 	    Client.stop();
 	    
 	    System.out.println("Played for " 
-	    		+ TimePlayed.getTimePlayed()
+	    		+ (TimePlayed.getGameQuitTime() - TimePlayed.getGameStartTime())/1000.0f
 	    		+ "s");
 	    System.exit(0);
 	  }
