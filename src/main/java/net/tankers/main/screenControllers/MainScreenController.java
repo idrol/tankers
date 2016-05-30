@@ -12,6 +12,7 @@ import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.Color;
 import net.tankers.client.Client;
+import net.tankers.main.NiftyThemeColors;
 
 public class MainScreenController extends DefaultScreenController {
     private Nifty nifty = null;
@@ -39,7 +40,7 @@ public class MainScreenController extends DefaultScreenController {
         try {
             Client.setHost(serverhost);
         	Client.run();
-        	notificationField.setColor(new Color("#077A00"));
+        	notificationField.setColor(NiftyThemeColors.goodNotification);
         	
         	if (notificationField.getText().equals("")) {
         		serverhost = "localhost";
@@ -54,7 +55,7 @@ public class MainScreenController extends DefaultScreenController {
         	
         } catch (Exception e) {
         	e.printStackTrace();
-        	notificationField.setColor(new Color("#7A0000"));
+        	notificationField.setColor(NiftyThemeColors.badNotification);
             notificationField.setText("Could not connect to host '" + serverhost + "'");
             System.err.println("Could not connect to host '" + serverhost + "'");
         }
@@ -68,7 +69,7 @@ public class MainScreenController extends DefaultScreenController {
         screen.findElementById("Register").setVisible(false);
         screen.findElementById("connectPanel").setVisible(true);
         Label notificationField = screen.findNiftyControl("notification", Label.class);
-        notificationField.setColor(new Color("#000000"));
+        notificationField.setColor(NiftyThemeColors.defaultColor);
         notificationField.setText("Disconnected from the server");
     }
 

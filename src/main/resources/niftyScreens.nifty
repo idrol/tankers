@@ -16,7 +16,7 @@
                     <panel id="connectPanel" childLayout="horizontal" align="center">
                 		<control name="label" text="Server Host:" color="#000000" marginRight="5"></control>
 	                    <control name="textfield" maxLength="100" width="100" id="serverhost"></control>
-	                    <control name="button" label="Connect" id="connect" align="center" valign="center" marginLeft="5"></control>
+	                    <control name="button" label="Connect" id="connect" align="center" valign="center" marginLeft="5" ></control>
                     </panel>
                     <control name="button" label="Disconnect" id="disconnect" align="center" valign="center" marginBottom="30" marginTop="5" visible="false"></control>
                     <control margin="5px" name="button" label="Login" id="Login" align="center" valign="center" background="#ffffff" visible="false"></control>
