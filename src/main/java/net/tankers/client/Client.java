@@ -15,6 +15,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import net.tankers.client.analytics.MatchesPlayed;
 import net.tankers.entity.*;
+import net.tankers.exceptions.NoSuchEntityException;
 import net.tankers.main.Game;
 
 import javax.net.ssl.SSLException;
@@ -46,6 +47,9 @@ public class Client {
     	registerNetworkedEntityClass(Tank.class);
         registerNetworkedEntityClass(Player.class);
         registerNetworkedEntityClass(Shell.class);
+        registerNetworkedEntityClass(Wall.class);
+        registerNetworkedEntityClass(HiddenWall.class);
+        registerNetworkedEntityClass(NonCollidable.class);
     }
     
     public static void setHost(String host) {
@@ -96,7 +100,12 @@ public class Client {
         String msgType = msg.split(";")[0];
         
         if(msgType.equals("object")){
-            decodeObject(msg.split(";")[1]);
+            try {
+                decodeObject(msg.split(";")[1]);
+            } catch (NoSuchEntityException e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
         } else if (msgType.equals("login_status")) {
         	if(msg.split(";")[1].equals("1")) {
         		nifty.gotoScreen("lobby");
@@ -113,9 +122,12 @@ public class Client {
         }
     }
 
-    private static void decodeObject(String msg) {
+    private static void decodeObject(String msg) throws NoSuchEntityException {
         String[] data = msg.split(":");
         HashMap<Integer, NetworkedEntity> objects = entities.get(data[0]);
+        if(objects == null){
+            throw new NoSuchEntityException("Entity " + data[0] + " has not been registered on the client.");
+        }
         if(data[2].equals("create")){
             if(objects.get(Integer.parseInt(data[1])) == null){
                 try {
@@ -144,9 +156,7 @@ public class Client {
             String[] data2 = new String[data.length-3];
             System.arraycopy(data, 3, data2, 0, data.length - 3);
             NetworkedEntity entity = objects.get(Integer.parseInt(data[1]));
-            if(entity != null){
-                entity.decodeDataClient(data2);
-            }
+            entity.decodeDataClient(data2);
         }else if(data[2].equals("delete")){
             objects.remove(Integer.parseInt(data[1]));
         }

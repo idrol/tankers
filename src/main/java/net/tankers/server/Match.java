@@ -4,6 +4,7 @@ import net.tankers.entity.Player;
 import net.tankers.entity.Shell;
 import net.tankers.entity.Tank;
 import net.tankers.exceptions.InvalidClientMsgException;
+import net.tankers.map.DefaultMap;
 import net.tankers.server.sqlite.PlayedMatchesHandler;
 import net.tankers.server.sqlite.SQLiteJDBC;
 import net.tankers.utils.NetworkUtils;
@@ -39,6 +40,8 @@ public class Match extends Thread{
     private long lastFrame;
 
     private long matchStartTime, matchEndTime, duration;
+
+    private net.tankers.map.Map map;
 
     private World world = new World(new Vec2(0, 0));
     private Set<Body> bodies = new HashSet<>();
@@ -145,10 +148,13 @@ public class Match extends Thread{
     @Override
     public void run() {
         broadCast("match_map;default");
-        tank1 = new Tank(server, this, player1, 100, 100);
-        tank2 = new Tank(server, this, player2, 200, 100);
-        tank1.setup(world, bodies);
-        tank2.setup(world, bodies);
+        map = new DefaultMap(world, bodies);
+        map.init(server, this);
+        map.syncWithMatch(this);
+        tank1 = new Tank(server, this, player1, 100, 768/2);
+        tank2 = new Tank(server, this, player2, 1366-100, 768/2);
+        tank1.setup(world, bodies, 90);
+        tank2.setup(world, bodies, -90);
         broadCast(tank1.sync());
         broadCast(tank2.sync());
         lastFrame = getTime();

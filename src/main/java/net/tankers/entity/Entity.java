@@ -4,6 +4,7 @@ import net.tankers.server.EntityUserData;
 import net.tankers.server.Match;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.*;
+import org.newdawn.slick.opengl.Texture;
 
 import java.util.Set;
 
@@ -18,9 +19,10 @@ public class Entity {
     public static final int TANK_SENSOR = 3;
     protected int x, y;
     protected int rotZ = 0;
-    protected int sizeX, sizeY;
-    private float r = 1f, g = 0, b = 0;
+    public int sizeX, sizeY;
+    protected float r = 1f, g = 0, b = 0;
     protected Body body;
+    protected Texture texture;
 
     public Entity setPos(int x, int y) {
         this.x = x;
@@ -77,9 +79,13 @@ public class Entity {
             glRotatef(rotZ, 0, 0, 1);
             glBegin(GL_QUADS);
                 glColor3f(r, g, b);
+                glTexCoord2f(0,0);
                 glVertex2i(-sizeX/2, -sizeY/2);
+                glTexCoord2f(1,0);
                 glVertex2i(-sizeX/2, sizeY/2);
+                glTexCoord2f(1,1);
                 glVertex2i(sizeX/2, sizeY/2);
+                glTexCoord2f(0,1);
                 glVertex2i(sizeX/2, -sizeY/2);
             glEnd();
         glPopMatrix();

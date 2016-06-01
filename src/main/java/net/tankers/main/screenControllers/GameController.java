@@ -24,8 +24,6 @@ public class GameController extends RenderableScreenController {
         this.nifty = nifty;
         this.screen = screen;
         System.out.println("Bind to GameController");
-        map = new DefaultMap();
-        map.init();
     }
 
     @Override
@@ -36,7 +34,6 @@ public class GameController extends RenderableScreenController {
         }
 
         Client.render();
-        map.render();
     }
 
     @Override

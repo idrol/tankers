@@ -11,9 +11,18 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
 
 /**
  * Created by idrol on 15-04-2016.
@@ -26,6 +35,9 @@ public class Tank extends NetworkedEntity {
     private boolean moveBackward = false;
     private boolean rotateLeft = false;
     private boolean rotateRight = false;
+    private float speed = 3f;
+    private float shellSpeed = speed + (speed*0.5f);
+    private float turnSpeed = 1f;
 
     public Tank(Integer instanceID) {
         super(instanceID);
@@ -37,8 +49,8 @@ public class Tank extends NetworkedEntity {
         this.x = x;
         this.y = y;
         this.match = match;
-        sizeX = 30;
-        sizeY = 30;
+        sizeX = 60;
+        sizeY = 100;
     }
 
     @Override
@@ -94,11 +106,11 @@ public class Tank extends NetworkedEntity {
         return this;
     }
 
-    @Override
-    public void setup(World world, Set<Body> bodies) {
+    public void setup(World world, Set<Body> bodies, float rotation) {
         BodyDef boxDef = new BodyDef();
         boxDef.position.set(Match.toMeters(x), Match.toMeters(y));
         boxDef.type = BodyType.DYNAMIC;
+        boxDef.angle = (float)(Math.toRadians(rotation));
         PolygonShape boxShape = new PolygonShape();
         boxShape.setAsBox(Match.toMeters(sizeX)/2, Match.toMeters(sizeY)/2);
         Body box = world.createBody(boxDef);
@@ -137,7 +149,6 @@ public class Tank extends NetworkedEntity {
     public void updateServer(float delta) {
         float xVel = 0;
         float yVel = 0;
-        float speed = 0.5f;
         if(moveForward != moveBackward) {
             if(moveForward) {
                 xVel = (float)(speed * Math.sin(body.getAngle()));
@@ -150,9 +161,9 @@ public class Tank extends NetworkedEntity {
         float angularVel = 0;
         if(rotateLeft != rotateRight) {
             if(rotateLeft) {
-                angularVel = 0.5f;
+                angularVel = turnSpeed;
             }else{
-                angularVel = -0.5f;
+                angularVel = -turnSpeed;
             }
         }
         body.setAngularVelocity(angularVel);
@@ -164,10 +175,9 @@ public class Tank extends NetworkedEntity {
     }
 
     public void fire() {
-        float length = 50;
-        float speed = 0.75f;
+        float length = 60;
         Vec2 pos = new Vec2(Match.toMeters(x), Match.toMeters(y));
-        Vec2 vel = new Vec2((float)(speed * Math.sin(body.getAngle())), -(float)(speed * Math.cos(body.getAngle())));
+        Vec2 vel = new Vec2((float)(shellSpeed * Math.sin(body.getAngle())), -(float)(shellSpeed * Math.cos(body.getAngle())));
         pos.add(vel).add(vel);
         Shell shell = new Shell(server, match, player);
         shell.x = x + (int)(length * Math.sin(body.getAngle()));
@@ -248,5 +258,34 @@ public class Tank extends NetworkedEntity {
                 rotateRight = false;
                 break;
         }
+    }
+
+    @Override
+    public void render() {
+        Color.white.bind();
+        glDisable(GL_TEXTURE_GEN_S);
+        glDisable(GL_TEXTURE_GEN_T);
+        if(texture == null) {
+            try {
+                texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("tank.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        texture.bind();
+        glPushMatrix();
+            glTranslatef(x, y, 0);
+            glRotatef(rotZ, 0, 0, 1);
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.8f,0.35f);
+                glVertex2i(-sizeX/2, -sizeY/2);
+                glTexCoord2f(0.2f,0.35f);
+                glVertex2i(-sizeX/2, sizeY/2);
+                glTexCoord2f(0.2f,0.65f);
+                glVertex2i(sizeX/2, sizeY/2);
+                glTexCoord2f(0.8f,0.65f);
+                glVertex2i(sizeX/2, -sizeY/2);
+            glEnd();
+        glPopMatrix();
     }
 }
