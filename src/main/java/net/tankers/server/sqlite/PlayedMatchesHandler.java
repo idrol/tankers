@@ -107,6 +107,9 @@ public class PlayedMatchesHandler {
             for (Long time : timeList) {
                 totalDuration += time;
             }
+
+            resultSet.close();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
