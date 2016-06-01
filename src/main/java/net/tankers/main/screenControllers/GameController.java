@@ -48,5 +48,6 @@ public class GameController extends RenderableScreenController {
         Client.renderResult = false;
         screen.findElementById("backtolobby").setVisible(false);
         nifty.gotoScreen("lobby");
+        Client.unsetEntities();
     }
 }

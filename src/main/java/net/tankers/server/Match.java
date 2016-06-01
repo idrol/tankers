@@ -176,6 +176,7 @@ public class Match extends Thread{
         matchEndTime = System.currentTimeMillis();
         duration = (matchEndTime - matchStartTime);
         playedMatchesHandler.insertPlayedMatch(duration, winner.username, loser.username);
+        System.out.println("Winner: " + winner + ", Loser: " + loser + ", Duration: " + duration/1000f + "s");
     }
 
     public void update() {

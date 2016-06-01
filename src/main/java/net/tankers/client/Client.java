@@ -22,6 +22,7 @@ import javax.net.ssl.SSLException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -41,6 +42,9 @@ public class Client {
     public static String username;
     public static String currentNotification;
     public static Boolean renderResult = false;
+
+    public static String totalMatches = "0";
+    public static String wonMatches = "0";
     
     public static void init(Nifty nifty) {
     	Client.nifty = nifty;
@@ -50,6 +54,14 @@ public class Client {
         registerNetworkedEntityClass(Wall.class);
         registerNetworkedEntityClass(HiddenWall.class);
         registerNetworkedEntityClass(NonCollidable.class);
+    }
+
+    public static void unsetEntities() {
+        for(Map.Entry<String, HashMap<Integer, NetworkedEntity>> cursor : entities.entrySet()) {
+            if(cursor.getKey() != "Player.class") {
+                cursor.setValue(new HashMap<Integer, NetworkedEntity>());
+            }
+        }
     }
     
     public static void setHost(String host) {
@@ -108,7 +120,8 @@ public class Client {
             }
         } else if (msgType.equals("login_status")) {
         	if(msg.split(";")[1].equals("1")) {
-        		nifty.gotoScreen("lobby");
+                Client.writeMessage("askdb;matches");
+                nifty.gotoScreen("lobby");
             }
         } else if(msgType.equals("user_info")){
         	
@@ -119,6 +132,8 @@ public class Client {
         	matchFound(msg);
         } else if(msgType.equals("match_result")) {
             matchEnded(msg);
+        } else if(msgType.equals("dbreply_matches")) {
+            handleDBReply(msg);
         }
     }
 
@@ -211,6 +226,20 @@ public class Client {
         System.out.println(msg);
         currentNotification = textToShow;
         renderResult = true;
+        Client.writeMessage("askdb;matches");
+    }
+
+    private static void handleDBReply(String msg) {
+        String msgType = msg.split(";")[0].split("_")[1];
+        String totalMatches = msg.split(";")[1].split(":")[0];
+        String wonMatches = msg.split(";")[1].split(":")[1];
+        switch(msgType) {
+            case ("matches"):
+                System.out.println(totalMatches+" total, "+wonMatches+" won");
+                Client.totalMatches = totalMatches;
+                Client.wonMatches = wonMatches;
+
+        }
     }
     
     public static void stop() {

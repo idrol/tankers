@@ -87,7 +87,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             } catch (InvalidClientMsgException e) {
                 System.err.println("A client tried to send an invalid message " + msg);
             }
-
+            System.out.println("Message name: " + message_name);
             if(channelAuthenticated(ctx.channel())){
                 switch (message_name){
                     case "search_match":
@@ -109,10 +109,23 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                             player.authenticated = false;
                         }
                         break;
+
+                    case "askdb":
+                        System.out.println("Case: askdb");
+                        handleAskDB(msg, ctx, player.username);
+                        break;
+
+                    case "matchesplayed":
+                        try {
+                            playedMatchesHandler.insertSessionPlayedMatches(msg.split(";")[1].split(":")[0]);
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            e.printStackTrace();
+                        }
+                        break;
                 }
 
             }else{
-                System.out.println("Message name: " + message_name);
+
                 if(message_name.equals("login")){
                     performLogin(msg, ctx);
 
@@ -131,19 +144,27 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
                     } catch (ArrayIndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
-                } else if(message_name.equals("matchesplayed")) {
-                    try {
-                        playedMatchesHandler.insertSessionPlayedMatches(msg.split(";")[1].split(":")[0]);
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        e.printStackTrace();
-                    }
                 } else {
                     System.out.println("Unauthenticated channel tried message: " + msg);
                 }
             }
         }
     }
-    
+
+    private void handleAskDB(String msg, ChannelHandlerContext ctx, String username) {
+        String itemRequested = msg.split(";")[1];
+        System.out.println("Item requested: " + itemRequested);
+        switch(itemRequested) {
+            case "matches":
+                int[] matchStats =
+                        playedMatchesHandler.getUserMatchStats(playedMatchesHandler.getUserMatches(username), username);
+
+
+                if (matchStats != null)
+                    ctx.writeAndFlush("dbreply_matches;" + matchStats[0] +":"+ matchStats[1] + NetworkUtils.ENDING);
+        }
+    }
+
     private void performLogin(String msg, ChannelHandlerContext ctx) {
     	String username, password;
     	

@@ -4,6 +4,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ButtonClickedEvent;
 import de.lessvoid.nifty.controls.Label;
+import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
 import net.tankers.client.Client;
@@ -20,10 +21,17 @@ public class LobbyController extends DefaultScreenController {
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
-        screen.findNiftyControl("username", Label.class).setText(Client.username);
+        System.out.println("Bind succesfull - LobbyController");
+    }
+
+    @Override
+    public void onStartScreen() {
+        screen.findNiftyControl("username", Label.class).setText("Logged in as '" + Client.username+"'");
+        System.out.println("Client username: " + Client.username);
+        screen.findNiftyControl("played", Label.class).setText("Matches played: " + Client.totalMatches);
+        screen.findNiftyControl("won", Label.class).setText("Matches won: " + Client.wonMatches);
         screen.findElementById("cancelsearch").setVisible(false);
         screen.findNiftyControl("gamesearchlabel", Label.class).setText("");
-        System.out.println("Bind succesfull - LobbyController");
     }
 
     @NiftyEventSubscriber(id="search-match")
@@ -35,6 +43,9 @@ public class LobbyController extends DefaultScreenController {
 
     @NiftyEventSubscriber(id="logout")
     public void logout(final String id, final ButtonClickedEvent event) {
+        screen.findElementById("cancelsearch").setVisible(false);
+        screen.findNiftyControl("gamesearchlabel", Label.class).setText("");
+        nifty.getScreen("login").findNiftyControl("username", TextField.class).setText("");
         nifty.gotoScreen("start");
         Client.username = "";
         Client.writeMessage("cancel_search");
