@@ -24,6 +24,10 @@ public class GameController extends RenderableScreenController {
         this.nifty = nifty;
         this.screen = screen;
         System.out.println("Bind to GameController");
+    }
+
+    @Override
+    public void onStartScreen() {
         map = new DefaultMap();
         map.init();
     }
@@ -51,5 +55,6 @@ public class GameController extends RenderableScreenController {
         Client.renderResult = false;
         screen.findElementById("backtolobby").setVisible(false);
         nifty.gotoScreen("lobby");
+        Client.unsetEntities();
     }
 }

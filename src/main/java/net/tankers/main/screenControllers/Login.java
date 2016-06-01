@@ -37,7 +37,7 @@ public class Login extends DefaultScreenController {
     public void login(final String id, final ButtonClickedEvent event) {
         TextField usernameField = screen.findNiftyControl("username", TextField.class);
         TextField passwordField = screen.findNiftyControl("password", TextField.class);
-        String username = usernameField.getDisplayedText();
+        String username = usernameField.getRealText();
         String password = passwordField.getRealText();
 
     	Client.loginUser(username, password);

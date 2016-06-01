@@ -21,6 +21,7 @@ import javax.net.ssl.SSLException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -49,6 +50,14 @@ public class Client {
     	registerNetworkedEntityClass(Tank.class);
         registerNetworkedEntityClass(Player.class);
         registerNetworkedEntityClass(Shell.class);
+    }
+
+    public static void unsetEntities() {
+        for(Map.Entry<String, HashMap<Integer, NetworkedEntity>> cursor : entities.entrySet()) {
+            if(cursor.getKey() != "Player.class") {
+                cursor.setValue(new HashMap<Integer, NetworkedEntity>());
+            }
+        }
     }
     
     public static void setHost(String host) {
@@ -103,7 +112,7 @@ public class Client {
         } else if (msgType.equals("login_status")) {
         	if(msg.split(";")[1].equals("1")) {
                 Client.writeMessage("askdb;matches");
-        		nifty.gotoScreen("lobby");
+                nifty.gotoScreen("lobby");
             }
         } else if(msgType.equals("user_info")){
         	
@@ -207,6 +216,7 @@ public class Client {
         System.out.println(msg);
         currentNotification = textToShow;
         renderResult = true;
+        Client.writeMessage("askdb;matches");
     }
 
     private static void handleDBReply(String msg) {

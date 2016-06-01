@@ -21,12 +21,17 @@ public class LobbyController extends DefaultScreenController {
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
+        System.out.println("Bind succesfull - LobbyController");
+    }
+
+    @Override
+    public void onStartScreen() {
         screen.findNiftyControl("username", Label.class).setText("Logged in as '" + Client.username+"'");
+        System.out.println("Client username: " + Client.username);
         screen.findNiftyControl("played", Label.class).setText("Matches played: " + Client.totalMatches);
         screen.findNiftyControl("won", Label.class).setText("Matches won: " + Client.wonMatches);
         screen.findElementById("cancelsearch").setVisible(false);
         screen.findNiftyControl("gamesearchlabel", Label.class).setText("");
-        System.out.println("Bind succesfull - LobbyController");
     }
 
     @NiftyEventSubscriber(id="search-match")
