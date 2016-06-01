@@ -83,4 +83,56 @@ public class PlayedMatchesHandler {
         sqlite.insertInto("sessionplayedmatches", "('playedMatches') "
                 + "VALUES ('"+ playedMatches +"')");
     }
+
+    public String getAverageMatchDuration() {
+        ResultSet resultSet;
+        Statement statement;
+        ArrayList<Long> timeList = new ArrayList<>();
+        String averageMatchTime = "0.000s";
+        long duration;
+        long totalDuration = 0;
+
+        try {
+            statement = connection.createStatement();
+            String query = "SELECT duration "
+                    + "FROM matches";
+
+            resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                duration = resultSet.getLong("duration");
+                timeList.add(duration);
+            }
+
+            for (Long time : timeList) {
+                totalDuration += time;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return (totalDuration/timeList.size())/1000f + "s";
+    }
+
+    public String getNumberOfMatches() {
+        ResultSet resultSet;
+        Statement statement;
+        long numberOfMatches = 0;
+
+        try {
+            statement = connection.createStatement();
+            String query = "SELECT COUNT(*) as total FROM matches";
+
+            resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                numberOfMatches = resultSet.getLong("total");
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Long.toString(numberOfMatches);
+    }
 }

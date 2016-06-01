@@ -12,6 +12,8 @@ import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.Color;
 import net.tankers.client.Client;
+import net.tankers.client.analytics.MatchesPlayed;
+import net.tankers.client.analytics.TimePlayed;
 import net.tankers.main.NiftyThemeColors;
 
 public class MainScreenController extends DefaultScreenController {
@@ -84,6 +86,8 @@ public class MainScreenController extends DefaultScreenController {
 
     @NiftyEventSubscriber(id="quit")
     public void quit(final String id, final ButtonClickedEvent event) {
+        Client.writeMessage("timeplayed;"+TimePlayed.getGameStartTime() + ":" + TimePlayed.getGameQuitTime());
+        Client.writeMessage("matchesplayed;"+MatchesPlayed.getMatchesPlayed());
         nifty.exit();
     }
 }

@@ -16,6 +16,7 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import net.tankers.client.analytics.MatchesPlayed;
 import net.tankers.entity.*;
 import net.tankers.exceptions.NoSuchEntityException;
+import net.tankers.main.AdminPanelInfo;
 import net.tankers.main.Game;
 
 import javax.net.ssl.SSLException;
@@ -110,6 +111,7 @@ public class Client {
 
     public static void decode(String msg){
         String msgType = msg.split(";")[0];
+        System.out.println(msg);
         
         if(msgType.equals("object")){
             try {
@@ -120,8 +122,16 @@ public class Client {
             }
         } else if (msgType.equals("login_status")) {
         	if(msg.split(";")[1].equals("1")) {
-                Client.writeMessage("askdb;matches");
-                nifty.gotoScreen("lobby");
+                System.out.println("login status 1");
+
+                if(Client.username.equals("admin")) {
+                    Client.writeMessage("askdb;adminpanelinfo");
+                    nifty.gotoScreen("admin");
+                }
+                else {
+                    Client.writeMessage("askdb;matches");
+                    nifty.gotoScreen("lobby");
+                }
             }
         } else if(msgType.equals("user_info")){
         	
@@ -132,7 +142,7 @@ public class Client {
         	matchFound(msg);
         } else if(msgType.equals("match_result")) {
             matchEnded(msg);
-        } else if(msgType.equals("dbreply_matches")) {
+        } else if(msgType.split("_")[0].equals("dbreply")) {
             handleDBReply(msg);
         }
     }
@@ -230,15 +240,37 @@ public class Client {
     }
 
     private static void handleDBReply(String msg) {
+        System.out.println(msg);
         String msgType = msg.split(";")[0].split("_")[1];
-        String totalMatches = msg.split(";")[1].split(":")[0];
-        String wonMatches = msg.split(";")[1].split(":")[1];
+
         switch(msgType) {
             case ("matches"):
                 System.out.println(totalMatches+" total, "+wonMatches+" won");
+                String totalMatches = msg.split(";")[1].split(":")[0];
+                String wonMatches = msg.split(";")[1].split(":")[1];
                 Client.totalMatches = totalMatches;
                 Client.wonMatches = wonMatches;
+                break;
 
+            case ("avgsessiontime"):
+                String avgSessionTime = msg.split(";")[1].split(":")[0];
+                AdminPanelInfo.setAvgSessionTime(avgSessionTime);
+                break;
+
+            case ("avgmatchtime"):
+                String avgMatchTime = msg.split(";")[1].split(":")[0];
+                AdminPanelInfo.setAvgMatchTime(avgMatchTime);
+                break;
+
+            case ("totalmatches"):
+                String allMatches = msg.split(";")[1].split(":")[0];
+                AdminPanelInfo.setTotalMatches(allMatches);
+                break;
+
+            case ("usernumber"):
+                String userNumber = msg.split(";")[1].split(":")[0];
+                AdminPanelInfo.setUserNumber(userNumber);
+                break;
         }
     }
     

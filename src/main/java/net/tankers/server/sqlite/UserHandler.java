@@ -13,15 +13,18 @@ import org.mindrot.jbcrypt.BCrypt;
 public class UserHandler {
 	private final SQLiteJDBC sqlite;
 	private final Connection connection;
+	private static final String ADMIN_USERNAME = "admin";
+	private static final String ADMIN_PASSWORD = "UltraSecretPass";
 	
 	public UserHandler(SQLiteJDBC sqlite) {
 		this.sqlite = sqlite;
 		this.connection = sqlite.getConnection();
 		initializeUserTable();
+		createAdminUser();
 	}
 	
 	public void printAllUsers() {
-		ResultSet resultSet = null;
+		ResultSet resultSet;
 		try {
 			Statement statement = connection.createStatement();
 			String query = "SELECT * FROM users";
@@ -164,7 +167,38 @@ public class UserHandler {
     	try {
 			createUser(username, password);
 		} catch (DuplicateUserException e) {
-			e.printStackTrace();
+			System.err.println("User '" + username + "' already exists");
 		}
     }
+
+	private void createAdminUser() {
+		if (isDuplicateUser("admin"))
+			deleteUser(ADMIN_USERNAME);
+
+		createNewUser(ADMIN_USERNAME,ADMIN_PASSWORD);
+	}
+
+	public String getNumberOfUsers() {
+		ResultSet resultSet;
+		Statement statement;
+		long numberOfUsers = 0;
+
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT COUNT(*) as total FROM users";
+
+			resultSet = statement.executeQuery(query);
+
+			while (resultSet.next()) {
+				numberOfUsers = resultSet.getLong("total");
+			}
+
+			resultSet.close();
+			statement.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return Long.toString(numberOfUsers);
+	}
 }

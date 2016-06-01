@@ -162,6 +162,17 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 
                 if (matchStats != null)
                     ctx.writeAndFlush("dbreply_matches;" + matchStats[0] +":"+ matchStats[1] + NetworkUtils.ENDING);
+                break;
+            case "adminpanelinfo":
+                String avgSessionTime = playedTimeHandler.getAverageSessionTime();
+                String avgMatchTime = playedMatchesHandler.getAverageMatchDuration();
+                String totalMatchesPlayed = playedMatchesHandler.getNumberOfMatches();
+                String userNumber = userHandler.getNumberOfUsers();
+
+                ctx.writeAndFlush("dbreply_avgsessiontime;" + avgSessionTime + NetworkUtils.ENDING);
+                ctx.writeAndFlush("dbreply_avgmatchtime;" + avgMatchTime + NetworkUtils.ENDING);
+                ctx.writeAndFlush("dbreply_totalmatches;" + totalMatchesPlayed + NetworkUtils.ENDING);
+                ctx.writeAndFlush("dbreply_usernumber;" + userNumber + NetworkUtils.ENDING);
         }
     }
 
@@ -188,6 +199,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
             player.username = username;
             sendMessages(ctx.channel(), player.sync());
             ctx.channel().writeAndFlush("user_info;0:0:"+channels.size()+ NetworkUtils.ENDING);
+
         }else{
             ctx.channel().writeAndFlush("login_status;0"+ NetworkUtils.ENDING);
             ctx.channel().writeAndFlush("notification;Invalid username or password"+ NetworkUtils.ENDING);

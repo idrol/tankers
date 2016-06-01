@@ -47,9 +47,9 @@ public class LobbyController extends DefaultScreenController {
         screen.findNiftyControl("gamesearchlabel", Label.class).setText("");
         nifty.getScreen("login").findNiftyControl("username", TextField.class).setText("");
         nifty.gotoScreen("start");
-        Client.username = "";
         Client.writeMessage("cancel_search");
         Client.writeMessage("logout");
+        Client.username = "";
     }
 
     @NiftyEventSubscriber(id="cancelsearch")

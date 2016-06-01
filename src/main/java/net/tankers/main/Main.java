@@ -175,11 +175,10 @@ public class Main {
    
 	private static void shutdown(final LwjglInputSystem inputSystem) {
 		TimePlayed.setGameQuitTime(System.currentTimeMillis());
+		Client.writeMessage("timeplayed;"+TimePlayed.getGameStartTime() + ":" + TimePlayed.getGameQuitTime());
 	    inputSystem.shutdown();
 	    Display.destroy();
-	    
-	    Client.writeMessage("timeplayed;"+TimePlayed.getGameStartTime() + ":" + TimePlayed.getGameQuitTime());
-	    Client.writeMessage("matchesplayed;"+MatchesPlayed.getMatchesPlayed());
+
 	    Client.stop();
 	    
 	    System.out.println("Played for " 

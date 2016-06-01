@@ -93,6 +93,23 @@
             </panel>
         </layer>
     </screen>
+
+    <screen id="admin" controller="net.tankers.main.screenControllers.AdminController">
+        <layer id="background" childLayout="center">
+            <image filename="tankersbg.jpg"></image>
+        </layer>
+        <layer childLayout="center">
+            <panel width="100%" height="100%" childLayout="center">
+                <panel width="200px" childLayout="vertical">
+                    <control width="500px" name="label" id="avgsessiontime" text="" color="#000000"></control>
+                    <control width="500px" name="label" id="avgmatchtime" text="" color="#000000"></control>
+                    <control width="500px" name="label" id="totalmatches" text="" color="#000000"></control>
+                    <control width="500px" name="label" id="totalusernumber" text="" color="#000000"></control>
+                    <control margin="5px" name="button" label="Log out" id="logout" align="center" valign="center"></control>
+                </panel>
+            </panel>
+        </layer>
+    </screen>
     
     <screen id="game" controller="net.tankers.main.screenControllers.GameController">
         <layer childLayout="center">
