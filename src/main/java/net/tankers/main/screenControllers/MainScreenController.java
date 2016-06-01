@@ -86,8 +86,6 @@ public class MainScreenController extends DefaultScreenController {
 
     @NiftyEventSubscriber(id="quit")
     public void quit(final String id, final ButtonClickedEvent event) {
-        Client.writeMessage("timeplayed;"+TimePlayed.getGameStartTime() + ":" + TimePlayed.getGameQuitTime());
-        Client.writeMessage("matchesplayed;"+MatchesPlayed.getMatchesPlayed());
         nifty.exit();
     }
 }
