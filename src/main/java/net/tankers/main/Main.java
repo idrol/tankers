@@ -27,6 +27,7 @@ public class Main {
 	public static String pathPrefix = "";
     private static String intellijResourcePrefix = "build/";
     private static String eclipseResourcePrefix = "bin/";
+	private static String buildResourcePrefixed = "";
 	private LwjglInputSystem lwjglInputSystem = null;
 	
 	private Nifty nifty = null;
@@ -34,13 +35,17 @@ public class Main {
 	protected boolean isRunning = true;
 	
     public static void main(String[] argv) {
-        System.out.println(argv[0]);
-        if(argv[0].equals("ECLIPSE")) {
-            pathPrefix = eclipseResourcePrefix;
-        }else if(argv[0].equals("INTELLIJ")) {
-            System.out.println("Worked");
-            pathPrefix = intellijResourcePrefix;
-        }
+		if(argv.length != 0){
+			System.out.println(argv[0]);
+			if(argv[0].equals("ECLIPSE")) {
+				pathPrefix = eclipseResourcePrefix;
+			}else if(argv[0].equals("INTELLIJ")) {
+				System.out.println("Worked");
+				pathPrefix = intellijResourcePrefix;
+			}
+		}else{
+			pathPrefix = buildResourcePrefixed;
+		}
         
     	Main main = new Main();
     	main.start();
@@ -125,11 +130,7 @@ public class Main {
 	public void loadNiftyXML() {
 		nifty.loadStyleFile("nifty-default-styles.xml");
 		nifty.loadControlFile("nifty-default-controls.xml");
-		try {
-			nifty.fromXml("main-screen", new FileInputStream(Main.pathPrefix+"niftyScreens.nifty"), "start", new MainScreenController());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		nifty.fromXml("main-screen", getClass().getResourceAsStream("/niftyScreens.nifty"), "start", new MainScreenController());
 	}
 	
 	public long getTime() {

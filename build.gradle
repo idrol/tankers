@@ -3,21 +3,34 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'application'
 
-mainClassName = "main.java.org.ogp.core.Core"
-applicationDefaultJvmArgs = ["-Djava.library.path=native/", "-DOgpResources=", "-XX:+UseConcMarkSweepGC"]
+mainClassName = "net.tankers.main.Main"
+applicationDefaultJvmArgs = ["-Djava.library.path=native/"]
 sourceCompatibility = 1.8
 version = '0.2'
 
+task moreStartScripts(type: CreateStartScripts) {
+    mainClassName = "net.tankers.server.Server"
+    applicationName = "Server"
+	defaultJvmOpts = ["-Djava.library.path=native/windows/"]
+    outputDir = new File(project.buildDir, 'scripts')
+    classpath = jar.outputs.files + project.configurations.runtime
+}
+
+applicationDistribution.into("bin") {
+            from(moreStartScripts)
+            fileMode = 0755
+}
+
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Open game project',
+        attributes 'Implementation-Title': 'Tankers',
                    'Implementation-Version': version
     }
 }
 
 startScripts {
 	doLast {
-		windowsScript.text = windowsScript.text.replace('native/', '%~dp0../native/')
+		windowsScript.text = windowsScript.text.replace('native/', '%~dp0../native/windows/')
 		windowsScript.text = windowsScript.text.replace('-DOgpResources=', '-DOgpResources=../')
 		unixScript.text = unixScript.text.replace('native/', '\$APP_HOME/native/')
 		unixScript.text = unixScript.text.replace('-DOgpResources=', '-DOgpResources=../')
@@ -27,7 +40,7 @@ startScripts {
 distZip {
 	into(project.name+"-"+project.version) {
 		from '.'
-		include 'native/*'
+		include 'native/**'
 		include 'res/**'
 	}
 }
