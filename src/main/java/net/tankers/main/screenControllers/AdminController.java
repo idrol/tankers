@@ -24,10 +24,22 @@ public class AdminController extends DefaultScreenController {
 
     @Override
     public void onStartScreen() {
-        screen.findNiftyControl("avgsessiontime", Label.class).setText("Average session time: " + AdminPanelInfo.getAvgSessionTime());
-        screen.findNiftyControl("avgmatchtime", Label.class).setText("Average match time: " + AdminPanelInfo.getAvgMatchTime());
-        screen.findNiftyControl("totalmatches", Label.class).setText("Total played matches: " + AdminPanelInfo.getTotalMatches());
-        screen.findNiftyControl("totalusernumber", Label.class).setText("Number of users: " + AdminPanelInfo.getUserNumber());
+        if(AdminPanelInfo.getAvgSessionTime() != null) {
+            screen.findNiftyControl("avgsessiontime", Label.class).setText("Average session time: " + AdminPanelInfo.getAvgSessionTime());
+        }
+
+        if(AdminPanelInfo.getAvgMatchTime() != null) {
+            screen.findNiftyControl("avgmatchtime", Label.class).setText("Average match time: " + AdminPanelInfo.getAvgMatchTime());
+        }
+
+        if(AdminPanelInfo.getTotalMatches() != null) {
+            screen.findNiftyControl("totalmatches", Label.class).setText("Total played matches: " + AdminPanelInfo.getTotalMatches());
+        }
+
+        if(AdminPanelInfo.getUserNumber() != null) {
+            screen.findNiftyControl("totalusernumber", Label.class).setText("Number of users: " + AdminPanelInfo.getUserNumber());
+        }
+
     }
 
     @NiftyEventSubscriber(id="logout")

@@ -63,7 +63,10 @@ public class PlayedTimeHandler {
 			resultSet.close();
 			statement.close();
 
-			averageSessionTime = (totalTime/timeList.size())/1000f + "s";
+			if(timeList.size() > 0) {
+				averageSessionTime = (totalTime/timeList.size())/1000f + "s";
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

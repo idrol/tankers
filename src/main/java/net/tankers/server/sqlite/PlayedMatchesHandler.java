@@ -113,7 +113,11 @@ public class PlayedMatchesHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return (totalDuration/timeList.size())/1000f + "s";
+        if(timeList.size() > 0) {
+            averageMatchTime = (totalDuration/timeList.size())/1000f + "s";
+        }
+
+        return averageMatchTime;
     }
 
     public String getNumberOfMatches() {
